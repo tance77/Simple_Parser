@@ -1,0 +1,16 @@
+
+Makefile
+
+*.bak
+
+tests/data_file
+
+*.out
+
+*.err
+
+*.gpl
+
+*.in
+
+tokens
