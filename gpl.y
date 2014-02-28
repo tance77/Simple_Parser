@@ -174,11 +174,11 @@ simple_type  T_ID  optional_initializer
 {
     if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
     {
-        if($1 == INT)
+        if($1 == INT && !$3)
             TheTable->insert(*$2, new Symbol($1, *$2, *$3));
-        if($1 == DOUBLE)
+        if($1 == DOUBLE && !$3)
             TheTable->insert(*$2, new Symbol($1, *$2, *$3));
-        if($1 == STRING)
+        if($1 == STRING & !$3)
             TheTable->insert(*$2, new Symbol($1, *$2, *$3));
     }
     else
@@ -195,17 +195,17 @@ simple_type  T_ID  optional_initializer
             oss << *$2;
             oss << '[' << i << ']';
             string *s  = new string(oss.str());
-        
-        if($1 == INT)
-            TheTable->insert(*s, new Symbol($1, *s, 42));
-        if($1 == DOUBLE)
-            TheTable->insert(*s, new Symbol($1, *s, 3.145));
-        if($1 == STRING)
-            TheTable->insert(*s, new Symbol($1, *s, "\"Hello world\""));
+
+            if($1 == INT)
+                TheTable->insert(*s, new Symbol($1, *s, 42));
+            if($1 == DOUBLE)
+                TheTable->insert(*s, new Symbol($1, *s, 3.145));
+            if($1 == STRING)
+                TheTable->insert(*s, new Symbol($1, *s, "\"Hello world\""));
         }
     }
-        else
-            Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+    else
+        Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
 }
 ;
 
@@ -228,7 +228,13 @@ T_INT
 //---------------------------------------------------------------------
 optional_initializer:
 T_ASSIGN expression
+{
+    $$ = $2;
+}
 | empty
+{
+    $$ = NULL;
+}
 ;
 
 //---------------------------------------------------------------------
