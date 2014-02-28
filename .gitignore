@@ -5,6 +5,10 @@ Makefile
 
 results/data_file
 
+*.myerr
+
+*.myout
+
 tests/data_file
 
 *.out
