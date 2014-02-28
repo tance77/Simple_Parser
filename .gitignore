@@ -3,6 +3,8 @@ Makefile
 
 *.bak
 
+results/data_file
+
 tests/data_file
 
 *.out
