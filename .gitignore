@@ -3,12 +3,6 @@ Makefile
 
 *.bak
 
-results/data_file
-
-*.myerr
-
-*.myout
-
 tests/data_file
 
 *.out
@@ -22,3 +16,7 @@ tests/data_file
 tokens
 
 *.swp
+
+*.myerr
+
+*.myout
