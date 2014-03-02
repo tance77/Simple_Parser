@@ -1,35 +1,32 @@
 #include "expression.h"
 #include "variable.h"
 
-iExpression::iExpression(Gpl_type type, Expression *LHS, Expression *RHS) : Expression(m_Type, LHS, RHS)
+iExpression::iExpression(int a, Gpl_type type)
 {
-    m_Type = type;
-    m_LHS = NULL;
-    m_RHS = NULL;
-}
-
-dExpression::dExpression(Gpl_type type, Expression *LHS, Expression *RHS) : Expression(type, LHS, RHS)
-{
-    m_LHS = NULL;
-    m_RHS = NULL;
+    mValue = a;
     m_Type = type;
 }
 
-sExpression::sExpression(Gpl_type gType, Expression *LHS, Expression *RHS) : Expression (gType, LHS, RHS)
+dExpression::dExpression(double d, Gpl_type type)
 {
-    m_LHS = NULL;
-    m_RHS = NULL;
+    m_Value = d;
+    m_Type = type;
+}
+
+sExpression::sExpression(std::string s, Gpl_type gType)
+{
+    m_Value = s;
     m_Type = gType;    
 }
 
-uExpression::uExpression(Operator_type type, Expression *LHS, Expression *RHS) : Expression (type, LHS, RHS)
+uExpression::uExpression(Operator_type type, Expression *LHS, Expression *RHS)
 {
     m_LHS = LHS;
     m_RHS = NULL;
     m_oType = type;
 }
 
-bExpression::bExpression(Operator_type oType, Expression *LHS, Expression *RHS) : Expression (oType, LHS, RHS)
+bExpression::bExpression(Operator_type oType, Expression *LHS, Expression *RHS)
 {
     m_LHS = LHS;
     m_RHS = RHS;

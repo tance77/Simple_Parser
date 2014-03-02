@@ -9,6 +9,8 @@
 #include "error.h"      // class for printing errors (used by gpl)
 #include "gpl_assert.h" // function version of standard assert.h
 #include "parser.h"
+#include "expression.h"
+#include "variable.h"
 #include <iostream>
 #include <assert.h>
 #include <vector>
@@ -28,6 +30,8 @@
         std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
         double         union_double;
         Gpl_type       union_gpl_type;
+        Expression*    union_expression;
+        Variable*      union_variable;
     }
 
 
@@ -133,6 +137,10 @@
 %token <union_double> T_DOUBLE_CONSTANT
 %token <union_string> T_STRING_CONSTANT
 %token <union_int> T_PRINT // returns line number
+%token <union_expresison> expression
+%token <union_expression> primary_expression
+%token <union_variable> variable
+%type <union_gpl_type> simple_type
 
 %token T_ERROR// Grammar symbols that have values associated with them need to be
 
@@ -148,7 +156,6 @@
 %left T_ASTERISK T_DIVIDE T_MOD
 %nonassoc T_NOT UNARY_OPS
 
-%type <union_gpl_type> simple_type
 %% // indicates the start of the rules
 //---------------------------------------------------------------------
 program:
@@ -174,12 +181,12 @@ simple_type  T_ID  optional_initializer
 {
     if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
     {
-        if($1 == INT && !$3)
-            TheTable->insert(*$2, new Symbol($1, *$2, *$3));
-        if($1 == DOUBLE && !$3)
-            TheTable->insert(*$2, new Symbol($1, *$2, *$3));
-        if($1 == STRING & !$3)
-            TheTable->insert(*$2, new Symbol($1, *$2, *$3));
+        if($1 == INT /*&& !$3*/)
+            TheTable->insert(*$2, new Symbol($1, *$2, 42));
+        if($1 == DOUBLE/* && !$3*/)
+            TheTable->insert(*$2, new Symbol($1, *$2, 3.145));
+        if($1 == STRING /*&& !$3*/)
+            TheTable->insert(*$2, new Symbol($1, *$2, "\"Hello world\""));
     }
     else
         Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
@@ -229,11 +236,11 @@ T_INT
 optional_initializer:
 T_ASSIGN expression
 {
-    $$ = $2;
+  /*  $$ = $2;*/
 }
 | empty
 {
-    $$ = NULL;
+   /* $$ = NULL; */
 }
 ;
 
@@ -440,17 +447,32 @@ primary_expression
 //---------------------------------------------------------------------
 primary_expression:
 T_LPAREN  expression T_RPAREN
+{
+    $$ = $2;
+}
 | variable
+{
+    $$ = new expression($1);
+}
 | T_INT_CONSTANT
 {
+    $$ = new iExpresison($1, INT);
 }
 | T_TRUE
+{
+    $$ = new iExpression(1, INT);
+}
 | T_FALSE
+{
+    $$ = new iExpression(0, INT);
+}
 | T_DOUBLE_CONSTANT
 {
+    $$ = new dExpression($1, DOUBLE);
 }
 | T_STRING_CONSTANT
 {
+    $$ = new sExpression($1, STRING);
 }
 ;
 
