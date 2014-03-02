@@ -1,18 +1,18 @@
 /*
-  ALWAYS include parser.h instead of y.tab.h
+   ALWAYS include parser.h instead of y.tab.h
 
-  Here is why:
+   Here is why:
 
-    Since the union created by bison contains several gpl objects,
-    a forward class declaration, or including the .h file must be 
-    done before the union is created.
+   Since the union created by bison contains several gpl objects,
+   a forward class declaration, or including the .h file must be 
+   done before the union is created.
 
-    Bison generates y.tab.h where the union is created. 
-    I can't find a way to get bison to generate a y.tab.h that includes 
-    forward class declarations and #include's, so I created this file.
+   Bison generates y.tab.h where the union is created. 
+   I can't find a way to get bison to generate a y.tab.h that includes 
+   forward class declarations and #include's, so I created this file.
 
 
-*/
+ */
 
 #ifndef PARSER_H
 #define PARSER_H
