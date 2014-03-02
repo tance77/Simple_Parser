@@ -33,8 +33,8 @@ void Symbol_table::print(ostream &os)
         if(it->second->getType() == STRING)
         {
             os << "string" << " "
-            << it->second->getID() << " "
-            << it->second->getstringValue() << endl;
+            << it->second->getID() << " \""
+            << it->second->getstringValue() << "\"" << endl;
         }
         it++;
     }

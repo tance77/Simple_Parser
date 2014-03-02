@@ -19,10 +19,10 @@ sExpression::sExpression(std::string *s, Gpl_type gType)
     m_Type = gType;    
 }
 
-uExpression::uExpression(Operator_type type, Expression *LHS, Expression *RHS)
+uExpression::uExpression(Operator_type type, Expression *RHS)
 {
-    m_LHS = LHS;
-    m_RHS = NULL;
+    m_LHS = NULL;
+    m_RHS = RHS;
     m_oType = type;
 }
 
@@ -31,4 +31,8 @@ bExpression::bExpression(Operator_type oType, Expression *LHS, Expression *RHS)
     m_LHS = LHS;
     m_RHS = RHS;
     m_oType = oType;
+}
+vExpression::vExpression(Variable *var)
+{
+    m_Variable = var;
 }

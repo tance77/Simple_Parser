@@ -232,8 +232,8 @@ typedef union YYSTYPE
         std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
         double         union_double;
         Gpl_type       union_gpl_type;
-        Expression     union_expression;
-        Variable       union_variable;
+        Expression*     union_expression;
+        Variable*       union_variable;
     }
 /* Line 1529 of yacc.c.  */
 #line 240 "y.tab.h"

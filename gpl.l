@@ -4,55 +4,58 @@
 #include "parser.h"   // gpl file, using now to get use to ti
 #include <ctype.h>
 #include <iostream>
-        using namespace std;
+    using namespace std;
 
-        Error error_handler; // error reporting object
+    Error error_handler; // error reporting object
 
-        // The following variable keeps track of what input line flex is reading.
-        // It will be used (by other parts of the program) for reporting the line
-        // numbers of errors.
-        // 
-        // It will be used by other parts of the program via the extern construct
-        //   If another .cpp file declares "extern int line_count" that line_count
-        //   in that file will be the line_count in this file (it becomes global)
-        int line_count = 1;
+    // The following variable keeps track of what input line flex is reading.
+    // It will be used (by other parts of the program) for reporting the line
+    // numbers of errors.
+    // 
+    // It will be used by other parts of the program via the extern construct
+    //   If another .cpp file declares "extern int line_count" that line_count
+    //   in that file will be the line_count in this file (it becomes global)
+    int line_count = 1;
 
-        int emit_int(int token)
+    int emit_int(int token)
+    {
+        yylval.union_int = atoi(yytext);
+        return token;
+    }
+    int emit_string(int token)
+    {
+        if(yytext[0] == '\"')
         {
-                yylval.union_int = atoi(yytext);
-                return token;
+            yytext[strlen(yytext)-1] = 0;
+            yytext = yytext-1;
         }
-        int emit_string(int token)
-        {
-           //     yytext[strlen(yytext)-1] = 0;
-         //       yytext = yytext-1;
-                yylval.union_string = new string(yytext);
-                return token;
-        }
-        int emit_double(int token)
-        {
-                yylval.union_double = atof(yytext);
-                return token;
-        }
-        int emit_with_line_number(int token)
-        {
-                yylval.union_int = line_count;
-                return token;
-        }
+        yylval.union_string = new string(yytext);
+        return token;
+    }
+    int emit_double(int token)
+    {
+        yylval.union_double = atof(yytext);
+        return token;
+    }
+    int emit_with_line_number(int token)
+    {
+        yylval.union_int = line_count;
+        return token;
+    }
 
-        int emit_error(int token)
-        {
-                // have the error handling object report the problem
-                // note: it uses line_count as a global variable
-                error_handler.error(Error::ILLEGAL_TOKEN, yytext);
+    int emit_error(int token)
+    {
+        // have the error handling object report the problem
+        // note: it uses line_count as a global variable
+        error_handler.error(Error::ILLEGAL_TOKEN, yytext);
 
-                // create a string to hold the current text
-                // put that string in the yylval union so it can be used by parser (.y file)
-                yylval.union_string = new string(yytext);
-                return token;
-        }
+        // create a string to hold the current text
+        // put that string in the yylval union so it can be used by parser (.y file)
+        yylval.union_string = new string(yytext);
+        return token;
+    }
 
-        // the %} below indicates the end of the C/C++ code section
+    // the %} below indicates the end of the C/C++ code section
 
 %}
 

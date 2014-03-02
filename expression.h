@@ -1,5 +1,5 @@
 #ifndef expression_h
-#define expression_H
+#define expression_h
 
 #include <string>
 #include "gpl_type.h"
@@ -52,7 +52,7 @@ class sExpression : public Expression
 class uExpression : public Expression
 {
     public:
-        uExpression(Operator_type type, Expression *LHS, Expression *RHS);
+        uExpression(Operator_type type, Expression *LHS);
 
     private:
         Operator_type m_oType;
@@ -69,10 +69,10 @@ class bExpression : public Expression
 class vExpression : public Expression
 {
     public:
-        vExpression(Expression *expr);
+        vExpression(Variable *expr);
         vExpression(Symbol *symbol);
     private:
-        Expression *m_Expression;
+        Variable *m_Variable;
         Symbol *m_Symbol;
 };
 #endif

@@ -30,8 +30,8 @@
         std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
         double         union_double;
         Gpl_type       union_gpl_type;
-        Expression     union_expression;
-        Variable       union_variable;
+        Expression*    union_expression;
+        Variable*      union_variable;
     }
 
 
@@ -137,9 +137,11 @@
 %token <union_double> T_DOUBLE_CONSTANT
 %token <union_string> T_STRING_CONSTANT
 %token <union_int> T_PRINT // returns line number
-%type <union_expression> expression
+
 %type <union_expression> primary_expression
 %type <union_variable> variable
+%type <union_expression> expression
+%type <union_variable> variable_declaration
 %type <union_gpl_type> simple_type
 
 %token T_ERROR// Grammar symbols that have values associated with them need to be
@@ -181,9 +183,9 @@ simple_type  T_ID  optional_initializer
 {
     if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
     {
-        if($1 == INT /*&& !$3*/)
+        if($1 == INT /*&&  !$3*/)
             TheTable->insert(*$2, new Symbol($1, *$2, 42));
-        if($1 == DOUBLE/* && !$3*/)
+        if($1 == DOUBLE /*&& !$3*/)
             TheTable->insert(*$2, new Symbol($1, *$2, 3.145));
         if($1 == STRING /*&& !$3*/)
             TheTable->insert(*$2, new Symbol($1, *$2, "\"Hello world\""));
@@ -191,7 +193,7 @@ simple_type  T_ID  optional_initializer
     else
         Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
 }
-| simple_type  T_ID  T_LBRACKET expression T_RBRACKET
+| simple_type  T_ID  T_LBRACKET T_INT_CONSTANT T_RBRACKET
 {
     ostringstream oss;
     if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
@@ -236,7 +238,7 @@ T_INT
 optional_initializer:
 T_ASSIGN expression
 {
-    /*  $$ = $2;*/
+    /* $$ = $2;*/
 }
 | empty
 {
@@ -423,17 +425,17 @@ T_ID
 | T_ID T_LBRACKET expression T_RBRACKET
 {
     /*
-    string = T_ID + [ + $3->evalint() + ];
-    find string in table;
-    new var = that variable that gets returned from the table
-    */
-    }
+       string = T_ID + [ + $3->evalint() + ];
+       find string in table;
+       new var = that variable that gets returned from the table
+     */
+}
 | T_ID T_PERIOD T_ID
 {
-    }
+}
 | T_ID T_LBRACKET expression T_RBRACKET T_PERIOD T_ID
 {
-    }
+}
 ;
 
 //---------------------------------------------------------------------
@@ -444,50 +446,64 @@ primary_expression
 }
 | expression T_OR expression
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_AND expression
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_LESS_EQUAL expression
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_GREATER_EQUAL  expression
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_LESS expression 
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_GREATER  expression
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_EQUAL expression
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_NOT_EQUAL expression
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_PLUS expression 
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_MINUS expression 
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_ASTERISK expression
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_DIVIDE expression
 {
+    $$ = bExpression($2, $1, $3);
 }
 | expression T_MOD expression
 {
+    $$ = bExpression($2, $1, $3);
 }
 | T_MINUS  expression %prec UNARY_OPS
 {
+    $$ = uExpression($1, $2);
 }
 | T_NOT  expression %prec UNARY_OPS
 {
-}
-| math_operator T_LPAREN expression T_RPAREN
+    $$ = uExpression($1, $2);}
+    | math_operator T_LPAREN expression T_RPAREN
 {
 }
 | variable geometric_operator variable
