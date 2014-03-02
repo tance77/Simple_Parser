@@ -43,9 +43,9 @@ class dExpression : public Expression
 class sExpression : public Expression
 {
     public:
-        sExpression(std::string s, Gpl_type gType); 
+        sExpression(std::string *s, Gpl_type gType); 
     private:
-        std::string mValue;
+        std::string *mValue;
         Gpl_type m_Type;
 };
 

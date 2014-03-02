@@ -30,8 +30,8 @@
         std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
         double         union_double;
         Gpl_type       union_gpl_type;
-        Expression*    union_expression;
-        Variable*      union_variable;
+        Expression     union_expression;
+        Variable       union_variable;
     }
 
 
@@ -137,9 +137,9 @@
 %token <union_double> T_DOUBLE_CONSTANT
 %token <union_string> T_STRING_CONSTANT
 %token <union_int> T_PRINT // returns line number
-%token <union_expresison> expression
-%token <union_expression> primary_expression
-%token <union_variable> variable
+%type <union_expression> expression
+%type <union_expression> primary_expression
+%type <union_variable> variable
 %type <union_gpl_type> simple_type
 
 %token T_ERROR// Grammar symbols that have values associated with them need to be
@@ -236,11 +236,11 @@ T_INT
 optional_initializer:
 T_ASSIGN expression
 {
-  /*  $$ = $2;*/
+    /*  $$ = $2;*/
 }
 | empty
 {
-   /* $$ = NULL; */
+    /* $$ = NULL; */
 }
 ;
 
@@ -417,33 +417,83 @@ variable T_ASSIGN expression
 //---------------------------------------------------------------------
 variable:
 T_ID
+{
+    $$ = new Variable();
+}
 | T_ID T_LBRACKET expression T_RBRACKET
+{
+    /*
+    string = T_ID + [ + $3->evalint() + ];
+    find string in table;
+    new var = that variable that gets returned from the table
+    */
+    }
 | T_ID T_PERIOD T_ID
+{
+    }
 | T_ID T_LBRACKET expression T_RBRACKET T_PERIOD T_ID
+{
+    }
 ;
 
 //---------------------------------------------------------------------
 expression:
 primary_expression
+{
+    $$ = $1;
+}
 | expression T_OR expression
+{
+}
 | expression T_AND expression
+{
+}
 | expression T_LESS_EQUAL expression
+{
+}
 | expression T_GREATER_EQUAL  expression
+{
+}
 | expression T_LESS expression 
+{
+}
 | expression T_GREATER  expression
+{
+}
 | expression T_EQUAL expression
+{
+}
 | expression T_NOT_EQUAL expression
+{
+}
 | expression T_PLUS expression 
+{
+}
 | expression T_MINUS expression 
+{
+}
 | expression T_ASTERISK expression
+{
+}
 | expression T_DIVIDE expression
+{
+}
 | expression T_MOD expression
+{
+}
 | T_MINUS  expression %prec UNARY_OPS
+{
+}
 | T_NOT  expression %prec UNARY_OPS
+{
+}
 | math_operator T_LPAREN expression T_RPAREN
+{
+}
 | variable geometric_operator variable
+{
+}
 ;
-
 //---------------------------------------------------------------------
 primary_expression:
 T_LPAREN  expression T_RPAREN
@@ -452,11 +502,11 @@ T_LPAREN  expression T_RPAREN
 }
 | variable
 {
-    $$ = new expression($1);
+    $$ = new vExpression($1);
 }
 | T_INT_CONSTANT
 {
-    $$ = new iExpresison($1, INT);
+    $$ = new iExpression($1, INT);
 }
 | T_TRUE
 {

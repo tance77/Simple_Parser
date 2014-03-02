@@ -9,13 +9,13 @@ iExpression::iExpression(int a, Gpl_type type)
 
 dExpression::dExpression(double d, Gpl_type type)
 {
-    m_Value = d;
+    mValue = d;
     m_Type = type;
 }
 
-sExpression::sExpression(std::string s, Gpl_type gType)
+sExpression::sExpression(std::string *s, Gpl_type gType)
 {
-    m_Value = s;
+    mValue = s;
     m_Type = gType;    
 }
 

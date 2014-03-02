@@ -9,6 +9,7 @@ class Expression;
 class Variable
 {
     public:
+        ~Variable();
         Variable(){m_sSymbol = NULL, m_eExpression = NULL;};
         Variable(string value, Expression *expression){};
         Gpl_type gettype();
