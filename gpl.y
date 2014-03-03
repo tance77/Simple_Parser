@@ -18,6 +18,7 @@
 #include <sstream>
 #include "symbol.h"
 #include "symbol_table.h"
+#include "gpl_type.h"
 
     using namespace std;
 
@@ -30,6 +31,7 @@
         std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
         double         union_double;
         Gpl_type       union_gpl_type;
+        Operator_type  union_operator_type;
         Expression*    union_expression;
         Variable*      union_variable;
     }
@@ -138,11 +140,13 @@
 %token <union_string> T_STRING_CONSTANT
 %token <union_int> T_PRINT // returns line number
 
-%type <union_expression> primary_expression
-%type <union_variable> variable
 %type <union_expression> expression
+%type <union_expression> primary_expression
+%type <union_expression> optional_initializer
+%type <union_variable> variable
 %type <union_variable> variable_declaration
 %type <union_gpl_type> simple_type
+%type <union_operator_type> math_operator
 
 %token T_ERROR// Grammar symbols that have values associated with them need to be
 
@@ -193,12 +197,12 @@ simple_type  T_ID  optional_initializer
     else
         Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
 }
-| simple_type  T_ID  T_LBRACKET T_INT_CONSTANT T_RBRACKET
+| simple_type  T_ID  T_LBRACKET expression T_RBRACKET
 {
     ostringstream oss;
     if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
     {
-        for(int i = 0; i < $4; i++)
+       /* for(int i = 0; i < $4; i++)
         {
             oss.str("");
             oss << *$2;
@@ -211,7 +215,7 @@ simple_type  T_ID  optional_initializer
                 TheTable->insert(*s, new Symbol($1, *s, 3.145));
             if($1 == STRING)
                 TheTable->insert(*s, new Symbol($1, *s, "\"Hello world\""));
-        }
+        }*/
     }
     else
         Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
@@ -446,65 +450,68 @@ primary_expression
 }
 | expression T_OR expression
 {
-    $$ = bExpression($2, $1, $3);
+    /*need to check to see weather or not we can or two things forexample a string cant or  integer*/
+    $$ = new bExpression(OR, $1, $3);
 }
 | expression T_AND expression
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(AND, $1, $3);
 }
 | expression T_LESS_EQUAL expression
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(LESS_THAN_EQUAL, $1, $3);
 }
 | expression T_GREATER_EQUAL  expression
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(GREATER_THAN_EQUAL, $1, $3);
 }
 | expression T_LESS expression 
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(LESS_THAN, $1, $3);
 }
 | expression T_GREATER  expression
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(GREATER_THAN, $1, $3);
 }
 | expression T_EQUAL expression
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(EQUAL, $1, $3);
 }
 | expression T_NOT_EQUAL expression
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(NOT_EQUAL, $1, $3);
 }
 | expression T_PLUS expression 
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(PLUS, $1, $3);
 }
 | expression T_MINUS expression 
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(MINUS, $1, $3);
 }
 | expression T_ASTERISK expression
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(MULTIPLY, $1, $3);
 }
 | expression T_DIVIDE expression
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(DIVIDE, $1, $3);
 }
 | expression T_MOD expression
 {
-    $$ = bExpression($2, $1, $3);
+    $$ = new bExpression(MOD, $1, $3);
 }
 | T_MINUS  expression %prec UNARY_OPS
 {
-    $$ = uExpression($1, $2);
+    $$ = new uExpression(MINUS, $2);
 }
 | T_NOT  expression %prec UNARY_OPS
 {
-    $$ = uExpression($1, $2);}
-    | math_operator T_LPAREN expression T_RPAREN
+    $$ = new uExpression(NOT, $2);
+}
+| math_operator T_LPAREN expression T_RPAREN
 {
+    $$ = new uExpression($1,$3);
 }
 | variable geometric_operator variable
 {
@@ -551,15 +558,45 @@ T_TOUCHES
 //---------------------------------------------------------------------
 math_operator:
 T_SIN
+{
+    $$ = SIN;
+}
 | T_COS
+{
+    $$ = COS;
+}
 | T_TAN
+{
+    $$ = TAN;
+}
 | T_ASIN
+{
+    $$ = ASIN;
+}
 | T_ACOS
+{
+    $$ = ACOS;
+}
 | T_ATAN
+{
+    $$ = ATAN;
+}
 | T_SQRT
+{ 
+    $$ = SQRT;
+}
 | T_ABS
+{
+    $$ = ABS;
+}
 | T_FLOOR
+{
+    $$ = FLOOR;
+}
 | T_RANDOM
+{
+    $$ = RANDOM;
+}
 ;
 
 //---------------------------------------------------------------------

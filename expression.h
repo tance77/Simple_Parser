@@ -12,8 +12,8 @@ class Expression
         //Expression(Variable *variable){};
         //Expression(Gpl_type gType, Expression *LHS, Expression *RHS);
         // Expression(Operator_type oType, Expression *LHS, Expression *RHS);
+        int eval_int();
         Gpl_type getType();
-        void evaluate();
     protected:
         Expression *m_LHS;
         Expression *m_RHS;

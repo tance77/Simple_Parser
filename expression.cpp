@@ -1,6 +1,10 @@
 #include "expression.h"
 #include "variable.h"
 
+int Expression::eval_int()
+{
+
+}
 iExpression::iExpression(int a, Gpl_type type)
 {
     mValue = a;
