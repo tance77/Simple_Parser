@@ -1,58 +1,10 @@
 #include "expression.h"
 #include "variable.h"
-#include <assert.h>
+#include "gpl_assert.h"
 #include <math.h>
 
 //expression base area
 int Expression::evalint()
-{
-    return 7;
-}
-double Expression::evaldouble()
-{
-    return 42;
-}
-std::string Expression::evalstring()
-{
-    return "hello";
-}
-Gpl_type Expression::getType()
-{
-    return m_gType;
-}
-//integer expression area
-iExpression::iExpression(int a, Gpl_type type)
-{
-    mValue = a;
-    m_Type = type;
-}
-//double expression area
-dExpression::dExpression(double d, Gpl_type type)
-{
-    mValue = d;
-    m_Type = type;
-}
-//string expression area
-sExpression::sExpression(std::string *s, Gpl_type gType)
-{
-    mValue = s;
-    m_Type = gType;
-}
-//unary expression area
-uExpression::uExpression(Operator_type type, Expression *RHS)
-{
-    m_LHS = NULL;
-    m_RHS = RHS;
-    m_oType = type;
-}
-//binary expression area
-bExpression::bExpression(Operator_type oType, Expression *LHS, Expression *RHS)
-{
-    m_LHS = LHS;
-    m_RHS = RHS;
-    m_oType = oType;
-}
-int bExpression::evalint()
 {
     assert(m_gType == INT);
     switch (m_oType) {
@@ -62,50 +14,50 @@ int bExpression::evalint()
             return m_LHS->evalint() && m_RHS->evalint();
         case LESS_THAN_EQUAL:
         {
-            if (m_LHS->getType() == STRING || m_RHS->getType() == STRING)
+            if (m_LHS->m_gType == STRING || m_RHS->m_gType == STRING)
                 return m_LHS->evalstring() <= m_RHS->evalstring();
-            else if (m_LHS->getType() == INT || m_RHS->getType() == INT)
+            else if (m_LHS->m_gType == INT || m_RHS->m_gType == INT)
                 return (m_LHS->evalint() <= m_RHS->evalint());
             else return (m_LHS->evaldouble() <= m_RHS->evaldouble());
         }
         case LESS_THAN:
         {
-            if (m_LHS->getType() == STRING || m_RHS->getType() == STRING)
+            if (m_LHS->m_gType == STRING || m_RHS->m_gType == STRING)
                 return m_LHS->evalstring() < m_RHS->evalstring();
-            else if (m_LHS->getType() == INT || m_RHS->getType() == INT)
+            else if (m_LHS->m_gType == INT || m_RHS->m_gType == INT)
                 return (m_LHS->evalint() < m_RHS->evalint());
             else return (m_LHS->evaldouble() < m_RHS->evaldouble());
         }
         case GREATER_THAN_EQUAL:
         {
-            if (m_LHS->getType() == STRING || m_RHS->getType() == STRING)
+            if (m_LHS->m_gType == STRING || m_RHS->m_gType == STRING)
                 return m_LHS->evalstring() >= m_RHS->evalstring();
-            else if (m_LHS->getType() == INT || m_RHS->getType() == INT)
+            else if (m_LHS->m_gType == INT || m_RHS->m_gType == INT)
                 return (m_LHS->evalint() >= m_RHS->evalint());
             else return (m_LHS->evaldouble() >= m_RHS->evaldouble());        }
         case GREATER_THAN:
         {
-            if (m_LHS->getType() == STRING || m_RHS->getType() == STRING)
+            if (m_LHS->m_gType == STRING || m_RHS->m_gType == STRING)
                 return m_LHS->evalstring() > m_RHS->evalstring();
-            else if (m_LHS->getType() == INT || m_RHS->getType() == INT)
+            else if (m_LHS->m_gType == INT || m_RHS->m_gType == INT)
                 return (m_LHS->evalint() > m_RHS->evalint());
             else return (m_LHS->evaldouble() > m_RHS->evaldouble());
         }
         case EQUAL:
         {
-            if (m_LHS->getType() == STRING || m_RHS->getType() == STRING)
-                return m_LHS->evalstring() != m_RHS->evalstring();
-            else if (m_LHS->getType() == INT || m_RHS->getType() == INT)
-                return (m_LHS->evalint() != m_RHS->evalint());
-            else return (m_LHS->evaldouble() != m_RHS->evaldouble());
+            if (m_LHS->m_gType == STRING || m_RHS->m_gType == STRING)
+                return m_LHS->evalstring() == m_RHS->evalstring();
+            else if (m_LHS->m_gType == INT || m_RHS->m_gType == INT)
+                return (m_LHS->evalint() == m_RHS->evalint());
+            else return (m_LHS->evaldouble() == m_RHS->evaldouble());
         }
         case NOT_EQUAL:
         {
-            if (m_LHS->getType() == STRING || m_RHS->getType() == STRING)
-                return m_LHS->evalstring() == m_RHS->evalstring();
-            else if (m_LHS->getType() == INT || m_RHS->getType() == INT)
-                return (m_LHS->evalint() == m_RHS->evalint());
-            else return (m_LHS->evaldouble() == m_RHS->evaldouble());
+            if (m_LHS->m_gType == STRING || m_RHS->m_gType == STRING)
+                return m_LHS->evalstring() != m_RHS->evalstring();
+            else if (m_LHS->m_gType == INT || m_RHS->m_gType == INT)
+                return (m_LHS->evalint() != m_RHS->evalint());
+            else return (m_LHS->evaldouble() != m_RHS->evaldouble());
         }
         case PLUS:
             return m_LHS->evalint() + m_RHS->evalint();
@@ -117,14 +69,14 @@ int bExpression::evalint()
             return m_LHS->evalint() * m_RHS->evalint();
         case MOD:
             return m_LHS->evalint() % m_RHS->evalint();
-            break;
         default:
-            //probabaly an error message here or something
+            //error message probably
             break;
     }
-    return 0;
+    return m_iValue;
+
 }
-double bExpression::evaldouble()
+double Expression::evaldouble()
 {
     assert(m_gType == DOUBLE);
     switch (m_oType) {
@@ -144,14 +96,29 @@ double bExpression::evaldouble()
             //probably error here
             break;
     }
-    return 0;
+    return m_dValue;
 }
-std::string bExpression::evalstring()
+std::string* Expression::evalstring()
 {
-    return "bye";
+    return m_sValue;
 }
-//variable expression area
-vExpression::vExpression(Variable *var)
+Gpl_type Expression::get_gType()
 {
-    m_Variable = var;
+    return m_gType;
+}
+Operator_type Expression::get_oType()
+{
+    return m_oType;
+}
+int Expression::getiValue()
+{
+    return m_iValue;
+}
+double Expression::getdValue()
+{
+    return m_dValue;
+}
+std::string* Expression::getsValue()
+{
+    return m_sValue;
 }

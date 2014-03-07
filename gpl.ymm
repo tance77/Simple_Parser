@@ -187,39 +187,45 @@ simple_type  T_ID  optional_initializer
 {
     if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
     {
-        if($1 == INT &&  !$3)
+        if($1 == INT && $3)
             TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
-        if($1 == DOUBLE && !$3)
+        else if($1 == INT && !$3)
+            TheTable->insert(*$2, new Symbol($1, *$2, 0));
+        if($1 == DOUBLE && $3)
             TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
-        if($1 == STRING && !$3)
-            TheTable->insert(*$2, new Symbol($1, *$2, $3->evalstring()));
-    }
-    else
-        Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
-}
-| simple_type  T_ID  T_LBRACKET expression T_RBRACKET
-{
-    ostringstream oss;
-    if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
-    {
-        for(int i = 0; i < $4->evalint(); i++)
-        {
-            oss.str("");
-            oss << *$2;
-            oss << '[' << i << ']';
-            string *s  = new string(oss.str());
+        else if($1 == DOUBLE && !$3)
+            TheTable->insert(*$2, new Symbol($1, *$2, 0.0);
+                    if($1 == STRING && $3)
+                    TheTable->insert(*$2, new Symbol($1, *$2, *$3->evalstring()));
+                    else if($1 == STRING && !$3)
+                    TheTable->insert(*$2, new Symbol($1, *$2, ""));
+                    }
+                    else
+                    Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+                    }
+                    | simple_type  T_ID  T_LBRACKET expression T_RBRACKET
+                    {
+                    ostringstream oss;
+                    if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
+                    {
+                    for(int i = 0; i < $4->evalint(); i++)
+                    {
+                    oss.str("");
+                    oss << *$2;
+                    oss << '[' << i << ']';
+                    string *s  = new string(oss.str());
 
-            if($1 == INT)
-                TheTable->insert(*s, new Symbol($1, *s, 42));
-            if($1 == DOUBLE)
-                TheTable->insert(*s, new Symbol($1, *s, 3.145));
-            if($1 == STRING)
-                TheTable->insert(*s, new Symbol($1, *s, "\"Hello world\""));
-        }
-    }
-    else
-        Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
-}
+                    if($1 == INT)
+                        TheTable->insert(*s, new Symbol($1, *s, 42));
+                    if($1 == DOUBLE)
+                        TheTable->insert(*s, new Symbol($1, *s, 3.145));
+                    if($1 == STRING)
+                        TheTable->insert(*s, new Symbol($1, *s, "\"Hello world\""));
+                    }
+                    }
+                    else
+                        Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+                    }
 ;
 
 //---------------------------------------------------------------------
@@ -242,11 +248,11 @@ T_INT
 optional_initializer:
 T_ASSIGN expression
 {
-    /* $$ = $2;*/
+    $$ = $2;
 }
 | empty
 {
-    /* $$ = NULL; */
+    $$ = NULL;
 }
 ;
 
@@ -427,26 +433,29 @@ T_ID
     Symbol *sTmp = new Symbol;
     sTmp = TheTable->lookup(*$1);
     if(!sTmp)
-        $$ = new Variable();
+    {
+        cout << "IT FUCKING BROKE(*******************" << endl;
+    }
     else
     {
-        /*some kind of erryr maybe dumbt variabl*/
+        $$ = new Variable(sTmp);
     }
 }
 | T_ID T_LBRACKET expression T_RBRACKET
 {
-   /* string tmp = *$1 + "[" + $3->evaluate() + "]";
-    Symbol *sTmp = new Symbol;
-    sTmp = TheTable->lookup(tmp);
-    if(!sTmp)
-    {
-        $$ = new Variable();
-        //new var = that variable that gets returned from the table
+    /*string tmp = *$1 + "[" + $3->evalint() + "]";
+      Symbol *sTmp = new Symbol;
+      sTmp = TheTable->lookup(tmp);
+      if(!sTmp)
+      {
+    /*some kind of error
+    some kind of erry maybe a dumby variable
     }
     else
     {
-        //some kind of erry maybe a dumby variable
-    }*/
+    $$ = new Variable(sTmp);
+    }
+     */
 }
 | T_ID T_PERIOD T_ID
 {
@@ -465,67 +474,67 @@ primary_expression
 | expression T_OR expression
 {
     /*need to check to see weather or not we can or two things forexample a string cant or  integer*/
-    $$ = new bExpression(OR, $1, $3);
+    $$ = new Expression(OR, $1, $3);
 }
 | expression T_AND expression
 {
-    $$ = new bExpression(AND, $1, $3);
+    $$ = new Expression(AND, $1, $3);
 }
 | expression T_LESS_EQUAL expression
 {
-    $$ = new bExpression(LESS_THAN_EQUAL, $1, $3);
+    $$ = new Expression(LESS_THAN_EQUAL, $1, $3);
 }
 | expression T_GREATER_EQUAL  expression
 {
-    $$ = new bExpression(GREATER_THAN_EQUAL, $1, $3);
+    $$ = new Expression(GREATER_THAN_EQUAL, $1, $3);
 }
 | expression T_LESS expression 
 {
-    $$ = new bExpression(LESS_THAN, $1, $3);
+    $$ = new Expression(LESS_THAN, $1, $3);
 }
 | expression T_GREATER  expression
 {
-    $$ = new bExpression(GREATER_THAN, $1, $3);
+    $$ = new Expression(GREATER_THAN, $1, $3);
 }
 | expression T_EQUAL expression
 {
-    $$ = new bExpression(EQUAL, $1, $3);
+    $$ = new Expression(EQUAL, $1, $3);
 }
 | expression T_NOT_EQUAL expression
 {
-    $$ = new bExpression(NOT_EQUAL, $1, $3);
+    $$ = new Expression(NOT_EQUAL, $1, $3);
 }
 | expression T_PLUS expression 
 {
-    $$ = new bExpression(PLUS, $1, $3);
+    $$ = new Expression(PLUS, $1, $3);
 }
 | expression T_MINUS expression 
 {
-    $$ = new bExpression(MINUS, $1, $3);
+    $$ = new Expression(MINUS, $1, $3);
 }
 | expression T_ASTERISK expression
 {
-    $$ = new bExpression(MULTIPLY, $1, $3);
+    $$ = new Expression(MULTIPLY, $1, $3);
 }
 | expression T_DIVIDE expression
 {
-    $$ = new bExpression(DIVIDE, $1, $3);
+    $$ = new Expression(DIVIDE, $1, $3);
 }
 | expression T_MOD expression
 {
-    $$ = new bExpression(MOD, $1, $3);
+    $$ = new Expression(MOD, $1, $3);
 }
 | T_MINUS  expression %prec UNARY_OPS
 {
-    $$ = new uExpression(MINUS, $2);
+    $$ = new Expression(MINUS, $2);
 }
 | T_NOT  expression %prec UNARY_OPS
 {
-    $$ = new uExpression(NOT, $2);
+    $$ = new Expression(NOT, $2);
 }
 | math_operator T_LPAREN expression T_RPAREN
 {
-    $$ = new uExpression($1,$3);
+    $$ = new Expression($1,$3);
 }
 | variable geometric_operator variable
 {
@@ -539,27 +548,27 @@ T_LPAREN  expression T_RPAREN
 }
 | variable
 {
-    $$ = new vExpression($1);
+    $$ = new Expression($1);
 }
 | T_INT_CONSTANT
 {
-    $$ = new iExpression($1, INT);
+    $$ = new Expression($1, INT);
 }
 | T_TRUE
 {
-    $$ = new iExpression(1, INT);
+    $$ = new Expression(1, INT);
 }
 | T_FALSE
 {
-    $$ = new iExpression(0, INT);
+    $$ = new Expression(0, INT);
 }
 | T_DOUBLE_CONSTANT
 {
-    $$ = new dExpression($1, DOUBLE);
+    $$ = new Expression($1, DOUBLE);
 }
 | T_STRING_CONSTANT
 {
-    $$ = new sExpression($1, STRING);
+    $$ = new Expression($1, STRING);
 }
 ;
 
