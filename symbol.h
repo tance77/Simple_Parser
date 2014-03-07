@@ -9,9 +9,9 @@ class Symbol
 {
 public:
     Symbol(){};
-    Symbol(Gpl_type turtle, string name, int value){m_gType = turtle; m_ID = name; m_iValue = value;};
-    Symbol(Gpl_type turtle, string name, double value){m_gType = turtle; m_ID = name; m_dValue = value;};
-    Symbol(Gpl_type turtle, string name, string value){m_gType = turtle; m_ID = name; m_sValue = value;};
+    Symbol(Gpl_type type, string name, int value){m_gType = type; m_ID = name; m_iValue = value;};
+    Symbol(Gpl_type type, string name, double value){m_gType = type; m_ID = name; m_dValue = value;};
+    Symbol(Gpl_type type, string name, string value){m_gType = type; m_ID = name; m_sValue = value;};
     int getintValue();
     double getdoubleValue();
     string getstringValue();

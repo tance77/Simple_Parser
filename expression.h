@@ -8,71 +8,83 @@
 class Variable;
 class Expression
 {
-    public:
-        //Expression(Variable *variable){};
-        //Expression(Gpl_type gType, Expression *LHS, Expression *RHS);
-        // Expression(Operator_type oType, Expression *LHS, Expression *RHS);
-        int eval_int();
-        Gpl_type getType();
-    protected:
-        Expression *m_LHS;
-        Expression *m_RHS;
-    private:
-        Variable *m_vVariable;
-        Operator_type m_oType;
+public:
+    //Expression(Variable *variable){};
+    //Expression(Gpl_type gType, Expression *LHS, Expression *RHS);
+    // Expression(Operator_type oType, Expression *LHS, Expression *RHS);
+    virtual int evalint();
+    virtual double evaldouble();
+    virtual std::string evalstring();
+    Gpl_type getType();
+protected:
+    Expression *m_LHS;
+    Expression *m_RHS;
+private:
+    Gpl_type m_gType;
+    Operator_type m_oType;
 };
 
 class iExpression : public Expression
 {
-    public:
-        iExpression(int i, Gpl_type gType); 
-    private:
-        int mValue;
-        Gpl_type m_Type;
+public:
+    iExpression(int i, Gpl_type gType);
+    //Gpl_type getType();
+    int getValue();
+private:
+    int mValue;
+    Gpl_type m_Type;
 };
 
 class dExpression : public Expression
 {
-    public:
-        dExpression(double d, Gpl_type gType); 
-    private:
-        double mValue;
-        Gpl_type m_Type;
+public:
+    // virtual void evaluate();
+    double getValue();
+    dExpression(double d, Gpl_type gType);
+private:
+    double mValue;
+    Gpl_type m_Type;
 };
 
 class sExpression : public Expression
 {
-    public:
-        sExpression(std::string *s, Gpl_type gType); 
-    private:
-        std::string *mValue;
-        Gpl_type m_Type;
+public:
+    //virtual void evaluate();
+    std::string getString();
+    sExpression(std::string *s, Gpl_type gType);
+private:
+    std::string *mValue;
+    Gpl_type m_Type;
 };
 
 class uExpression : public Expression
 {
-    public:
-        uExpression(Operator_type type, Expression *LHS);
-
-    private:
-        Operator_type m_oType;
+public:
+    uExpression(Operator_type type, Expression *LHS);
+    
+private:
+    Operator_type m_oType;
 };
 
 class bExpression : public Expression
 {
-    public:
-        bExpression(Operator_type oType, Expression *LHS, Expression *RHS);
-    private:
-        Operator_type m_oType;
+public:
+    bExpression(Operator_type oType, Expression *LHS, Expression *RHS);
+    virtual int evalint();
+    virtual double evaldouble();
+    virtual std::string evalstring();
+private:
+    Operator_type m_oType;
+    Gpl_type m_gType;
 };
 
 class vExpression : public Expression
 {
-    public:
-        vExpression(Variable *expr);
-        vExpression(Symbol *symbol);
-    private:
-        Variable *m_Variable;
-        Symbol *m_Symbol;
+public:
+    vExpression(Variable *expr);
+    vExpression(Symbol *symbol);
+private:
+    Variable *m_Variable;
+    Expression *m_Expression;;
 };
 #endif

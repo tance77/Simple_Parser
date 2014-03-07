@@ -187,12 +187,12 @@ simple_type  T_ID  optional_initializer
 {
     if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
     {
-        if($1 == INT /*&&  !$3*/)
-            TheTable->insert(*$2, new Symbol($1, *$2, 42));
-        if($1 == DOUBLE /*&& !$3*/)
-            TheTable->insert(*$2, new Symbol($1, *$2, 3.145));
-        if($1 == STRING /*&& !$3*/)
-            TheTable->insert(*$2, new Symbol($1, *$2, "\"Hello world\""));
+        if($1 == INT &&  !$3)
+            TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
+        if($1 == DOUBLE && !$3)
+            TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
+        if($1 == STRING && !$3)
+            TheTable->insert(*$2, new Symbol($1, *$2, $3->evalstring()));
     }
     else
         Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
@@ -202,7 +202,7 @@ simple_type  T_ID  optional_initializer
     ostringstream oss;
     if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
     {
-       /* for(int i = 0; i < $4; i++)
+        for(int i = 0; i < $4->evalint(); i++)
         {
             oss.str("");
             oss << *$2;
@@ -215,7 +215,7 @@ simple_type  T_ID  optional_initializer
                 TheTable->insert(*s, new Symbol($1, *s, 3.145));
             if($1 == STRING)
                 TheTable->insert(*s, new Symbol($1, *s, "\"Hello world\""));
-        }*/
+        }
     }
     else
         Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
@@ -424,15 +424,29 @@ variable T_ASSIGN expression
 variable:
 T_ID
 {
-    $$ = new Variable();
+    Symbol *sTmp = new Symbol;
+    sTmp = TheTable->lookup(*$1);
+    if(!sTmp)
+        $$ = new Variable();
+    else
+    {
+        /*some kind of erryr maybe dumbt variabl*/
+    }
 }
 | T_ID T_LBRACKET expression T_RBRACKET
 {
-    /*
-       string = T_ID + [ + $3->evalint() + ];
-       find string in table;
-       new var = that variable that gets returned from the table
-     */
+   /* string tmp = *$1 + "[" + $3->evaluate() + "]";
+    Symbol *sTmp = new Symbol;
+    sTmp = TheTable->lookup(tmp);
+    if(!sTmp)
+    {
+        $$ = new Variable();
+        //new var = that variable that gets returned from the table
+    }
+    else
+    {
+        //some kind of erry maybe a dumby variable
+    }*/
 }
 | T_ID T_PERIOD T_ID
 {

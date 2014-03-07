@@ -20,3 +20,9 @@ tokens
 *.myerr
 
 *.myout
+
+*.o
+
+*.o
+
+*.c

@@ -10,16 +10,18 @@ class Variable
 {
     public:
         ~Variable();
-        Variable(){m_sSymbol = NULL, m_eExpression = NULL;};
+        Variable(){m_Symbol = NULL, m_Expression = NULL;};
         Variable(string value, Expression *expression){};
         Gpl_type gettype();
         void evaluate();
         int getiValue();
         double getdValue();
         string getsValue();
+        void setSymbol();
     private:
-        Gpl_type m_gType;
-        Symbol *m_sSymbol;
-        Expression *m_eExpression;
+        Gpl_type m_Type;
+        Symbol *m_Symbol;
+        Variable *m_Variable;
+        Expression *m_Expression;
 };
 #endif
