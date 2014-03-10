@@ -6,7 +6,12 @@
 //expression base area
 int Expression::evalint()
 {
-    assert(m_gType == INT);
+    //assert(m_gType == INT);
+    if(m_kind == "VARIABLE")
+        return m_Variable->getiValue();
+    if(!m_oType)
+        return m_iValue;
+    else{
     switch (m_oType) {
         case OR:
             return m_LHS->evalint() || m_RHS->evalint();
@@ -70,15 +75,17 @@ int Expression::evalint()
         case MOD:
             return m_LHS->evalint() % m_RHS->evalint();
         default:
-            //error message probably
+            return m_iValue;
             break;
     }
-    return m_iValue;
-
+    }
 }
 double Expression::evaldouble()
 {
-    assert(m_gType == DOUBLE);
+    if(m_kind == "VARIABLE")
+        return m_Variable->getdValue();
+    else if(!m_oType)
+        return m_dValue;
     switch (m_oType) {
         case SIN:
             return sin(m_RHS->evaldouble());
@@ -93,10 +100,8 @@ double Expression::evaldouble()
         case ATAN:
             return atan(m_RHS->evaldouble());
         default:
-            //probably error here
-            break;
+            return m_dValue;
     }
-    return m_dValue;
 }
 std::string* Expression::evalstring()
 {

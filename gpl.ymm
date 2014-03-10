@@ -190,42 +190,48 @@ simple_type  T_ID  optional_initializer
         if($1 == INT && $3)
             TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
         else if($1 == INT && !$3)
+        {
+            if($3->get_gType() != INT)
+            {
+                Error::error(Error::ASSIGNMENT_TYPE_ERROR);
+            }
             TheTable->insert(*$2, new Symbol($1, *$2, 0));
+        }
         if($1 == DOUBLE && $3)
             TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
         else if($1 == DOUBLE && !$3)
-            TheTable->insert(*$2, new Symbol($1, *$2, 0.0);
-                    if($1 == STRING && $3)
-                    TheTable->insert(*$2, new Symbol($1, *$2, *$3->evalstring()));
-                    else if($1 == STRING && !$3)
-                    TheTable->insert(*$2, new Symbol($1, *$2, ""));
-                    }
-                    else
-                    Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
-                    }
-                    | simple_type  T_ID  T_LBRACKET expression T_RBRACKET
-                    {
-                    ostringstream oss;
-                    if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
-                    {
-                    for(int i = 0; i < $4->evalint(); i++)
-                    {
-                    oss.str("");
-                    oss << *$2;
-                    oss << '[' << i << ']';
-                    string *s  = new string(oss.str());
+            TheTable->insert(*$2, new Symbol($1, *$2, 0.0));
+        if($1 == STRING && $3)
+            TheTable->insert(*$2, new Symbol($1, *$2, *$3->evalstring()));
+        else if($1 == STRING && !$3)
+            TheTable->insert(*$2, new Symbol($1, *$2, ""));
+    }
+    else
+        Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+}
+| simple_type  T_ID  T_LBRACKET expression T_RBRACKET
+{
+    ostringstream oss;
+    if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
+    {
+        for(int i = 0; i < $4->evalint(); i++)
+        {
+            oss.str("");
+            oss << *$2;
+            oss << '[' << i << ']';
+            string *s  = new string(oss.str());
 
-                    if($1 == INT)
-                        TheTable->insert(*s, new Symbol($1, *s, 42));
-                    if($1 == DOUBLE)
-                        TheTable->insert(*s, new Symbol($1, *s, 3.145));
-                    if($1 == STRING)
-                        TheTable->insert(*s, new Symbol($1, *s, "\"Hello world\""));
-                    }
-                    }
-                    else
-                        Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
-                    }
+            if($1 == INT)
+                TheTable->insert(*s, new Symbol($1, *s, 42));
+            if($1 == DOUBLE)
+                TheTable->insert(*s, new Symbol($1, *s, 3.145));
+            if($1 == STRING)
+                TheTable->insert(*s, new Symbol($1, *s, "\"Hello world\""));
+        }
+    }
+    else
+        Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+}
 ;
 
 //---------------------------------------------------------------------

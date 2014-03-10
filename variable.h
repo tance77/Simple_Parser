@@ -10,8 +10,8 @@ class Variable
 {
 public:
     ~Variable();
-    Variable(){m_Symbol = NULL, m_Expression = NULL;};
-    Variable(Symbol *s){m_Symbol = s;};
+    Variable();
+    Variable(Symbol *s);
     Variable(string value, Expression *e){m_sValue = value, m_Expression = e;};
     Gpl_type gettype();
     void evaluate();
@@ -20,6 +20,8 @@ public:
     string getsValue();
     void setSymbol();
 private:
+    int m_iValue;
+    double m_dValue;
     string m_sValue;
     Gpl_type m_Type;
     Symbol *m_Symbol;
