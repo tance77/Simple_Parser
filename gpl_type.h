@@ -41,7 +41,7 @@ enum Operator_type {PLUS, MINUS, MULTIPLY, DIVIDE, MOD,
                     NEAR, TOUCHES,
                     SIN, COS, TAN,
                     ASIN, ACOS, ATAN,
-                    SQRT, FLOOR, ABS, RANDOM
+                    SQRT, FLOOR, ABS, RANDOM, GARBAGE
                    };
 
 std::string operator_to_string(Operator_type op);

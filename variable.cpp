@@ -20,5 +20,9 @@ Variable::Variable(Symbol *target)
     m_Symbol = target;
     m_iValue = getiValue();
     m_dValue = getdValue();
-    m_sValue = getdValue();
+    m_sValue = getsValue();
+}
+Gpl_type Variable::gettype()
+{
+    return m_Symbol->getType();
 }

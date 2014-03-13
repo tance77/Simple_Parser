@@ -24,7 +24,7 @@
 
     static Symbol_table *TheTable = Symbol_table::instance();
 
-    %} 
+    %}
 
     %union {
         int            union_int;
@@ -187,32 +187,22 @@ simple_type  T_ID  optional_initializer
 {
     if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
     {
-        if($1 == INT && $3)
+        if($1 == INT && $3->get_gType() == INT && $3)
             TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
-        else if($1 == INT && !$3)
-        {
-            if($3->get_gType() != INT)
-            {
-                Error::error(Error::ASSIGNMENT_TYPE_ERROR);
-            }
+        else if($1 == INT && $3->get_gType() == INT && !$3)
             TheTable->insert(*$2, new Symbol($1, *$2, 0));
-        }
-        if($1 == DOUBLE && $3)
+        else if($1 == DOUBLE && $3->get_gType() == DOUBLE && $3)
             TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
-        else if($1 == DOUBLE && !$3)
-        {
-            if($3->get_gType() != DOUBLE)
-            {
-                Error::error(Error::ASSIGNMENT_TYPE_ERROR);
-            }
+        else if($1 == DOUBLE && $3->get_gType() == DOUBLE && !$3)
             TheTable->insert(*$2, new Symbol($1, *$2, 0.0));
-        }
-        if($1 == STRING && $3)
-            TheTable->insert(*$2, new Symbol($1, *$2, *$3->evalstring()));
-        else if($1 == STRING && !$3)
-            TheTable->insert(*$2, new Symbol($1, *$2, ""));
+        else if($1 == STRING && $3->get_gType() == STRING && $3)
+            TheTable->insert(*$2, new Symbol($1, *$2, $3->evalstring()));
+        else if($1 == STRING && $3->get_gType() == STRING && !$3)
+                TheTable->insert(*$2, new Symbol($1, *$2, ""));
+        else //if none of the above we have an error
+            Error::error(Error::ASSIGNMENT_TYPE_ERROR);
     }
-    else
+    else //if it failed to lookup we have an error also
         Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
 }
 | simple_type  T_ID  T_LBRACKET expression T_RBRACKET
@@ -228,15 +218,16 @@ simple_type  T_ID  optional_initializer
             string *s  = new string(oss.str());
 
             if($1 == INT)
-                TheTable->insert(*s, new Symbol($1, *s, 42));
+                TheTable->insert(*s, new Symbol($1, *s, 0));
             if($1 == DOUBLE)
-                TheTable->insert(*s, new Symbol($1, *s, 3.145));
+                TheTable->insert(*s, new Symbol($1, *s, 0));
             if($1 == STRING)
-                TheTable->insert(*s, new Symbol($1, *s, "\"Hello world\""));
+                TheTable->insert(*s, new Symbol($1, *s, ""));
         }
     }
     else
         Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+
 }
 ;
 
@@ -362,15 +353,15 @@ T_SPACE
 | T_RIGHTMOUSE_UP
 | T_MOUSE_MOVE
 | T_MOUSE_DRAG
-| T_AKEY 
-| T_SKEY 
-| T_DKEY 
-| T_FKEY 
-| T_HKEY 
-| T_JKEY 
-| T_KKEY 
-| T_LKEY 
-| T_WKEY 
+| T_AKEY
+| T_SKEY
+| T_DKEY
+| T_FKEY
+| T_HKEY
+| T_JKEY
+| T_KKEY
+| T_LKEY
+| T_WKEY
 | T_F1
 ;
 
@@ -413,7 +404,7 @@ if_statement
 //---------------------------------------------------------------------
 if_statement:
 T_IF T_LPAREN expression T_RPAREN if_block %prec IF_NO_ELSE
-| T_IF T_LPAREN expression T_RPAREN if_block T_ELSE if_block %prec T_ELSE 
+| T_IF T_LPAREN expression T_RPAREN if_block T_ELSE if_block %prec T_ELSE
 ;
 
 //---------------------------------------------------------------------
@@ -455,19 +446,7 @@ T_ID
 }
 | T_ID T_LBRACKET expression T_RBRACKET
 {
-    /*string tmp = *$1 + "[" + $3->evalint() + "]";
-      Symbol *sTmp = new Symbol;
-      sTmp = TheTable->lookup(tmp);
-      if(!sTmp)
-      {
-    /*some kind of error
-    some kind of erry maybe a dumby variable
-    }
-    else
-    {
-    $$ = new Variable(sTmp);
-    }
-     */
+    $$ = new Variable(*$1, $3);
 }
 | T_ID T_PERIOD T_ID
 {
@@ -500,7 +479,7 @@ primary_expression
 {
     $$ = new Expression(GREATER_THAN_EQUAL, $1, $3);
 }
-| expression T_LESS expression 
+| expression T_LESS expression
 {
     $$ = new Expression(LESS_THAN, $1, $3);
 }
@@ -516,11 +495,11 @@ primary_expression
 {
     $$ = new Expression(NOT_EQUAL, $1, $3);
 }
-| expression T_PLUS expression 
+| expression T_PLUS expression
 {
     $$ = new Expression(PLUS, $1, $3);
 }
-| expression T_MINUS expression 
+| expression T_MINUS expression
 {
     $$ = new Expression(MINUS, $1, $3);
 }
@@ -562,7 +541,7 @@ T_LPAREN  expression T_RPAREN
 {
     $$ = new Expression($1);
 }
-| T_INT_CONSTANT
+| T_INT_CONSTANT /*This runs when i say double i = 22 it returns a 0*/
 {
     $$ = new Expression($1, INT);
 }
@@ -580,7 +559,7 @@ T_LPAREN  expression T_RPAREN
 }
 | T_STRING_CONSTANT
 {
-    $$ = new Expression($1, STRING);
+    $$ = new Expression(*$1, STRING);
 }
 ;
 
@@ -617,7 +596,7 @@ T_SIN
     $$ = ATAN;
 }
 | T_SQRT
-{ 
+{
     $$ = SQRT;
 }
 | T_ABS

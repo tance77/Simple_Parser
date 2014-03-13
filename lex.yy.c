@@ -661,7 +661,7 @@ char *yytext;
         if(yytext[0] == '\"')
         {
             yytext[strlen(yytext)-1] = 0;
-            yytext = yytext-1;
+            yytext = yytext+1;
         }
         yylval.union_string = new string(yytext);
         return token;
