@@ -187,17 +187,17 @@ simple_type  T_ID  optional_initializer
 {
     if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
     {
-        if($1 == INT && $3->get_gType() == INT && $3)
+        if($1 == INT /*&& $3->get_gType() == INT*/ && $3)
             TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
-        else if($1 == INT && $3->get_gType() == INT && !$3)
+        else if($1 == INT /* && $3->get_gType() == INT */&& !$3)
             TheTable->insert(*$2, new Symbol($1, *$2, 0));
-        else if($1 == DOUBLE && $3->get_gType() == DOUBLE && $3)
+        else if($1 == DOUBLE /*&& $3->get_gType() == DOUBLE*/ && $3)
             TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
-        else if($1 == DOUBLE && $3->get_gType() == DOUBLE && !$3)
+        else if($1 == DOUBLE /*&& $3->get_gType() == DOUBLE*/ && !$3)
             TheTable->insert(*$2, new Symbol($1, *$2, 0.0));
-        else if($1 == STRING && $3->get_gType() == STRING && $3)
+        else if($1 == STRING /*&& $3->get_gType() == STRING*/ && $3)
             TheTable->insert(*$2, new Symbol($1, *$2, $3->evalstring()));
-        else if($1 == STRING && $3->get_gType() == STRING && !$3)
+        else if($1 == STRING /*&& $3->get_gType() == STRING*/ && !$3)
                 TheTable->insert(*$2, new Symbol($1, *$2, ""));
         else //if none of the above we have an error
             Error::error(Error::ASSIGNMENT_TYPE_ERROR);

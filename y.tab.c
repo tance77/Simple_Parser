@@ -1794,17 +1794,17 @@ yyreduce:
     {
     if(TheTable->lookup(*(yyvsp[(2) - (3)].union_string)) == NULL && TheTable->lookup(*(yyvsp[(2) - (3)].union_string) + "[0]") == NULL)
     {
-        if((yyvsp[(1) - (3)].union_gpl_type) == INT && (yyvsp[(3) - (3)].union_expression)->get_gType() == INT && (yyvsp[(3) - (3)].union_expression))
+        if((yyvsp[(1) - (3)].union_gpl_type) == INT /*&& $3->get_gType() == INT*/ && (yyvsp[(3) - (3)].union_expression))
             TheTable->insert(*(yyvsp[(2) - (3)].union_string), new Symbol((yyvsp[(1) - (3)].union_gpl_type), *(yyvsp[(2) - (3)].union_string), (yyvsp[(3) - (3)].union_expression)->evalint()));
-        else if((yyvsp[(1) - (3)].union_gpl_type) == INT && (yyvsp[(3) - (3)].union_expression)->get_gType() == INT && !(yyvsp[(3) - (3)].union_expression))
+        else if((yyvsp[(1) - (3)].union_gpl_type) == INT /* && $3->get_gType() == INT */&& !(yyvsp[(3) - (3)].union_expression))
             TheTable->insert(*(yyvsp[(2) - (3)].union_string), new Symbol((yyvsp[(1) - (3)].union_gpl_type), *(yyvsp[(2) - (3)].union_string), 0));
-        else if((yyvsp[(1) - (3)].union_gpl_type) == DOUBLE && (yyvsp[(3) - (3)].union_expression)->get_gType() == DOUBLE && (yyvsp[(3) - (3)].union_expression))
+        else if((yyvsp[(1) - (3)].union_gpl_type) == DOUBLE /*&& $3->get_gType() == DOUBLE*/ && (yyvsp[(3) - (3)].union_expression))
             TheTable->insert(*(yyvsp[(2) - (3)].union_string), new Symbol((yyvsp[(1) - (3)].union_gpl_type), *(yyvsp[(2) - (3)].union_string), (yyvsp[(3) - (3)].union_expression)->evaldouble()));
-        else if((yyvsp[(1) - (3)].union_gpl_type) == DOUBLE && (yyvsp[(3) - (3)].union_expression)->get_gType() == DOUBLE && !(yyvsp[(3) - (3)].union_expression))
+        else if((yyvsp[(1) - (3)].union_gpl_type) == DOUBLE /*&& $3->get_gType() == DOUBLE*/ && !(yyvsp[(3) - (3)].union_expression))
             TheTable->insert(*(yyvsp[(2) - (3)].union_string), new Symbol((yyvsp[(1) - (3)].union_gpl_type), *(yyvsp[(2) - (3)].union_string), 0.0));
-        else if((yyvsp[(1) - (3)].union_gpl_type) == STRING && (yyvsp[(3) - (3)].union_expression)->get_gType() == STRING && (yyvsp[(3) - (3)].union_expression))
+        else if((yyvsp[(1) - (3)].union_gpl_type) == STRING /*&& $3->get_gType() == STRING*/ && (yyvsp[(3) - (3)].union_expression))
             TheTable->insert(*(yyvsp[(2) - (3)].union_string), new Symbol((yyvsp[(1) - (3)].union_gpl_type), *(yyvsp[(2) - (3)].union_string), (yyvsp[(3) - (3)].union_expression)->evalstring()));
-        else if((yyvsp[(1) - (3)].union_gpl_type) == STRING && (yyvsp[(3) - (3)].union_expression)->get_gType() == STRING && !(yyvsp[(3) - (3)].union_expression))
+        else if((yyvsp[(1) - (3)].union_gpl_type) == STRING /*&& $3->get_gType() == STRING*/ && !(yyvsp[(3) - (3)].union_expression))
                 TheTable->insert(*(yyvsp[(2) - (3)].union_string), new Symbol((yyvsp[(1) - (3)].union_gpl_type), *(yyvsp[(2) - (3)].union_string), ""));
         else //if none of the above we have an error
             Error::error(Error::ASSIGNMENT_TYPE_ERROR);
