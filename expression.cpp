@@ -122,19 +122,49 @@ double Expression::evaldouble()
     switch (m_oType) {
         case SIN:
             if(m_RHS->get_gType() == INT)
-                return sin(m_RHS->evalint());
+                return sin(m_RHS->evalint() * (M_PI / 180));
             else
                 return sin(m_RHS->evaldouble()* (M_PI / 180));
         case COS:
-            return cos(m_RHS->evaldouble() * (M_PI / 180));
+            if(m_RHS->get_gType() == INT)
+                return cos(m_RHS->evalint() * (M_PI / 180));
+            else
+                return cos(m_RHS->evaldouble()* (M_PI / 180));
         case TAN:
-            return tan(m_RHS->evaldouble()* (M_PI / 180));
+            if(m_RHS->get_gType() == INT)
+                return tan(m_RHS->evalint() * (M_PI / 180));
+            else
+                return tan(m_RHS->evaldouble()* (M_PI / 180));
         case ASIN:
-            return asin(m_RHS->evaldouble() * (M_PI / 180));
+            if(m_RHS->get_gType() == INT)
+                return asin(m_RHS->evalint()) * (180 / M_PI);
+            else
+                return asin(m_RHS->evaldouble()) * (180 / M_PI);
         case ACOS:
-            return acos(m_RHS->evaldouble() * (M_PI / 180));
+            if(m_RHS->get_gType() == INT)
+                return acos(m_RHS->evalint()) * (180 / M_PI);
+            else
+                return acos(m_RHS->evaldouble()) * (180 / M_PI);
         case ATAN:
-            return atan(m_RHS->evaldouble()* (M_PI /180));
+            if(m_RHS->get_gType() == INT)
+                return atan(m_RHS->evalint()) * (180 / M_PI);
+            else
+                return atan(m_RHS->evaldouble()) * (180 / M_PI);
+        case SQRT:
+            if(m_RHS->get_gType() == INT)
+                return sqrt(m_RHS->evalint());
+            else
+                return sqrt(m_RHS->evaldouble());
+        case ABS:
+            if(m_RHS->get_gType() == INT)
+                return abs(m_RHS->evalint());
+            else
+                return fabs(m_RHS->evaldouble());
+        case FLOOR:
+            if(m_RHS->get_gType() == INT)
+                return floor(m_RHS->evalint());
+            else
+                return floor(m_RHS->evaldouble());
         case PLUS:
         {
         if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT) //Left is INT right is INT
