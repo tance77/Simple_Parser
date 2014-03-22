@@ -142,6 +142,8 @@ int Expression::evalint()
                 return floor(m_RHS->evalint());
             case UNARY_MINUS:
                 return m_RHS->evalint() * -1;
+            case RANDOM:
+                return rand() % m_RHS->evalint();
             default:
                 return m_iValue;
         }
@@ -158,14 +160,14 @@ double Expression::evaldouble()
     switch (m_oType) {
         case SIN:
             if(m_RHS->get_gType() == INT)
-                return sin(m_RHS->evalint() * (M_PI / 180));
+                return (double) (sin(m_RHS->evalint() * (M_PI / 180)));
             else
-                return sin(m_RHS->evaldouble()* (M_PI / 180));
+                return  (double) (sin(m_RHS->evaldouble()* (M_PI / 180)));
         case COS:
             if(m_RHS->get_gType() == INT)
-                return cos(m_RHS->evalint() * (M_PI / 180));
+                return (double) (cos(m_RHS->evalint() * (M_PI / 180)));
             else
-                return cos(m_RHS->evaldouble()* (M_PI / 180));
+                return (double) (cos(m_RHS->evaldouble()* (M_PI / 180)));
         case TAN:
             if(m_RHS->get_gType() == INT)
                 return tan(m_RHS->evalint() * (M_PI / 180));
