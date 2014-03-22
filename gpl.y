@@ -517,7 +517,7 @@ primary_expression
 }
 | T_MINUS  expression %prec UNARY_OPS
 {
-    $$ = new Expression(MINUS, $2);
+    $$ = new Expression(UNARY_MINUS, $2);
 }
 | T_NOT  expression %prec UNARY_OPS
 {

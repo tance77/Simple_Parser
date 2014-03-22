@@ -2,7 +2,7 @@
 #include "variable.h"
 #include "gpl_assert.h"
 #include <sstream>
-#include <math.h>
+#include <cmath>
 
 Expression::Expression(Operator_type type, Expression *LHS, Expression *RHS)
 {
@@ -26,6 +26,10 @@ Expression::Expression(Operator_type type, Expression *RHS)
     
     if(type == SIN || type == COS || type == TAN || type == ASIN || type == ACOS || type == ATAN)
         m_gType = DOUBLE;
+    else if(type == ABS)
+        m_gType = m_RHS->get_gType();
+    else if(type == UNARY_MINUS)
+        m_gType = m_RHS->get_gType();
 }
 
 int Expression::evalint()
@@ -33,7 +37,7 @@ int Expression::evalint()
         //assert(m_gType == INT);
     if(m_kind == "VARIABLE")
         return m_Variable->getiValue();
-    if(m_kind == "INT_CONSTANT")
+    else if(m_kind == "INT_CONSTANT")
         return m_iValue;
     else{
         switch (m_oType) {
@@ -90,7 +94,6 @@ int Expression::evalint()
             else return (m_LHS->evaldouble() != m_RHS->evaldouble());
             }
             case PLUS:
-            {
             if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
                 return m_LHS->evalint() + m_RHS->evalint();
             else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)
@@ -99,15 +102,46 @@ int Expression::evalint()
                 return m_LHS->evalint() + m_RHS->evaldouble();
             else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)
                 return m_LHS->evaldouble() + m_RHS->evaldouble();
-            }
             case MINUS:
-                return m_LHS->evalint() - m_RHS->evalint();
+                if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
+                    return m_LHS->evalint() - m_RHS->evalint();
+                else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)
+                    return m_LHS->evaldouble() - m_RHS->evalint();
+                else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
+                    return m_LHS->evalint() - m_RHS->evaldouble();
+                else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)
+                    return m_LHS->evaldouble() - m_RHS->evaldouble();
             case MULTIPLY:
-                return m_LHS->evalint() * m_RHS->evalint();
+                if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
+                    return m_LHS->evalint() * m_RHS->evalint();
+                else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)
+                    return m_LHS->evaldouble() * m_RHS->evalint();
+                else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
+                    return m_LHS->evalint() * m_RHS->evaldouble();
+                else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)
+                    return m_LHS->evaldouble() * m_RHS->evaldouble();
             case DIVIDE:
-                return m_LHS->evalint() * m_RHS->evalint();
+                if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
+                    return m_LHS->evalint() / m_RHS->evalint();
+                else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)
+                    return m_LHS->evaldouble() / m_RHS->evalint();
+                else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
+                    return m_LHS->evalint() / m_RHS->evaldouble();
+                else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)
+                    return m_LHS->evaldouble() / m_RHS->evaldouble();
             case MOD:
                 return m_LHS->evalint() % m_RHS->evalint();
+            case SQRT:
+                return sqrt(m_RHS->evalint());
+            case ABS:
+                if(m_RHS->get_gType() == INT)
+                    return abs(m_RHS->evalint());
+                else
+                    return fabs(m_RHS->evaldouble());
+            case FLOOR:
+                return floor(m_RHS->evalint());
+            case UNARY_MINUS:
+                return m_RHS->evalint() * -1;
             default:
                 return m_iValue;
         }
@@ -119,6 +153,8 @@ double Expression::evaldouble()
         return m_Variable->getdValue();
     else if(m_kind == "DOUBLE_CONSTANT")
         return m_dValue;
+//    else if(m_kind == "")
+//        return m_RHS->evaldouble();
     switch (m_oType) {
         case SIN:
             if(m_RHS->get_gType() == INT)
@@ -151,38 +187,59 @@ double Expression::evaldouble()
             else
                 return atan(m_RHS->evaldouble()) * (180 / M_PI);
         case SQRT:
-            if(m_RHS->get_gType() == INT)
-                return sqrt(m_RHS->evalint());
-            else
                 return sqrt(m_RHS->evaldouble());
         case ABS:
-            if(m_RHS->get_gType() == INT)
+            if(m_RHS->get_gType() == DOUBLE)
+                return abs(m_RHS->evaldouble());
+            else
                 return abs(m_RHS->evalint());
-            else
-                return fabs(m_RHS->evaldouble());
+            
         case FLOOR:
-            if(m_RHS->get_gType() == INT)
-                return floor(m_RHS->evalint());
-            else
                 return floor(m_RHS->evaldouble());
+        case UNARY_MINUS:
+            return m_RHS->evaldouble() * -1;
         case PLUS:
         {
-        if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT) //Left is INT right is INT
+        if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)                         //Left is INT right is INT
             return (double)m_LHS->evalint() + (double)m_RHS->evalint();
-        else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT) //Left is DOUBLE right is INT
+        else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)                 //Left is DOUBLE right is INT
             return m_LHS->evaldouble() + m_RHS->evalint();
-        else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE) //Left is INT right is DOUBLE
+        else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)                 //Left is INT right is DOUBLE
             return (double)m_LHS->evalint() + m_RHS->evaldouble();
-        else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE) //Left is DOUBLE right is DOUBLE
+        else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)              //Left is DOUBLE right is DOUBLE
             return m_LHS->evaldouble() + m_RHS->evaldouble();
         return m_LHS->evaldouble() + m_RHS->evaldouble();
         }
         case MINUS:
+            if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)                         //Left is INT right is INT
+                return (double)m_LHS->evalint() - (double)m_RHS->evalint();
+            else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)                 //Left is DOUBLE right is INT
+                return m_LHS->evaldouble() - m_RHS->evalint();
+            else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)                 //Left is INT right is DOUBLE
+                return (double)m_LHS->evalint() - m_RHS->evaldouble();
+            else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)              //Left is DOUBLE right is DOUBLE
+                return m_LHS->evaldouble() - m_RHS->evaldouble();
             return m_LHS->evaldouble() - m_RHS->evaldouble();
         case MULTIPLY:
+            if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)                         //Left is INT right is INT
+                return (double)m_LHS->evalint() * (double)m_RHS->evalint();
+            else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)                 //Left is DOUBLE right is INT
+                return m_LHS->evaldouble() * m_RHS->evalint();
+            else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)                 //Left is INT right is DOUBLE
+                return (double)m_LHS->evalint() * m_RHS->evaldouble();
+            else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)              //Left is DOUBLE right is DOUBLE
+                return m_LHS->evaldouble() * m_RHS->evaldouble();
             return m_LHS->evaldouble() * m_RHS->evaldouble();
         case DIVIDE:
-            return m_LHS->evaldouble() * m_RHS->evaldouble();
+            if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)                         //Left is INT right is INT
+                return (double)m_LHS->evalint() / (double)m_RHS->evalint();
+            else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)                 //Left is DOUBLE right is INT
+                return m_LHS->evaldouble() / m_RHS->evalint();
+            else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)                 //Left is INT right is DOUBLE
+                return (double)m_LHS->evalint() / m_RHS->evaldouble();
+            else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)              //Left is DOUBLE right is DOUBLE
+                return m_LHS->evaldouble() / m_RHS->evaldouble();
+            return m_LHS->evaldouble() / m_RHS->evaldouble();
         default:
             return m_dValue;
     }

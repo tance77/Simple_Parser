@@ -2018,7 +2018,7 @@ yyreduce:
   case 104:
 #line 519 "gpl.y"
     {
-    (yyval.union_expression) = new Expression(MINUS, (yyvsp[(2) - (2)].union_expression));
+    (yyval.union_expression) = new Expression(UNARY_MINUS, (yyvsp[(2) - (2)].union_expression));
 }
     break;
 

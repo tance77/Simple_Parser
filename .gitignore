@@ -26,3 +26,9 @@ tokens
 *.o
 
 *.c
+
+*.o
+
+*.o
+
+gpl
