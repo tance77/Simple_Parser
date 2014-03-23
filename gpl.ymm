@@ -1,9 +1,9 @@
 %{  // bison syntax to indicate the start of the header
-    // the header is copied directly into y.tab.c
+  // the header is copied directly into y.tab.c
 
-    extern int yylex();         // this lexer function returns next token
-    extern int yyerror(char *); // used to print errors
-    extern int line_count;      // the current line in the input; from array.l
+  extern int yylex();         // this lexer function returns next token
+  extern int yyerror(char *); // used to print errors
+  extern int line_count;      // the current line in the input; from array.l
 
 
 #include "error.h"      // class for printing errors (used by gpl)
@@ -20,21 +20,21 @@
 #include "symbol_table.h"
 #include "gpl_type.h"
 
-    using namespace std;
+  using namespace std;
 
-    static Symbol_table *TheTable = Symbol_table::instance();
+  static Symbol_table *TheTable = Symbol_table::instance();
 
-    %}
+  %}
 
-    %union {
-        int            union_int;
-        std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
-        double         union_double;
-        Gpl_type       union_gpl_type;
-        Operator_type  union_operator_type;
-        Expression*    union_expression;
-        Variable*      union_variable;
-    }
+  %union {
+    int            union_int;
+    std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
+    double         union_double;
+    Gpl_type       union_gpl_type;
+    Operator_type  union_operator_type;
+    Expression*    union_expression;
+    Variable*      union_variable;
+  }
 
 
 // each token in the language is defined here
@@ -185,48 +185,78 @@ variable_declaration T_SEMIC
 variable_declaration:
 simple_type  T_ID  optional_initializer
 {
-    if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
-    {
-        if($1 == INT /*&& $3->get_gType() == INT*/ && $3)
-            TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
-        else if($1 == INT /* && $3->get_gType() == INT */&& !$3)
-            TheTable->insert(*$2, new Symbol($1, *$2, 0));
-        else if($1 == DOUBLE /*&& $3->get_gType() == DOUBLE*/ && $3)
-            TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
-        else if($1 == DOUBLE /*&& $3->get_gType() == DOUBLE*/ && !$3)
-            TheTable->insert(*$2, new Symbol($1, *$2, 0.0));
-        else if($1 == STRING /*&& $3->get_gType() == STRING*/ && $3)
-            TheTable->insert(*$2, new Symbol($1, *$2, $3->evalstring()));
-        else if($1 == STRING /*&& $3->get_gType() == STRING*/ && !$3)
-                TheTable->insert(*$2, new Symbol($1, *$2, ""));
-        else //if none of the above we have an error
-            Error::error(Error::ASSIGNMENT_TYPE_ERROR);
+  if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
+  {
+    if($1 == INT){
+      if($3){
+        TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
+      }
+      else /* No expression */{
+        TheTable->insert(*$2, new Symbol($1, *$2, 0));
+      }
     }
-    else //if it failed to lookup we have an error also
-        Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+    else if($1 == DOUBLE){
+      if($3){
+        if($3->get_gType() == INT){
+          TheTable->insert(*$2, new Symbol($1, *$2, (double)$3->evalint()));
+        }
+        else if($3->get_gType() ==  DOUBLE){
+          TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
+        }
+      }
+      else /* No expression */{
+        TheTable->insert(*$2, new Symbol($1, *$2, (double)0));
+      }
+    }
+    else if($1 == STRING){
+      if($3){
+        if($3->get_gType() == INT){
+          ostringstream ss;
+          ss << $3->evalint();
+          TheTable->insert(*$2, new Symbol($1, *$2, ss.str()));
+        }
+        else if($3->get_gType() ==  DOUBLE){
+          ostringstream ss;
+          ss << $3->evaldouble();
+          TheTable->insert(*$2, new Symbol($1, *$2, ss.str()));
+        }
+        else if($3->get_gType() == STRING){
+          TheTable->insert(*$2, new Symbol($1, *$2, $3->evalstring()));
+        }
+      }
+      else /* No expression */{
+        TheTable->insert(*$2, new Symbol($1, *$2, ""));
+      }
+    }
+    else{
+      Error::error(Error::ASSIGNMENT_TYPE_ERROR);
+    }
+  }
+  else //if none of the above we have an error
+    Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
 }
 | simple_type  T_ID  T_LBRACKET expression T_RBRACKET
 {
-    ostringstream oss;
-    if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
+  ostringstream oss;
+  if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
+  {
+    for(int i = 0; i < $4->evalint(); i++)
     {
-        for(int i = 0; i < $4->evalint(); i++)
-        {
-            oss.str("");
-            oss << *$2;
-            oss << '[' << i << ']';
-            string *s  = new string(oss.str());
+      oss.str("");
+      oss << *$2;
+      oss << '[' << i << ']';
+      string *s  = new string(oss.str());
 
-            if($1 == INT)
-                TheTable->insert(*s, new Symbol($1, *s, 0));
-            if($1 == DOUBLE)
-                TheTable->insert(*s, new Symbol($1, *s, 0));
-            if($1 == STRING)
-                TheTable->insert(*s, new Symbol($1, *s, ""));
-        }
+      if($1 == INT)
+        TheTable->insert(*s, new Symbol($1, *s, 0));
+      if($1 == DOUBLE)
+        TheTable->insert(*s, new Symbol($1, *s, 0));
+      if($1 == STRING)
+        TheTable->insert(*s, new Symbol($1, *s, ""));
     }
-    else
-        Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+  }
+  else
+    Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
 
 }
 ;
@@ -235,15 +265,15 @@ simple_type  T_ID  optional_initializer
 simple_type:
 T_INT
 {
-    $$ = INT;
+  $$ = INT;
 }
 | T_DOUBLE
 {
-    $$ = DOUBLE;
+  $$ = DOUBLE;
 }
 | T_STRING
 {
-    $$ = STRING;
+  $$ = STRING;
 }
 ;
 
@@ -251,11 +281,11 @@ T_INT
 optional_initializer:
 T_ASSIGN expression
 {
-    $$ = $2;
+  $$ = $2;
 }
 | empty
 {
-    $$ = NULL;
+  $$ = NULL;
 }
 ;
 
@@ -433,20 +463,20 @@ variable T_ASSIGN expression
 variable:
 T_ID
 {
-    Symbol *sTmp = new Symbol;
-    sTmp = TheTable->lookup(*$1);
-    if(!sTmp)
-    {
-        cout << "IT FUCKING BROKE(*******************" << endl;
-    }
-    else
-    {
-        $$ = new Variable(sTmp);
-    }
+  Symbol *sTmp = new Symbol;
+  sTmp = TheTable->lookup(*$1);
+  if(!sTmp)
+  {
+    cout << "IT FUCKING BROKE(*******************" << endl;
+  }
+  else
+  {
+    $$ = new Variable(sTmp);
+  }
 }
 | T_ID T_LBRACKET expression T_RBRACKET
 {
-    $$ = new Variable(*$1, $3);
+  $$ = new Variable(*$1, $3);
 }
 | T_ID T_PERIOD T_ID
 {
@@ -460,71 +490,122 @@ T_ID
 expression:
 primary_expression
 {
-    $$ = $1;
+  $$ = $1;
 }
 | expression T_OR expression
 {
-    /*need to check to see weather or not we can or two things forexample a string cant or  integer*/
+  /*need to check to see weather or not we can or two things forexample a string cant or  integer*/
+  if($1->get_gType() == STRING)
+    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "||");
+  else if ($3->get_gType() == STRING)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "||");
+  else
     $$ = new Expression(OR, $1, $3);
 }
 | expression T_AND expression
 {
+  if($1->get_gType() == STRING)
+    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "&&");
+  else if ($3->get_gType() == STRING)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "&&");
+  else
     $$ = new Expression(AND, $1, $3);
 }
 | expression T_LESS_EQUAL expression
 {
-    $$ = new Expression(LESS_THAN_EQUAL, $1, $3);
+  $$ = new Expression(LESS_THAN_EQUAL, $1, $3);
 }
 | expression T_GREATER_EQUAL  expression
 {
-    $$ = new Expression(GREATER_THAN_EQUAL, $1, $3);
+  $$ = new Expression(GREATER_THAN_EQUAL, $1, $3);
 }
 | expression T_LESS expression
 {
-    $$ = new Expression(LESS_THAN, $1, $3);
+  $$ = new Expression(LESS_THAN, $1, $3);
 }
 | expression T_GREATER  expression
 {
-    $$ = new Expression(GREATER_THAN, $1, $3);
+  $$ = new Expression(GREATER_THAN, $1, $3);
 }
 | expression T_EQUAL expression
 {
-    $$ = new Expression(EQUAL, $1, $3);
+  $$ = new Expression(EQUAL, $1, $3);
 }
 | expression T_NOT_EQUAL expression
 {
-    $$ = new Expression(NOT_EQUAL, $1, $3);
+  $$ = new Expression(NOT_EQUAL, $1, $3);
 }
 | expression T_PLUS expression
 {
-    $$ = new Expression(PLUS, $1, $3);
+  $$ = new Expression(PLUS, $1, $3);
 }
 | expression T_MINUS expression
 {
+  if($1->get_gType() == STRING)
+    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "-");
+  else if ($3->get_gType() == STRING)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "-");
+  else
     $$ = new Expression(MINUS, $1, $3);
 }
 | expression T_ASTERISK expression
 {
+  if($1->get_gType() == STRING)
+    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "*");
+  else if ($3->get_gType() == STRING)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "*");
+  else
     $$ = new Expression(MULTIPLY, $1, $3);
 }
 | expression T_DIVIDE expression
 {
+  if($1->get_gType() == STRING)
+    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "/");
+  else if ($3->get_gType() == STRING)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "/");
+  else
     $$ = new Expression(DIVIDE, $1, $3);
 }
 | expression T_MOD expression
 {
+  if($1->get_gType() == STRING)
+    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "%");
+  else if ($3->get_gType() == STRING)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "%");
+  else
     $$ = new Expression(MOD, $1, $3);
 }
 | T_MINUS  expression %prec UNARY_OPS
 {
-    $$ = new Expression(UNARY_MINUS, $2);
+  $$ = new Expression(UNARY_MINUS, $2);
 }
 | T_NOT  expression %prec UNARY_OPS
 {
-    $$ = new Expression(NOT, $2);
+  $$ = new Expression(NOT, $2);
 }
 | math_operator T_LPAREN expression T_RPAREN
 {
+  if($3->get_gType() == STRING && $1 == SIN)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "sin");
+  else if ($3->get_gType() == STRING && $1 == COS)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "cos");
+  else if ($3->get_gType() == STRING && $1 == TAN)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "tan");
+  else if ($3->get_gType() == STRING && $1 ==ASIN)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "asin");
+  else if ($3->get_gType() == STRING && $1 == ACOS)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "acos");
+  else if ($3->get_gType() == STRING && $1 == ATAN)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "atan");
+  else if ($3->get_gType() == STRING && $1 == ABS)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "abs");
+  else if ($3->get_gType() == STRING && $1 == FLOOR)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "floor");
+  else if ($3->get_gType() == STRING && $1 == RANDOM)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "random");
+  else if ($3->get_gType() == STRING && $1 == SQRT)
+    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "sqrt");
+  else
     $$ = new Expression($1,$3);
 }
 | variable geometric_operator variable
@@ -535,31 +616,31 @@ primary_expression
 primary_expression:
 T_LPAREN  expression T_RPAREN
 {
-    $$ = $2;
+  $$ = $2;
 }
 | variable
 {
-    $$ = new Expression($1);
+  $$ = new Expression($1);
 }
 | T_INT_CONSTANT /*This runs when i say double i = 22 it returns a 0*/
 {
-    $$ = new Expression($1, INT);
+  $$ = new Expression($1, INT);
 }
 | T_TRUE
 {
-    $$ = new Expression(1, INT);
+  $$ = new Expression(1, INT);
 }
 | T_FALSE
 {
-    $$ = new Expression(0, INT);
+  $$ = new Expression(0, INT);
 }
 | T_DOUBLE_CONSTANT
 {
-    $$ = new Expression($1, DOUBLE);
+  $$ = new Expression($1, DOUBLE);
 }
 | T_STRING_CONSTANT
 {
-    $$ = new Expression(*$1, STRING);
+  $$ = new Expression(*$1, STRING);
 }
 ;
 
@@ -573,43 +654,43 @@ T_TOUCHES
 math_operator:
 T_SIN
 {
-    $$ = SIN;
+  $$ = SIN;
 }
 | T_COS
 {
-    $$ = COS;
+  $$ = COS;
 }
 | T_TAN
 {
-    $$ = TAN;
+  $$ = TAN;
 }
 | T_ASIN
 {
-    $$ = ASIN;
+  $$ = ASIN;
 }
 | T_ACOS
 {
-    $$ = ACOS;
+  $$ = ACOS;
 }
 | T_ATAN
 {
-    $$ = ATAN;
+  $$ = ATAN;
 }
 | T_SQRT
 {
-    $$ = SQRT;
+  $$ = SQRT;
 }
 | T_ABS
 {
-    $$ = ABS;
+  $$ = ABS;
 }
 | T_FLOOR
 {
-    $$ = FLOOR;
+  $$ = FLOOR;
 }
 | T_RANDOM
 {
-    $$ = RANDOM;
+  $$ = RANDOM;
 }
 ;
 

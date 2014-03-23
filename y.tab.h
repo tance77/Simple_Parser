@@ -228,14 +228,14 @@
 typedef union YYSTYPE
 #line 29 "gpl.y"
 {
-        int            union_int;
-        std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
-        double         union_double;
-        Gpl_type       union_gpl_type;
-        Operator_type  union_operator_type;
-        Expression*    union_expression;
-        Variable*      union_variable;
-    }
+    int            union_int;
+    std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
+    double         union_double;
+    Gpl_type       union_gpl_type;
+    Operator_type  union_operator_type;
+    Expression*    union_expression;
+    Variable*      union_variable;
+  }
 /* Line 1529 of yacc.c.  */
 #line 241 "y.tab.h"
 	YYSTYPE;
