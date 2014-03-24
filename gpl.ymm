@@ -189,7 +189,12 @@ simple_type  T_ID  optional_initializer
   {
     if($1 == INT){
       if($3){
-        TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
+        if($3->get_Kind() == "DOUBLE_CONSTANT" || $3->get_Kind() == "STRING_CONSTANT"){
+          Error::error(Error::INVALID_TYPE_FOR_INITIAL_VALUE, *$2);
+        }
+        else{
+          TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
+        }
       }
       else /* No expression */{
         TheTable->insert(*$2, new Symbol($1, *$2, 0));
@@ -197,11 +202,16 @@ simple_type  T_ID  optional_initializer
     }
     else if($1 == DOUBLE){
       if($3){
-        if($3->get_gType() == INT){
-          TheTable->insert(*$2, new Symbol($1, *$2, (double)$3->evalint()));
+        if($3->get_Kind() == "STRING_CONSTANT"){
+          Error::error(Error::INVALID_TYPE_FOR_INITIAL_VALUE, *$2);
         }
-        else if($3->get_gType() ==  DOUBLE){
-          TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
+        else{
+          if($3->get_gType() == INT){
+            TheTable->insert(*$2, new Symbol($1, *$2, (double)$3->evalint()));
+          }
+          else if($3->get_gType() ==  DOUBLE){
+            TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
+          }
         }
       }
       else /* No expression */{
@@ -237,26 +247,39 @@ simple_type  T_ID  optional_initializer
 }
 | simple_type  T_ID  T_LBRACKET expression T_RBRACKET
 {
-  ostringstream oss;
-  if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
+  if($4->get_gType() == INT)
   {
-    for(int i = 0; i < $4->evalint(); i++)
+    ostringstream oss;
+    if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
     {
-      oss.str("");
-      oss << *$2;
-      oss << '[' << i << ']';
-      string *s  = new string(oss.str());
+      for(int i = 0; i < $4->evalint(); i++)
+      {
+        oss.str("");
+        oss << *$2;
+        oss << '[' << i << ']';
+        string *s  = new string(oss.str());
 
-      if($1 == INT)
-        TheTable->insert(*s, new Symbol($1, *s, 0));
-      if($1 == DOUBLE)
-        TheTable->insert(*s, new Symbol($1, *s, 0));
-      if($1 == STRING)
-        TheTable->insert(*s, new Symbol($1, *s, ""));
+        if($1 == INT)
+          TheTable->insert(*s, new Symbol($1, *s, 0));
+        if($1 == DOUBLE)
+          TheTable->insert(*s, new Symbol($1, *s, (double)0));
+        if($1 == STRING)
+          TheTable->insert(*s, new Symbol($1, *s, ""));
+      }
     }
-  }
-  else
+    else
     Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+  }
+  else if($4->get_gType() == DOUBLE){
+    ostringstream ss;
+    ss << $4->evaldouble();
+    Error::error(Error::INVALID_ARRAY_SIZE, *$2, ss.str());
+  }
+  else if($4->get_gType() == STRING){
+    ostringstream ss;
+    ss << $4->evalstring();
+    Error::error(Error::INVALID_ARRAY_SIZE, *$2, ss.str());
+  }
 
 }
 ;

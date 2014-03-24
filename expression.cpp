@@ -10,8 +10,10 @@ Expression::Expression(Operator_type type, Expression *LHS, Expression *RHS)
   m_kind = "EXPRESSION";
   m_LHS = LHS;
   m_RHS = RHS;
-  if(type == OR || type == AND || type == GREATER_THAN || type == GREATER_THAN_EQUAL || type == LESS_THAN_EQUAL || type == LESS_THAN || type == EQUAL)
+  if(type == OR || type == AND || type == GREATER_THAN || type == GREATER_THAN_EQUAL || type == LESS_THAN_EQUAL || type == LESS_THAN || type == EQUAL || type == NOT_EQUAL)
+    {
     m_gType = INT;
+    }
   else if((m_LHS->get_gType() == STRING || m_RHS->get_gType() == STRING))
     m_gType = STRING;
   else if(m_LHS->get_gType() == DOUBLE || m_RHS->get_gType() == DOUBLE)
@@ -49,7 +51,7 @@ int Expression::evalint()
         if(m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return m_LHS->evalint() && m_RHS->evalint();
         else if(m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)
-          return m_LHS->evalint() && m_RHS->evalint();
+          return m_LHS->evaldouble() && m_RHS->evaldouble();
         else if(m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)
           return m_LHS->evaldouble() && m_RHS->evalint();
         else if(m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
@@ -58,7 +60,7 @@ int Expression::evalint()
         if(m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return m_LHS->evalint() || m_RHS->evalint();
         else if(m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)
-          return m_LHS->evalint() || m_RHS->evalint();
+          return m_LHS->evaldouble() || m_RHS->evaldouble();
         else if(m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)
           return m_LHS->evaldouble() || m_RHS->evalint();
         else if(m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
@@ -96,7 +98,7 @@ int Expression::evalint()
           return m_LHS->evaldouble() <= m_RHS->evalint();
         else if(m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
           return m_LHS->evalint() <= m_RHS->evaldouble();
-        else if (m_LHS->m_gType == INT && m_RHS->m_gType == INT)
+        else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return (m_LHS->evalint() <= m_RHS->evalint());
       case LESS_THAN:
         if (m_LHS->get_gType() == STRING && m_RHS->get_gType() == STRING)
@@ -131,10 +133,12 @@ int Expression::evalint()
           return m_LHS->evaldouble() < m_RHS->evalint();
         else if(m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
           return m_LHS->evalint() < m_RHS->evaldouble();
-        else if (m_LHS->m_gType == INT && m_RHS->m_gType == INT)
+        else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return (m_LHS->evalint() < m_RHS->evalint());
       case GREATER_THAN_EQUAL:
-        if (m_LHS->get_gType() == STRING && m_RHS->get_gType() == STRING)
+        if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
+          return (m_LHS->evalint() >= m_RHS->evalint());
+        else if (m_LHS->get_gType() == STRING && m_RHS->get_gType() == STRING)
           return m_LHS->evalstring() >= m_RHS->evalstring();
         else if(m_LHS->get_gType() == INT && m_RHS->get_gType() == STRING)
         {
@@ -166,8 +170,6 @@ int Expression::evalint()
           return m_LHS->evaldouble() >= m_RHS->evalint();
         else if(m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
           return m_LHS->evalint() >= m_RHS->evaldouble();
-        else if (m_LHS->m_gType == INT && m_RHS->m_gType == INT)
-          return (m_LHS->evalint() >= m_RHS->evalint());
       case GREATER_THAN:
         if (m_LHS->get_gType() == STRING && m_RHS->get_gType() == STRING)
           return m_LHS->evalstring() > m_RHS->evalstring();
@@ -201,8 +203,43 @@ int Expression::evalint()
           return m_LHS->evaldouble() > m_RHS->evalint();
         else if(m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
           return m_LHS->evalint() > m_RHS->evaldouble();
-        else if (m_LHS->m_gType == INT && m_RHS->m_gType == INT)
+        else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return (m_LHS->evalint() > m_RHS->evalint());
+      case EQUAL:
+        if (m_LHS->get_gType() == STRING && m_RHS->get_gType() == STRING)
+          return m_LHS->evalstring() == m_RHS->evalstring();
+        else if(m_LHS->get_gType() == INT && m_RHS->get_gType() == STRING)
+          {
+          ostringstream ss;
+          ss << m_LHS->evalint();
+          return ss.str() == m_RHS->evalstring();
+          }
+        else if(m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == STRING)
+          {
+          ostringstream ss;
+          ss << m_LHS->evaldouble();
+          return ss.str() == m_RHS->evalstring();
+          }
+        else if(m_LHS->get_gType() == STRING && m_RHS->get_gType() == INT)
+          {
+          ostringstream ss;
+          ss << m_RHS->evalint();
+          return m_LHS->evalstring() == ss.str();
+          }
+        else if(m_LHS->get_gType() == STRING && m_RHS->get_gType() == DOUBLE)
+          {
+          ostringstream ss;
+          ss << m_RHS->evaldouble();
+          return m_LHS->evalstring() == ss.str();
+          }
+        else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)
+          return (m_LHS->evaldouble() == m_RHS->evaldouble());
+        else if(m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == INT)
+          return m_LHS->evaldouble() == m_RHS->evalint();
+        else if(m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
+          return m_LHS->evalint() == m_RHS->evaldouble();
+        else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
+          return (m_LHS->evalint() == m_RHS->evalint());
       case NOT_EQUAL:
         if (m_LHS->get_gType() == STRING && m_RHS->get_gType() == STRING)
           return m_LHS->evalstring() != m_RHS->evalstring();
@@ -236,7 +273,7 @@ int Expression::evalint()
           return m_LHS->evaldouble() != m_RHS->evalint();
         else if(m_LHS->get_gType() == INT && m_RHS->get_gType() == DOUBLE)
           return m_LHS->evalint() != m_RHS->evaldouble();
-        else if (m_LHS->m_gType == INT && m_RHS->m_gType == INT)
+        else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return (m_LHS->evalint() != m_RHS->evalint());
       case PLUS:
         if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
@@ -276,8 +313,6 @@ int Expression::evalint()
           return m_LHS->evaldouble() / m_RHS->evaldouble();
       case MOD:
         return m_LHS->evalint() % m_RHS->evalint();
-      case SQRT:
-        return sqrt(m_RHS->evalint());
       case ABS:
         if(m_RHS->get_gType() == INT)
           return abs(m_RHS->evalint());
@@ -289,10 +324,18 @@ int Expression::evalint()
         }
         return floor(m_RHS->evalint());
       case UNARY_MINUS:
-        return m_RHS->evalint() * -1;
+        if(m_RHS->get_gType()== DOUBLE){
+          return m_RHS->evaldouble();
+        }
+        else if(m_RHS->get_gType()==INT){
+          return m_RHS->evalint() * -1;
+        }
       case RANDOM:
         return rand() % m_RHS->evalint();
       case NOT:
+        if(m_RHS->get_gType() == DOUBLE){
+          return !m_RHS->evaldouble();
+        }
         return !m_RHS->evalint();
       default:
         return m_iValue;
@@ -339,7 +382,12 @@ double Expression::evaldouble()
       else
         return atan(m_RHS->evaldouble()) * (180 / M_PI);
     case SQRT:
-      return sqrt(m_RHS->evaldouble());
+      if(m_RHS->get_gType() == DOUBLE){
+        return sqrt(m_RHS->evaldouble());
+      }
+      else if(m_RHS->get_gType() == INT){
+        return sqrt(m_RHS->evalint());
+      }
     case ABS:
       if(m_RHS->get_gType() == DOUBLE)
         return abs(m_RHS->evaldouble());
@@ -392,31 +440,7 @@ double Expression::evaldouble()
       else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)              //Left is DOUBLE right is DOUBLE
         return m_LHS->evaldouble() / m_RHS->evaldouble();
       return m_LHS->evaldouble() / m_RHS->evaldouble();
-    case EQUAL:
-      if (m_LHS->get_gType()  == STRING && m_RHS->get_gType()  == STRING)
-        return (double) (m_LHS->evalstring() == m_RHS->evalstring());
-      else if (m_LHS->get_gType()  == INT && m_RHS->get_gType()  == INT)
-        return (double) m_LHS->evalint() == m_RHS->evalint();
-      else if(m_LHS->get_gType()  == DOUBLE && m_RHS->get_gType()  == DOUBLE)
-        return (m_LHS->evaldouble() == m_RHS->evaldouble());
-      else if(m_LHS->get_gType()  == INT && m_RHS->get_gType()  == DOUBLE)
-        return (double) (m_LHS->evalint() == m_RHS->evaldouble());
-      else if (m_LHS->get_gType()  == DOUBLE && m_RHS->get_gType()  == INT)
-        return (double) (m_LHS->evaldouble() == m_RHS->evalint());
-      else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == STRING)
-      {
-        ostringstream ss;
-        ss << m_LHS->evalint();
-        return ss.str() == m_RHS->evalstring();
-      }
-      else if(m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == STRING)
-      {
-        ostringstream ss;
-        ss << m_LHS->evaldouble();
-        return ss.str() == m_RHS->evalstring();
-      }
-
-    default:
+       default:
       return m_dValue;
   }
 }
@@ -594,51 +618,6 @@ std::string Expression::evalstring()
           }
           return m_LHS->evalstring() + m_RHS->evalstring();                               // ADDING TO STRING CONSTANTS
         }
-      case EQUAL:
-        if (m_LHS->get_gType()  == STRING && m_RHS->get_gType()  == STRING)
-        {
-          ostringstream ss;
-          ss << (m_LHS->evalstring() == m_RHS->evalstring());
-          return ss.str();
-        }
-        else if (m_LHS->get_gType()  == INT && m_RHS->get_gType()  == INT)
-        {
-          ostringstream ss;
-          ss << (m_LHS->evalint() == m_RHS->evalint());
-          ss.str();
-        }
-        else if(m_LHS->get_gType()  == DOUBLE && m_RHS->get_gType()  == DOUBLE)
-        {
-          ostringstream ss;
-          ss << (m_LHS->evaldouble() == m_RHS->evaldouble());
-          return ss.str();
-        }
-        else if(m_LHS->get_gType()  == INT && m_RHS->get_gType()  == DOUBLE)
-        {
-          ostringstream ss;
-          ss << (m_LHS->evalint() == m_RHS->evaldouble());
-          return ss.str();
-        }
-        else if (m_LHS->get_gType()  == DOUBLE && m_RHS->get_gType()  == INT)
-        {
-          ostringstream ss;
-          ss << (m_LHS->evaldouble() == m_RHS->evalint());
-          return ss.str();
-        }
-        else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == STRING)
-        {
-          ostringstream ss, ss2;
-          ss << m_LHS->evalint();
-          ss2 << (ss.str() == m_RHS->evalstring());
-          return ss2.str();
-        }
-        else if(m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == STRING)
-        {
-          ostringstream ss, ss2;
-          ss << m_LHS->evaldouble();
-          ss2 << (ss.str() == m_RHS->evalstring());
-          return ss2.str();
-        }
       default:
         return m_sValue;                                                                // IF THE OPERATOR TYPE WAS SOMEHOW NULL
     }
@@ -671,6 +650,10 @@ double Expression::getdValue()
 std::string Expression::getsValue()
 {
   return m_sValue;
+}
+std::string Expression::get_Kind()
+{
+  return m_kind;
 }
 /*template <typename T>
   std::string NumberToString ( T Number )

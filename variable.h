@@ -12,7 +12,7 @@ public:
     ~Variable();
     Variable();
     Variable(Symbol *s);
-    Variable(std::string value, Expression *e){m_sValue = value, m_Expression = e;};
+  Variable(std::string value, Expression *e);
     Gpl_type gettype();
     void evaluate();
     int getiValue();

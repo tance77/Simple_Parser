@@ -25,6 +25,7 @@ public:
   std::string evalstring();
   Gpl_type get_gType();
   Operator_type get_oType();
+  std::string get_Kind();
   template<typename T, typename Function>
   std::string deg_str(T angle_deg)
   {
