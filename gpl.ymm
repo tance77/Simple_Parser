@@ -262,13 +262,13 @@ simple_type  T_ID  optional_initializer
         if($1 == INT)
           TheTable->insert(*s, new Symbol($1, *s, 0));
         if($1 == DOUBLE)
-          TheTable->insert(*s, new Symbol($1, *s, (double)0));
+          TheTable->insert(*s, new Symbol($1, *s, 0.0));
         if($1 == STRING)
           TheTable->insert(*s, new Symbol($1, *s, ""));
       }
     }
     else
-    Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+      Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
   }
   else if($4->get_gType() == DOUBLE){
     ostringstream ss;
@@ -490,7 +490,8 @@ T_ID
   sTmp = TheTable->lookup(*$1);
   if(!sTmp)
   {
-    cout << "IT FUCKING BROKE(*******************" << endl;
+    Error::error(Error::UNDECLARED_VARIABLE, *$1);
+    $$ = new Variable(sTmp);
   }
   else
   {
@@ -608,26 +609,108 @@ primary_expression
 }
 | math_operator T_LPAREN expression T_RPAREN
 {
-  if($3->get_gType() == STRING && $1 == SIN)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "sin");
-  else if ($3->get_gType() == STRING && $1 == COS)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "cos");
-  else if ($3->get_gType() == STRING && $1 == TAN)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "tan");
-  else if ($3->get_gType() == STRING && $1 ==ASIN)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "asin");
-  else if ($3->get_gType() == STRING && $1 == ACOS)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "acos");
-  else if ($3->get_gType() == STRING && $1 == ATAN)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "atan");
-  else if ($3->get_gType() == STRING && $1 == ABS)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "abs");
-  else if ($3->get_gType() == STRING && $1 == FLOOR)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "floor");
-  else if ($3->get_gType() == STRING && $1 == RANDOM)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "random");
-  else if ($3->get_gType() == STRING && $1 == SQRT)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "sqrt");
+  if($1 == SIN)
+  {
+    if($3->get_gType() == STRING){
+      Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "sin");
+      $$ = new Expression($1,0);
+    }
+    else
+    {
+      $$ = new Expression($1,$3);
+    }
+  }
+  else if ($1 == COS)
+  {
+    if($3->get_gType() == STRING){
+      Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "cos");
+      $$ = new Expression($1,0);
+    }
+    else
+    {
+      $$ = new Expression($1,$3);
+    }
+  }
+  else if ($1 == TAN){
+    if($3->get_gType() == STRING){
+      Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "tan");
+      $$ = new Expression($1,0);
+    }
+    else
+    {
+      $$ = new Expression($1,$3);
+    }
+  }
+  else if ($1 == ASIN){
+    if($3->get_gType() == STRING){
+      Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "asin");
+      $$ = new Expression($1,0);
+    }
+    else
+    {
+      $$ = new Expression($1,$3);
+    }
+  }
+  else if ($1 == ACOS){
+    if($3->get_gType() == STRING){
+      Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "acos");
+      $$ = new Expression($1,0);
+    }
+    else
+    {
+      $$ = new Expression($1,$3);
+    }
+  }
+  else if ($1 == ATAN){
+    if($3->get_gType() == STRING){
+      Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "atan");
+      $$ = new Expression($1,0);
+    }
+    else
+    {
+      $$ = new Expression($1,$3);
+    }
+  }
+  else if ($1 == ABS){
+    if($3->get_gType() == STRING){
+      Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "abs");
+      $$ = new Expression($1,0);
+    }
+    else
+    {
+      $$ = new Expression($1,$3);
+    }
+  }
+  else if ($1 == FLOOR){
+    if($3->get_gType() == STRING){
+      Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "floor");
+      $$ = new Expression($1,0);
+    }
+    else
+    {
+      $$ = new Expression($1,$3);
+    }
+  }
+  else if ($1 == RANDOM){
+    if($3->get_gType() == STRING){
+      Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "random");
+      $$ = new Expression($1,0);
+    }
+    else
+    {
+      $$ = new Expression($1,$3);
+    }
+  }
+  else if ($1 == SQRT){
+    if($3->get_gType() == STRING){
+      Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "sqrt");
+      $$ = new Expression($1,0);
+    }
+    else
+    {
+      $$ = new Expression($1,$3);
+    }
+  }
   else
     $$ = new Expression($1,$3);
 }

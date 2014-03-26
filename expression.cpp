@@ -205,6 +205,7 @@ int Expression::evalint()
           return m_LHS->evalint() > m_RHS->evaldouble();
         else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return (m_LHS->evalint() > m_RHS->evalint());
+      
       case EQUAL:
         if (m_LHS->get_gType() == STRING && m_RHS->get_gType() == STRING)
           return m_LHS->evalstring() == m_RHS->evalstring();
@@ -240,6 +241,7 @@ int Expression::evalint()
           return m_LHS->evalint() == m_RHS->evaldouble();
         else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return (m_LHS->evalint() == m_RHS->evalint());
+      
       case NOT_EQUAL:
         if (m_LHS->get_gType() == STRING && m_RHS->get_gType() == STRING)
           return m_LHS->evalstring() != m_RHS->evalstring();
@@ -275,6 +277,7 @@ int Expression::evalint()
           return m_LHS->evalint() != m_RHS->evaldouble();
         else if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return (m_LHS->evalint() != m_RHS->evalint());
+      
       case PLUS:
         if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return m_LHS->evalint() + m_RHS->evalint();
@@ -284,6 +287,7 @@ int Expression::evalint()
           return m_LHS->evalint() + m_RHS->evaldouble();
         else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)
           return m_LHS->evaldouble() + m_RHS->evaldouble();
+      
       case MINUS:
         if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return m_LHS->evalint() - m_RHS->evalint();
@@ -293,6 +297,7 @@ int Expression::evalint()
           return m_LHS->evalint() - m_RHS->evaldouble();
         else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)
           return m_LHS->evaldouble() - m_RHS->evaldouble();
+        
       case MULTIPLY:
         if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return m_LHS->evalint() * m_RHS->evalint();
@@ -302,6 +307,7 @@ int Expression::evalint()
           return m_LHS->evalint() * m_RHS->evaldouble();
         else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)
           return m_LHS->evaldouble() * m_RHS->evaldouble();
+        
       case DIVIDE:
         if (m_LHS->get_gType() == INT && m_RHS->get_gType() == INT)
           return m_LHS->evalint() / m_RHS->evalint();
