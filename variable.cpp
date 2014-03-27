@@ -1,5 +1,6 @@
 #include "variable.h"
 #include "expression.h"
+#include "gpl_assert.h"
 #include "error.h"
 #include "symbol_table.h"
 
@@ -8,6 +9,7 @@ Symbol_table* TheTable = Symbol_table::instance();
 Variable::Variable(Symbol *target)
 {
   if(target != NULL){
+    m_Expression = NULL;
     m_Symbol = target;
     m_iValue = target->getintValue();
     m_dValue = target->getdoubleValue();
@@ -63,12 +65,13 @@ Variable::Variable(std::string value, Expression *e) //array
 
 int Variable::getiValue()
 {
+  cout << "getivalue()\n";
        if(m_Symbol != NULL){
-        return m_Symbol->getintValue();
+       return m_Symbol->getintValue();
         }
-        else{
-        return 0;
-        }
+//        else{
+//        return 0;
+//        }
 //  if(m_Expression == NULL)
 //    {
 //    if(m_Symbol == NULL)
@@ -77,25 +80,28 @@ int Variable::getiValue()
 //      return 0;
 //      }
 //    }
-//  else
-//    {
-//    stringstream ss;
-//    ss << m_Expression->evalint();
-//    Symbol* sym = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
-//    if(sym == NULL)
-//      {
-//      stringstream ss2;
-//      ss2 << m_Expression->evalint();
-//            Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
-//      }
-//    else
-//      {
-//      return sym->getintValue();
-//      }
-//
-//    }
-//  return 0;
-//  
+  else
+    {
+    assert(m_Expression);
+    stringstream ss;
+    ss << m_Expression->evalint();
+    Symbol* sym = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
+    
+    cout << "right place sym = " << (void *) sym << endl;
+    if(sym == NULL)
+      {
+      stringstream ss2;
+      ss2 << m_Expression->evalint();
+            Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
+      }
+    else
+      {
+      return sym->getintValue();
+      }
+
+    }
+  return 0;
+  
 }
 double Variable::getdValue()
 {

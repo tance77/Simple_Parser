@@ -41,7 +41,7 @@ void Symbol_table::print(ostream &os)
 }
 Symbol* Symbol_table::lookup(string target)
 {
-    if(mTable.find(target) == mTable.end() &&   mTable.find(target + "[0]") == mTable.end())
+  if(mTable.find(target) == mTable.end() ) // &&   mTable.find(target + "[0]") == mTable.end())
         return NULL;
     else return mTable.find(target)->second;
 }
