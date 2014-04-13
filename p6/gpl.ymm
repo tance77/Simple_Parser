@@ -11,6 +11,7 @@
 #include "parser.h"
 #include "expression.h"
 #include "variable.h"
+#include "game_object.h"
 #include <iostream>
 #include <assert.h>
 #include <vector>
@@ -19,10 +20,16 @@
 #include "symbol.h"
 #include "symbol_table.h"
 #include "gpl_type.h"
+#include "circle.h"
+#include "pixmap.h"
+#include "rectangle.h"
+#include "textbox.h"
+#include "triangle.h"
 
   using namespace std;
 
   static Symbol_table *TheTable = Symbol_table::instance();
+  static Symbol curr_object_under_constructions = Symbol::instance();
 
   %}
 
@@ -34,6 +41,7 @@
     Operator_type  union_operator_type;
     Expression*    union_expression;
     Variable*      union_variable;
+    Game_object*   union_game_object;
   }
 
 
@@ -147,6 +155,7 @@
 %type <union_variable> variable_declaration
 %type <union_gpl_type> simple_type
 %type <union_operator_type> math_operator
+%type <union_int> object_type // for p6
 
 %token T_ERROR// Grammar symbols that have values associated with them need to be
 
@@ -322,10 +331,26 @@ object_type T_ID T_LPAREN parameter_list_or_empty T_RPAREN
 //---------------------------------------------------------------------
 object_type:
 T_TRIANGLE
+{
+  curr_object_under_constructions = new Triangle();
+  TheTable->insert(*s, curr_object_under_constructions);
+}
 | T_PIXMAP
+{
+  curr_object_under_constructions = new Pixmap();
+}
 | T_CIRCLE
+{
+  curr_object_under_constructions = new Circle();
+}
 | T_RECTANGLE
+{
+  curr_object_under_constructions = new Rectangle();
+}
 | T_TEXTBOX
+{
+  curr_object_under_constructions = new Textbox();
+}
 ;
 
 //---------------------------------------------------------------------

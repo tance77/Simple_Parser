@@ -5,6 +5,7 @@
 #include <map>
 #include <iostream>
 #include "symbol.h"
+#include "game_object.h"
 
 using namespace std;
 
