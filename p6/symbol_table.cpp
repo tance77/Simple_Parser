@@ -1,6 +1,7 @@
 #include "symbol_table.h"
 #include "gpl_type.h"
 #include <assert.h>
+#include "indent.h"
 
 
 Symbol_table *Symbol_table::m_instance = 0;
@@ -37,7 +38,13 @@ void Symbol_table::print(ostream &os)
       << it->second->getstringValue() << "\"" << endl;
       }
     if(it->second->getType() == GAME_OBJECT)
+      {
+      indent++;
+      os << "game_object " << it->second->getID()<< endl;
       (it->second->getgameobjectValue())->print(os);
+      os << endl;
+      indent--;
+      }
     it++;
     }
 }

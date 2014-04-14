@@ -32,3 +32,7 @@ tokens
 *.o
 
 gpl
+
+*.mypixels
+
+*.mypixels
