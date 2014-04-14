@@ -37,12 +37,7 @@ void Symbol_table::print(ostream &os)
       << it->second->getstringValue() << "\"" << endl;
       }
     if(it->second->getType() == GAME_OBJECT)
-      {
-      os &Game_object::print(os);
-//      os << "game object" << " "
-//      << it->second->getID() << " "
-//      << it->second->getgameobjectValue() << endl;
-      }
+      (it->second->getgameobjectValue())->print(os);
     it++;
     }
 }
@@ -55,4 +50,13 @@ Symbol* Symbol_table::lookup(string target)
 void Symbol_table::insert(string ID, Symbol *symbol)
 {
   mTable.insert(pair<string, Symbol*>(ID, symbol));
+}
+bool Symbol_table::get(string name, int &value)
+{
+  Symbol *cur = lookup(name);
+  if (!cur || !cur->is_int())
+    return false;
+  
+  value = cur->get_int_value();
+  return true;
 }

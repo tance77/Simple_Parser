@@ -13,14 +13,14 @@ public:
   Symbol(Gpl_type type, string name, int value){m_gType = type; m_ID = name; m_iValue = value;};
   Symbol(Gpl_type type, string name, double value){m_gType = type; m_ID = name; m_dValue = value;};
   Symbol(Gpl_type type, string name, string value){m_gType = type; m_ID = name; m_sValue = value;};
-  Symbol(Gpl_type type, string name, Game_object *value){m_gType = type; m_ID = name; m_Gameobject = value;};
+  Symbol(string name, Game_object *value){m_gType = GAME_OBJECT; m_ID = name; m_Gameobject = value;};
 //  Symbol(Gpl_type type, string name, Circle value){m_gType = type; m_ID = name; m_Circle = value;};
 //  Symbol(Gpl_type type, string name, Rectangle value){m_gType = type; m_ID = name; m_Rectangle = value;};
 //  Symbol(Gpl_type type, string name, Pixmap value){m_gType = type; m_ID = name; m_Pixmap = value;};
 //  Symbol(Gpl_type type, string name, Textbox value){m_gType = type; m_ID = name; m_Textbox = value;};
 //  Symbol(Gpl_type type, string name, Triangle value){m_gType = type; m_ID = name; m_Triangle = value;};
-  const Symbol &operator=(const Symbol &);
-  static Symbol *instance();
+//  const Symbol &operator=(const Symbol &);
+//  static Symbol *instance();
   int getintValue();
   double getdoubleValue();
   string getstringValue();
