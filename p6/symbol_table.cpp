@@ -54,9 +54,39 @@ void Symbol_table::insert(string ID, Symbol *symbol)
 bool Symbol_table::get(string name, int &value)
 {
   Symbol *cur = lookup(name);
-  if (!cur || !cur->is_int())
+  if (!cur /*|| !cur->is_int()*/)
     return false;
   
-  value = cur->get_int_value();
+  value = cur->getintValue();
+  return true;
+}
+bool Symbol_table::get(string name, double &value)
+{
+  Symbol *cur = lookup(name);
+  if (!cur /*|| !cur->is_int()*/)
+    return false;
+  
+  value = cur->getdoubleValue();
+  return true;
+}
+bool Symbol_table::get(string name, string &value)
+{
+  Symbol *cur = lookup(name);
+  if (!cur /*|| !cur->is_int()*/)
+    return false;
+  
+  value = cur->getstringValue();
+  return true;
+}
+bool Symbol_table::get_type (string name, Gpl_type &value)
+{
+  Symbol *cur = lookup(name);
+  if (!cur /*|| !cur->is_int()*/)
+    return false;
+  
+  value = cur->getType();
+  return true;
+}
+bool Symbol_table::set(string name, int value){ // used for mouse_x, mouse_y
   return true;
 }
