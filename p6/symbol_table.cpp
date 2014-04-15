@@ -61,7 +61,7 @@ void Symbol_table::insert(string ID, Symbol *symbol)
 bool Symbol_table::get(string name, int &value)
 {
   Symbol *cur = lookup(name);
-  if (!cur /*|| !cur->is_int()*/)
+  if (!cur || !cur->is_int())
     return false;
   
   value = cur->getintValue();
@@ -70,7 +70,7 @@ bool Symbol_table::get(string name, int &value)
 bool Symbol_table::get(string name, double &value)
 {
   Symbol *cur = lookup(name);
-  if (!cur /*|| !cur->is_int()*/)
+  if (!cur || !cur->is_int())
     return false;
   
   value = cur->getdoubleValue();
@@ -79,7 +79,7 @@ bool Symbol_table::get(string name, double &value)
 bool Symbol_table::get(string name, string &value)
 {
   Symbol *cur = lookup(name);
-  if (!cur /*|| !cur->is_int()*/)
+  if (!cur || !cur->is_int())
     return false;
   
   value = cur->getstringValue();
@@ -88,7 +88,7 @@ bool Symbol_table::get(string name, string &value)
 bool Symbol_table::get_type (string name, Gpl_type &value)
 {
   Symbol *cur = lookup(name);
-  if (!cur /*|| !cur->is_int()*/)
+  if (!cur || !cur->is_int())
     return false;
   
   value = cur->getType();

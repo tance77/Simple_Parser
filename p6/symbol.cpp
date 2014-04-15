@@ -29,3 +29,9 @@ Animation_block *Symbol::getanimationValue()
 {
   return m_Animation_block;
 }
+bool Symbol::is_int()
+{
+  if(m_gType == INT)
+    return true;
+  else return false;
+}

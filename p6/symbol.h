@@ -12,21 +12,21 @@ class Symbol
 public:
   Symbol(){};
   /*INT*/Symbol(Gpl_type type, string name, int value){
-    m_gType = type;
+    m_gType = INT;
     m_ID = name;
     m_iValue = value;
     m_Gameobject = NULL;
     m_Animation_block = NULL;
   };
   /*DOUBLE*/Symbol(Gpl_type type, string name, double value){
-    m_gType = type;
+    m_gType = DOUBLE;
     m_ID = name;
     m_dValue = value;
     m_Gameobject = NULL;
     m_Animation_block = NULL;
   };
   /*STRING*/Symbol(Gpl_type type, string name, string value){
-    m_gType = type;
+    m_gType = STRING;
     m_ID = name;
     m_sValue = value;
     m_Gameobject = NULL;
@@ -51,6 +51,7 @@ public:
   Animation_block *getanimationValue();
   string getID();
   Gpl_type getType();
+  bool is_int();
   
 private:
   static Symbol *m_instance;

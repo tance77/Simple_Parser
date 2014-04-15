@@ -475,6 +475,10 @@ T_ID T_ASSIGN expression
 //---------------------------------------------------------------------
 forward_declaration:
 T_FORWARD T_ANIMATION T_ID T_LPAREN animation_parameter T_RPAREN
+{
+    //curr_object_under_constructions = new Animation_block();
+    //TheTable->insert(*$3, new Symbol(*$3, curr_object_under_constructions));
+}
 ;
 
 //---------------------------------------------------------------------
