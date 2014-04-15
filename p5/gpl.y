@@ -186,60 +186,62 @@ simple_type  T_ID  optional_initializer
 {
   if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
   {
-    if($1 == INT){                              //CASE INT
-      if($3){
-        if ($3->get_gType() == DOUBLE || $3 -> get_gType() == STRING) {
+    switch($1){
+      case INT: /*INT*/
+        if($3){
+          if ($3->get_gType() == DOUBLE || $3 -> get_gType() == STRING) {
             Error::error(Error::INVALID_TYPE_FOR_INITIAL_VALUE, *$2);
             TheTable->insert(*$2, new Symbol($1, *$2, 0));
+          }
+          else
+            TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
         }
-        else
-          TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
-      }
-      else /* No expression */
-        TheTable->insert(*$2, new Symbol($1, *$2, 0));
-    }
-    else if($1 == DOUBLE){                      //CASE DOUBLE
-      if($3){
-        if($3->get_gType() == STRING ){
-          Error::error(Error::INVALID_TYPE_FOR_INITIAL_VALUE, *$2);
-          TheTable->insert(*$2, new Symbol($1, *$2, 0.0));
+        else /* No expression */
+          TheTable->insert(*$2, new Symbol($1, *$2, 0));
+        break;
+      case DOUBLE: /*DOUBLE*/
+        if($3){
+          if($3->get_gType() == STRING ){
+            Error::error(Error::INVALID_TYPE_FOR_INITIAL_VALUE, *$2);
+            TheTable->insert(*$2, new Symbol($1, *$2, 0.0));
+          }
+          else
+          {
+            if($3->get_gType() == INT)
+              TheTable->insert(*$2, new Symbol($1, *$2, (double)$3->evalint()));
+            else if($3->get_gType() ==  DOUBLE)
+              TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
+          }
         }
-        else
-        {
-          if($3->get_gType() == INT)
-            TheTable->insert(*$2, new Symbol($1, *$2, (double)$3->evalint()));
-          else if($3->get_gType() ==  DOUBLE)
-            TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
+        else /* No expression */
+          TheTable->insert(*$2, new Symbol($1, *$2, (double)0));
+        break;
+      case STRING:/*STRING*/
+        if($3){
+          if($3->get_gType() == INT){
+            ostringstream ss;
+            ss << $3->evalint();
+            TheTable->insert(*$2, new Symbol($1, *$2, ss.str()));
+          }
+          else if($3->get_gType() ==  DOUBLE){
+            ostringstream ss;
+            ss << $3->evaldouble();
+            TheTable->insert(*$2, new Symbol($1, *$2, ss.str()));
+          }
+          else if($3->get_gType() == STRING){
+            TheTable->insert(*$2, new Symbol($1, *$2, $3->evalstring()));
+          }
         }
-      }
-      else /* No expression */
-        TheTable->insert(*$2, new Symbol($1, *$2, (double)0));
-    }
-    else if($1 == STRING){                        //case STRING
-      if($3){
-        if($3->get_gType() == INT){
-          ostringstream ss;
-          ss << $3->evalint();
-          TheTable->insert(*$2, new Symbol($1, *$2, ss.str()));
+        else /* No expression */{
+          TheTable->insert(*$2, new Symbol($1, *$2, ""));
         }
-        else if($3->get_gType() ==  DOUBLE){
-          ostringstream ss;
-          ss << $3->evaldouble();
-          TheTable->insert(*$2, new Symbol($1, *$2, ss.str()));
-        }
-        else if($3->get_gType() == STRING){
-          TheTable->insert(*$2, new Symbol($1, *$2, $3->evalstring()));
-        }
-      }
-      else /* No expression */{
-        TheTable->insert(*$2, new Symbol($1, *$2, ""));
-      }
-    }
-    else{
-      Error::error(Error::ASSIGNMENT_TYPE_ERROR);
+        break;
+      default: /*DEFAULT*/
+        Error::error(Error::ASSIGNMENT_TYPE_ERROR);
+        break;
     }
   }
-  else //if none of the above we have an error
+  else
     Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
 }
 | simple_type  T_ID  T_LBRACKET expression T_RBRACKET
@@ -316,16 +318,31 @@ T_ASSIGN expression
 //---------------------------------------------------------------------
 object_declaration:
 object_type T_ID T_LPAREN parameter_list_or_empty T_RPAREN
-| object_type T_ID T_LBRACKET expression T_RBRACKET
+{
+}
+| object_type T_ID T_LBRACKET expression T_RBRACKET // this is an array
+{
+
+}
 ;
 
 //---------------------------------------------------------------------
 object_type:
 T_TRIANGLE
+{
+}
 | T_PIXMAP
+{
+}
 | T_CIRCLE
+{
+}
 | T_RECTANGLE
+{
+}
 | T_TEXTBOX
+{
+}
 ;
 
 //---------------------------------------------------------------------
@@ -343,6 +360,8 @@ parameter_list T_COMMA parameter
 //---------------------------------------------------------------------
 parameter:
 T_ID T_ASSIGN expression
+{
+}
 ;
 
 //---------------------------------------------------------------------

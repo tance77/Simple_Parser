@@ -1,4 +1,4 @@
-Terminals unused in grammar
+Terminals which are not used
 
    T_PLUS_PLUS
    T_MINUS_MINUS
@@ -56,9 +56,9 @@ Grammar
 
    32 initialization_block: T_INITIALIZATION statement_block
 
-   33 $@1: /* empty */
+   33 @1: /* empty */
 
-   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE $@1 statement_list T_RBRACE end_of_statement_block
+   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE @1 statement_list T_RBRACE end_of_statement_block
 
    35 animation_parameter: object_type T_ID
 
@@ -305,7 +305,7 @@ initialization_block (107)
     on left: 32, on right: 29
 animation_block (108)
     on left: 34, on right: 30
-$@1 (109)
+@1 (109)
     on left: 33, on right: 34
 animation_parameter (110)
     on left: 35, on right: 26
@@ -349,7 +349,8 @@ primary_expression (127)
 geometric_operator (128)
     on left: 114 115, on right: 106
 math_operator (129)
-    on left: 116 117 118 119 120 121 122 123 124 125, on right: 105
+    on left: 116 117 118 119 120 121 122 123 124 125,
+    on right: 105
 empty (130)
     on left: 126, on right: 3 13 22 28 71
 
@@ -637,7 +638,7 @@ state 29
 
 state 30
 
-   34 animation_block: T_ANIMATION . T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE $@1 statement_list T_RBRACE end_of_statement_block
+   34 animation_block: T_ANIMATION . T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE @1 statement_list T_RBRACE end_of_statement_block
 
     T_ID  shift, and go to state 68
 
@@ -983,7 +984,7 @@ state 67
 
 state 68
 
-   34 animation_block: T_ANIMATION T_ID . T_LPAREN check_animation_parameter T_RPAREN T_LBRACE $@1 statement_list T_RBRACE end_of_statement_block
+   34 animation_block: T_ANIMATION T_ID . T_LPAREN check_animation_parameter T_RPAREN T_LBRACE @1 statement_list T_RBRACE end_of_statement_block
 
     T_LPAREN  shift, and go to state 102
 
@@ -1394,7 +1395,7 @@ state 101
 
 state 102
 
-   34 animation_block: T_ANIMATION T_ID T_LPAREN . check_animation_parameter T_RPAREN T_LBRACE $@1 statement_list T_RBRACE end_of_statement_block
+   34 animation_block: T_ANIMATION T_ID T_LPAREN . check_animation_parameter T_RPAREN T_LBRACE @1 statement_list T_RBRACE end_of_statement_block
 
     T_TRIANGLE   shift, and go to state 134
     T_PIXMAP     shift, and go to state 135
@@ -2098,7 +2099,7 @@ state 138
 
 state 139
 
-   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter . T_RPAREN T_LBRACE $@1 statement_list T_RBRACE end_of_statement_block
+   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter . T_RPAREN T_LBRACE @1 statement_list T_RBRACE end_of_statement_block
 
     T_RPAREN  shift, and go to state 179
 
@@ -2711,7 +2712,7 @@ state 178
 
 state 179
 
-   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN . T_LBRACE $@1 statement_list T_RBRACE end_of_statement_block
+   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN . T_LBRACE @1 statement_list T_RBRACE end_of_statement_block
 
     T_LBRACE  shift, and go to state 193
 
@@ -2953,11 +2954,11 @@ state 192
 
 state 193
 
-   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE . $@1 statement_list T_RBRACE end_of_statement_block
+   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE . @1 statement_list T_RBRACE end_of_statement_block
 
-    $default  reduce using rule 33 ($@1)
+    $default  reduce using rule 33 (@1)
 
-    $@1  go to state 202
+    @1  go to state 202
 
 
 state 194
@@ -3181,7 +3182,7 @@ state 201
 
 state 202
 
-   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE $@1 . statement_list T_RBRACE end_of_statement_block
+   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE @1 . statement_list T_RBRACE end_of_statement_block
 
     $default  reduce using rule 126 (empty)
 
@@ -3235,7 +3236,7 @@ state 207
 
 state 208
 
-   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE $@1 statement_list . T_RBRACE end_of_statement_block
+   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE @1 statement_list . T_RBRACE end_of_statement_block
    70 statement_list: statement_list . statement
 
     T_IF      shift, and go to state 162
@@ -3299,7 +3300,7 @@ state 212
 
 state 213
 
-   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE $@1 statement_list T_RBRACE . end_of_statement_block
+   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE @1 statement_list T_RBRACE . end_of_statement_block
 
     $default  reduce using rule 69 (end_of_statement_block)
 
@@ -3360,7 +3361,7 @@ state 216
 
 state 217
 
-   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE $@1 statement_list T_RBRACE end_of_statement_block .
+   34 animation_block: T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE @1 statement_list T_RBRACE end_of_statement_block .
 
     $default  reduce using rule 34 (animation_block)
 
