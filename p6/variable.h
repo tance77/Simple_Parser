@@ -5,14 +5,18 @@
 #include "gpl_type.h"
 #include "symbol.h"
 
+
 class Expression;
+class Symbol;
 class Variable
 {
 public:
   ~Variable();
   Variable();
-  Variable(Symbol *s);
-  Variable(std::string value, Expression *e);
+  Variable(Symbol *s); //VARIABLE
+  Variable(std::string value, Expression *e); //EXPRESSION
+  Variable(std::string GameObject_Name, std::string MemberName); //GAME OBJECT
+  Variable(std::string name, Animation_block *animate); //ANIMATION BLOCK
   Gpl_type gettype();
   void evaluate();
   int getiValue();
@@ -27,9 +31,10 @@ private:
   Symbol *m_Symbol;
   Variable *m_Variable;
   Expression *m_Expression;
-  
   Animation_block *m_AnimatiomBlock;
-  std::string m_MemberName;
+  std::string m_MemberName; //DONT KNOW IF I NEED THIS OR NOT
+  std::string m_AnimationName;
+  std::string m_GameObjectName;
   
 };
 #endif

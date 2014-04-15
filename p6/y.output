@@ -30,7 +30,7 @@ Grammar
 
    14 @1: /* empty */
 
-   15 object_declaration: object_type T_ID T_LPAREN @1 parameter_list_or_empty T_RPAREN
+   15 object_declaration: object_type T_ID @1 T_LPAREN parameter_list_or_empty T_RPAREN
    16                   | object_type T_ID T_LBRACKET expression T_RBRACKET
 
    17 object_type: T_TRIANGLE
@@ -512,7 +512,7 @@ state 17
 
 state 18
 
-   15 object_declaration: object_type . T_ID T_LPAREN @1 parameter_list_or_empty T_RPAREN
+   15 object_declaration: object_type . T_ID @1 T_LPAREN parameter_list_or_empty T_RPAREN
    16                   | object_type . T_ID T_LBRACKET expression T_RBRACKET
 
     T_ID  shift, and go to state 26
@@ -586,11 +586,14 @@ state 25
 
 state 26
 
-   15 object_declaration: object_type T_ID . T_LPAREN @1 parameter_list_or_empty T_RPAREN
+   15 object_declaration: object_type T_ID . @1 T_LPAREN parameter_list_or_empty T_RPAREN
    16                   | object_type T_ID . T_LBRACKET expression T_RBRACKET
 
-    T_LPAREN    shift, and go to state 40
-    T_LBRACKET  shift, and go to state 41
+    T_LBRACKET  shift, and go to state 40
+
+    $default  reduce using rule 14 (@1)
+
+    @1  go to state 41
 
 
 state 27
@@ -758,15 +761,6 @@ state 39
 
 state 40
 
-   15 object_declaration: object_type T_ID T_LPAREN . @1 parameter_list_or_empty T_RPAREN
-
-    $default  reduce using rule 14 (@1)
-
-    @1  go to state 94
-
-
-state 41
-
    16 object_declaration: object_type T_ID T_LBRACKET . expression T_RBRACKET
 
     T_TRUE             shift, and go to state 70
@@ -790,9 +784,16 @@ state 41
     T_STRING_CONSTANT  shift, and go to state 88
 
     variable            go to state 89
-    expression          go to state 95
+    expression          go to state 94
     primary_expression  go to state 91
     math_operator       go to state 92
+
+
+state 41
+
+   15 object_declaration: object_type T_ID @1 . T_LPAREN parameter_list_or_empty T_RPAREN
+
+    T_LPAREN  shift, and go to state 95
 
 
 state 42
@@ -1306,20 +1307,6 @@ state 93
 
 state 94
 
-   15 object_declaration: object_type T_ID T_LPAREN @1 . parameter_list_or_empty T_RPAREN
-
-    T_ID  shift, and go to state 124
-
-    $default  reduce using rule 127 (empty)
-
-    parameter_list_or_empty  go to state 125
-    parameter_list           go to state 126
-    parameter                go to state 127
-    empty                    go to state 128
-
-
-state 95
-
    16 object_declaration: object_type T_ID T_LBRACKET expression . T_RBRACKET
    91 expression: expression . T_OR expression
    92           | expression . T_AND expression
@@ -1335,7 +1322,7 @@ state 95
   102           | expression . T_DIVIDE expression
   103           | expression . T_MOD expression
 
-    T_RBRACKET       shift, and go to state 129
+    T_RBRACKET       shift, and go to state 124
     T_ASTERISK       shift, and go to state 110
     T_DIVIDE         shift, and go to state 111
     T_MOD            shift, and go to state 112
@@ -1349,6 +1336,20 @@ state 95
     T_NOT_EQUAL      shift, and go to state 120
     T_AND            shift, and go to state 121
     T_OR             shift, and go to state 122
+
+
+state 95
+
+   15 object_declaration: object_type T_ID @1 T_LPAREN . parameter_list_or_empty T_RPAREN
+
+    T_ID  shift, and go to state 125
+
+    $default  reduce using rule 127 (empty)
+
+    parameter_list_or_empty  go to state 126
+    parameter_list           go to state 127
+    parameter                go to state 128
+    empty                    go to state 129
 
 
 state 96
@@ -1958,19 +1959,26 @@ state 123
 
 state 124
 
+   16 object_declaration: object_type T_ID T_LBRACKET expression T_RBRACKET .
+
+    $default  reduce using rule 16 (object_declaration)
+
+
+state 125
+
    26 parameter: T_ID . T_ASSIGN expression
 
     T_ASSIGN  shift, and go to state 158
 
 
-state 125
+state 126
 
-   15 object_declaration: object_type T_ID T_LPAREN @1 parameter_list_or_empty . T_RPAREN
+   15 object_declaration: object_type T_ID @1 T_LPAREN parameter_list_or_empty . T_RPAREN
 
     T_RPAREN  shift, and go to state 159
 
 
-state 126
+state 127
 
    22 parameter_list_or_empty: parameter_list .
    24 parameter_list: parameter_list . T_COMMA parameter
@@ -1980,25 +1988,18 @@ state 126
     $default  reduce using rule 22 (parameter_list_or_empty)
 
 
-state 127
+state 128
 
    25 parameter_list: parameter .
 
     $default  reduce using rule 25 (parameter_list)
 
 
-state 128
+state 129
 
    23 parameter_list_or_empty: empty .
 
     $default  reduce using rule 23 (parameter_list_or_empty)
-
-
-state 129
-
-   16 object_declaration: object_type T_ID T_LBRACKET expression T_RBRACKET .
-
-    $default  reduce using rule 16 (object_declaration)
 
 
 state 130
@@ -2542,7 +2543,7 @@ state 158
 
 state 159
 
-   15 object_declaration: object_type T_ID T_LPAREN @1 parameter_list_or_empty T_RPAREN .
+   15 object_declaration: object_type T_ID @1 T_LPAREN parameter_list_or_empty T_RPAREN .
 
     $default  reduce using rule 15 (object_declaration)
 
@@ -2551,7 +2552,7 @@ state 160
 
    24 parameter_list: parameter_list T_COMMA . parameter
 
-    T_ID  shift, and go to state 124
+    T_ID  shift, and go to state 125
 
     parameter  go to state 182
 

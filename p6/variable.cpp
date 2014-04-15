@@ -8,6 +8,10 @@ Symbol_table* TheTable = Symbol_table::instance();
 
 Variable::Variable(Symbol *target)
 {
+  m_AnimatiomBlock = NULL;
+  m_MemberName = "NULL";
+  m_AnimationName = "NULL";
+  m_GameObjectName = "NULL";
   if(target != NULL){
     m_Expression = NULL;
     m_Symbol = target;
@@ -19,6 +23,10 @@ Variable::Variable(Symbol *target)
 }
 Variable::Variable(std::string value, Expression *e) //array
 {
+  m_AnimatiomBlock = NULL;
+  m_MemberName = "NULL";
+  m_AnimationName = "NULL";
+  m_GameObjectName = "NULL";
   m_Symbol = NULL;
   if(e->get_gType()== INT){
     m_sValue = value;
@@ -53,7 +61,25 @@ Variable::Variable(std::string value, Expression *e) //array
     m_Type = INT;
   }
 }
-
+Variable::Variable(std::string GameObject_Name, std::string MemberName) //GAME OBJECT
+{
+  m_Expression = NULL;
+  m_GameObjectName = GameObject_Name;
+  m_Symbol = TheTable->lookup(MemberName);
+  m_Type = GAME_OBJECT;
+}
+Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
+{
+  m_Expression = NULL;
+  m_AnimationName = name;
+  m_Symbol = TheTable->lookup(name);
+  if(m_Symbol == NULL)
+    m_Type = INT;
+  m_Type = m_Symbol->getType();
+  m_AnimatiomBlock = m_Symbol->getanimationValue();
+  if(m_Type == 0) //If the type isn't initialized
+    m_Type = INT;
+};
 int Variable::getiValue()
 {
   if(m_Symbol != NULL){

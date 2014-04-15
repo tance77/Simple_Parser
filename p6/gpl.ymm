@@ -30,6 +30,7 @@
 
   static Symbol_table *TheTable = Symbol_table::instance();
   Game_object *curr_object_under_constructions;
+  std::string name_of_curr_object_under_constructions;
 
   %}
 
@@ -326,7 +327,7 @@ T_ASSIGN expression
 
 //---------------------------------------------------------------------
 object_declaration:
-object_type T_ID T_LPAREN
+object_type T_ID
 {
   switch($1)
   {
@@ -355,7 +356,7 @@ object_type T_ID T_LPAREN
 
   }
 }
-parameter_list_or_empty T_RPAREN
+T_LPAREN parameter_list_or_empty T_RPAREN
 {
 }
 | object_type T_ID T_LBRACKET expression T_RBRACKET // this is an array
@@ -403,13 +404,6 @@ parameter_list_or_empty T_RPAREN
           break;
           
         }
-//        
-//        if($1 == INT)
-//        TheTable->insert(*s, new Symbol($1, *s, 0));
-//        if($1 == DOUBLE)
-//        TheTable->insert(*s, new Symbol($1, *s, 0.0));
-//        if($1 == STRING)
-//        TheTable->insert(*s, new Symbol($1, *s, ""));
       }
     }
     else
@@ -468,6 +462,7 @@ parameter_list T_COMMA parameter
 parameter:
 T_ID T_ASSIGN expression
 {
+    //probably need to add some more error checking here.
   if($3->get_gType() == INT)
   curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
   else if($3->get_gType() == DOUBLE)

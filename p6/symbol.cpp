@@ -1,14 +1,6 @@
 #include "symbol.h"
 #include "gpl_type.h"
-//
-//Symbol *Symbol::m_instance = 0;
-//
-//Symbol *Symbol::instance()
-//{
-//  if(m_instance == 0)
-//    m_instance = new Symbol();
-//  return m_instance;
-//}
+
 int Symbol::getintValue()
 {
         return m_iValue;
@@ -32,4 +24,8 @@ Gpl_type Symbol::getType()
 Game_object *Symbol::getgameobjectValue()
 {
   return m_Gameobject;
+}
+Animation_block *Symbol::getanimationValue()
+{
+  return m_Animation_block;
 }
