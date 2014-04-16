@@ -671,3 +671,7 @@ std::string Expression::get_Kind()
   }
   return m_kind;
 }
+Animation_block* Expression::get_Animation()
+{
+  return m_Variable->getAnimate();
+}

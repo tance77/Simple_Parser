@@ -45,6 +45,14 @@ void Symbol_table::print(ostream &os)
       os << endl;
       indent--;
       }
+    if(it->second->getType() == ANIMATION_BLOCK)
+      {
+      indent++;
+      os << "animation_block " << it->second->getID()<< endl;
+      (it->second->getanimationValue())->print(os);
+      os << endl;
+      indent--;
+      }
     it++;
     }
 }

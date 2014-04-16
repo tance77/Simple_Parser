@@ -3,6 +3,7 @@
 
 #include "gpl_type.h"
 #include "game_object.h"
+#include "animation_block.h"
 #include "variable.h"
 #include <string>
 using namespace std;

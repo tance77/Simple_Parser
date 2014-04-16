@@ -65,6 +65,7 @@ class Expression
     std::string evalstring();
     Gpl_type get_gType();
     Operator_type get_oType();
+    Animation_block* get_Animation();
     std::string get_Kind();
   private:
     int m_iValue;

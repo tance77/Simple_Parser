@@ -6,6 +6,7 @@
 #include <iostream>
 #include "symbol.h"
 #include "game_object.h"
+#include "animation_block.h"
 
 using namespace std;
 

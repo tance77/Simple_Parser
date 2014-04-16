@@ -25,6 +25,9 @@
 #include "rectangle.h"
 #include "textbox.h"
 #include "triangle.h"
+#include "animation_block.h"
+#include "event_manager.h"
+#include "window.h"
 
   using namespace std;
 
@@ -42,7 +45,9 @@
     Operator_type  union_operator_type;
     Expression*    union_expression;
     Variable*      union_variable;
-    Game_object*   union_game_object;
+      // Game_object*   union_game_object;
+      //Animation_block* union_animation_block;
+      Symbol*        union_symbol;
   }
 
 
@@ -157,6 +162,7 @@
 %type <union_gpl_type> simple_type
 %type <union_operator_type> math_operator
 %type <union_int> object_type // for p6
+%type <union_symbol> animation_parameter // for p6
 
 %token T_ERROR// Grammar symbols that have values associated with them need to be
 
@@ -469,6 +475,11 @@ T_ID T_ASSIGN expression
   curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
   else if($3->get_gType() == STRING)
   curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
+  else if($3->get_gType() == ANIMATION_BLOCK)
+  curr_object_under_constructions->set_member_variable(*$1, $3->get_Animation());
+  
+    //  Gpl_type tmp;
+    //Status s = curr_object_under_constructions->get_member_variable_type(*$1, tmp);
 }
 ;
 
@@ -476,8 +487,10 @@ T_ID T_ASSIGN expression
 forward_declaration:
 T_FORWARD T_ANIMATION T_ID T_LPAREN animation_parameter T_RPAREN
 {
-    //curr_object_under_constructions = new Animation_block();
-    //TheTable->insert(*$3, new Symbol(*$3, curr_object_under_constructions));
+  assert($5);
+  Animation_block* new_animation = new Animation_block(-1, $5, *$3);
+  Symbol *tmp = new Symbol(*$3, new_animation);
+  TheTable->insert(*$3, tmp);
 }
 ;
 
@@ -507,15 +520,58 @@ T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE { } statem
 //---------------------------------------------------------------------
 animation_parameter:
 object_type T_ID
+{
+  Game_object *parameter;
+  switch($1)
+  {
+  case T_TRIANGLE:
+  parameter = new Triangle();
+  break;
+  case T_RECTANGLE:
+  parameter = new Rectangle();
+  break;
+  case T_CIRCLE:
+  parameter = new Circle();
+  break;
+  case T_PIXMAP:
+  parameter = new Pixmap();
+  break;
+  case T_TEXTBOX:
+  parameter = new Textbox();
+  break;
+  default:
+    //error
+    break;
+  }
+
+  parameter->never_animate();
+  parameter->never_draw();
+  
+  Symbol *passmeup = new Symbol(*$2, parameter);
+  
+  TheTable->insert(*$2, passmeup);
+  
+  $$ = passmeup;
+}
 ;
 
 //---------------------------------------------------------------------
 check_animation_parameter:
 T_TRIANGLE T_ID
+{
+}
 | T_PIXMAP T_ID
+{
+}
 | T_CIRCLE T_ID
+{
+}
 | T_RECTANGLE T_ID
+{
+}
 | T_TEXTBOX T_ID
+{
+}
 ;
 
 //---------------------------------------------------------------------
@@ -636,9 +692,11 @@ T_ID
 }
 | T_ID T_PERIOD T_ID
 {
+  $$ = new Variable(TheTable->lookup(*$1), *$3);
 }
 | T_ID T_LBRACKET expression T_RBRACKET T_PERIOD T_ID
 {
+  $$ = new Variable($3, *$1, *$6);
 }
 ;
 
