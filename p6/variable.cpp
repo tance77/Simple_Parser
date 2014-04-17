@@ -6,16 +6,17 @@
 
 Symbol_table* TheTable = Symbol_table::instance();
 
-Variable::Variable(Symbol *target)
+Variable::Variable(Symbol *target) //default add symbol to table int double strin
 {
-  m_AnimatiomBlock = NULL;
-  m_MemberName = "";
-  m_AnimationName = "";
-  m_GameObjectName = "";
+  m_MemberName = ""; //when would this have a member name?
   if(target != NULL){
     m_Expression = NULL;
     m_Symbol = target;
     m_Type = m_Symbol->getType();
+    if(m_Symbol->getType() == ANIMATION_BLOCK)
+      {
+      m_AnimatiomBlock = m_Symbol->getanimationValue();
+      }
   }
   else {
       //WTF goes here?
@@ -25,8 +26,6 @@ Variable::Variable(std::string value, Expression *e) //array
 {
   m_AnimatiomBlock = NULL;
   m_MemberName = "";
-  m_AnimationName = "";
-  m_GameObjectName = "";
   m_Symbol = NULL;
   if(e->get_gType()== INT){
     m_sValue = value;
@@ -65,15 +64,15 @@ Variable::Variable(std::string GameObject_Name, std::string MemberName) //GAME O
 {
   m_MemberName = "";
   m_Expression = NULL;
-  m_GameObjectName = GameObject_Name;
+  m_sValue = GameObject_Name;
   m_Symbol = TheTable->lookup(MemberName);
   m_Type = GAME_OBJECT;
 }
 Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
 {
   m_MemberName = "";
+  m_sValue = name;
   m_Expression = NULL;
-  m_AnimationName = name;
   m_Symbol = TheTable->lookup(name);
   if(m_Symbol == NULL)
     m_Type = INT;
@@ -82,28 +81,24 @@ Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
   if(m_Type == 0) //If the type isn't initialized
     m_Type = INT;
 };
-Variable::Variable(Symbol *sym, std::string memberID)
+Variable::Variable(Symbol *sym, std::string memberID) //EX J.x
 {
 
   if(sym != NULL){
     m_Symbol = sym;
     m_MemberName = memberID;
     m_Expression = NULL;
-    m_AnimatiomBlock = NULL;
-    m_AnimationName = "";
-    m_GameObjectName = "";
+      //m_AnimatiomBlock = NULL;
     m_Type = m_Symbol->getType();
   }
   else {
       //WTF goes here?
   }
 }
-Variable::Variable(Expression *e, std::string ID, std::string memberID)
+Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10].x
 {
   m_MemberName = memberID;
-  m_AnimatiomBlock = NULL;
-  m_AnimationName = "NULL";
-  m_GameObjectName = "NULL";
+    // m_AnimatiomBlock = NULL;
   m_Symbol = NULL;
   if(e->get_gType()== INT){
     m_sValue = ID;

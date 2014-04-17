@@ -235,9 +235,9 @@ typedef union YYSTYPE
     Operator_type  union_operator_type;
     Expression*    union_expression;
     Variable*      union_variable;
-      // Game_object*   union_game_object;
-      //Animation_block* union_animation_block;
-      Symbol*        union_symbol;
+    // Game_object*   union_game_object;
+    //Animation_block* union_animation_block;
+    Symbol*        union_symbol;
   }
 /* Line 1529 of yacc.c.  */
 #line 244 "y.tab.h"

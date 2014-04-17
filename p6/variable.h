@@ -36,8 +36,8 @@ private:
   Expression *m_Expression;
   Animation_block *m_AnimatiomBlock;
   std::string m_MemberName; //DONT KNOW IF I NEED THIS OR NOT
-  std::string m_AnimationName;
-  std::string m_GameObjectName;
+//  std::string m_AnimationName;
+//  std::string m_GameObjectName;
   
 };
 #endif

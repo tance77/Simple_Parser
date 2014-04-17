@@ -45,9 +45,9 @@
     Operator_type  union_operator_type;
     Expression*    union_expression;
     Variable*      union_variable;
-      // Game_object*   union_game_object;
-      //Animation_block* union_animation_block;
-      Symbol*        union_symbol;
+    // Game_object*   union_game_object;
+    //Animation_block* union_animation_block;
+    Symbol*        union_symbol;
   }
 
 
@@ -385,35 +385,35 @@ T_LPAREN parameter_list_or_empty T_RPAREN
         switch($1)
         {
           case T_TRIANGLE:
-          curr_object_under_constructions = new Triangle();
-          TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
-          break;
+            curr_object_under_constructions = new Triangle();
+            TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
+            break;
           case T_PIXMAP:
-          curr_object_under_constructions = new Pixmap();
-          TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
-          break;
+            curr_object_under_constructions = new Pixmap();
+            TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
+            break;
           case T_CIRCLE:
-          curr_object_under_constructions = new Circle();
-          TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
-          break;
+            curr_object_under_constructions = new Circle();
+            TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
+            break;
           case T_RECTANGLE:
-          curr_object_under_constructions = new Rectangle();
-          TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
-          break;
+            curr_object_under_constructions = new Rectangle();
+            TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
+            break;
           case T_TEXTBOX:
-          curr_object_under_constructions = new Textbox();
-          TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
-          break;
+            curr_object_under_constructions = new Textbox();
+            TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
+            break;
           default:
-          
+
             //probably an error
-          break;
-          
+            break;
+
         }
       }
     }
     else
-    Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+      Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
   }
   else if($4->get_gType() == DOUBLE){
     ostringstream ss;
@@ -468,18 +468,61 @@ parameter_list T_COMMA parameter
 parameter:
 T_ID T_ASSIGN expression
 {
-    //probably need to add some more error checking here.
-  if($3->get_gType() == INT)
-  curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
-  else if($3->get_gType() == DOUBLE)
-  curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
-  else if($3->get_gType() == STRING)
-  curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
-  else if($3->get_gType() == ANIMATION_BLOCK)
-  curr_object_under_constructions->set_member_variable(*$1, $3->get_Animation());
-  
-    //  Gpl_type tmp;
-    //Status s = curr_object_under_constructions->get_member_variable_type(*$1, tmp);
+  Gpl_type d3 = $3->get_gType();
+
+  Gpl_type gpl_RHS;
+  Status s = (curr_object_under_constructions->get_member_variable_type(*$1, gpl_RHS));
+  if(s == OK)
+  {
+    switch(gpl_RHS)
+    {
+      case INT:/*INT*/
+        if(d3 != DOUBLE && d3 != STRING && d3 != ANIMATION_BLOCK)
+          curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
+        else{//error
+          break;
+        }
+      case DOUBLE:/*DOOUBLE*/
+        if(d3 != STRING && d3 != ANIMATION_BLOCK)
+        {
+          if(d3 == INT)
+            curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
+          else if(d3 == DOUBLE)
+            curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
+        }
+        else
+        {
+          //errror
+        }
+        break;
+      case STRING:/*STRING*/
+        if(d3 != ANIMATION_BLOCK)
+        {
+          if(d3 == INT)
+            curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
+          else if(d3 == DOUBLE)
+            curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
+          else if(d3 == STRING)
+            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
+        }
+        else
+        {
+          //error
+        }
+        break;
+      case ANIMATION_BLOCK:/*ANIMATION BLOCK*/
+        if(d3 != INT && d3 != DOUBLE && d3 != STRING)
+          curr_object_under_constructions->set_member_variable(*$1, $3->get_Animation());
+        else
+        {
+          //error
+        }
+        break;
+      default:
+        //error
+        break;
+    }
+  }
 }
 ;
 
@@ -524,33 +567,33 @@ object_type T_ID
   Game_object *parameter;
   switch($1)
   {
-  case T_TRIANGLE:
-  parameter = new Triangle();
-  break;
-  case T_RECTANGLE:
-  parameter = new Rectangle();
-  break;
-  case T_CIRCLE:
-  parameter = new Circle();
-  break;
-  case T_PIXMAP:
-  parameter = new Pixmap();
-  break;
-  case T_TEXTBOX:
-  parameter = new Textbox();
-  break;
-  default:
-    //error
-    break;
+    case T_TRIANGLE:
+      parameter = new Triangle();
+      break;
+    case T_RECTANGLE:
+      parameter = new Rectangle();
+      break;
+    case T_CIRCLE:
+      parameter = new Circle();
+      break;
+    case T_PIXMAP:
+      parameter = new Pixmap();
+      break;
+    case T_TEXTBOX:
+      parameter = new Textbox();
+      break;
+    default:
+      //error
+      break;
   }
 
   parameter->never_animate();
   parameter->never_draw();
-  
+
   Symbol *passmeup = new Symbol(*$2, parameter);
-  
+
   TheTable->insert(*$2, passmeup);
-  
+
   $$ = passmeup;
 }
 ;
@@ -690,9 +733,54 @@ T_ID
 {
   $$ = new Variable(*$1, $3);
 }
-| T_ID T_PERIOD T_ID
+| T_ID T_PERIOD T_ID /*rect.x*/
 {
-  $$ = new Variable(TheTable->lookup(*$1), *$3);
+  Gpl_type gpl_LHS = TheTable->lookup(*$1)->getType();
+  if(!TheTable->lookup(*$1))
+  {
+    Error::error(Error::UNDECLARED_VARIABLE, *$1);
+    $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
+
+  }
+  else if (gpl_LHS == INT || gpl_LHS == DOUBLE || gpl_LHS == STRING)
+  {
+    Error::error(Error::LHS_OF_PERIOD_MUST_BE_OBJECT, *$1);
+    $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
+  }
+  else
+  {
+    int iTmp;
+    double dTmp;
+    string sTmp;
+    Gpl_type gpl_RHS;
+    Status s = (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable_type(*$3, gpl_RHS);
+    if(s == OK)
+    {
+      if(gpl_LHS == INT)
+      {
+        (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable(*$3, iTmp);
+        Symbol *tmp = new Symbol((TheTable->lookup(*$3))->getType(), *$3, iTmp);
+        $$ = new Variable(tmp, *$3);
+      }
+      else if(gpl_RHS == DOUBLE)
+      {
+        (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable(*$3, dTmp);
+        Symbol *tmp = new Symbol((TheTable->lookup(*$3))->getType(), *$3, dTmp);
+        $$ = new Variable(tmp, *$3);
+      }
+      else if(gpl_LHS == STRING)
+      {
+        (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable(*$3, sTmp);
+        Symbol *tmp = new Symbol((TheTable->lookup(*$3))->getType(), *$3, sTmp);
+        $$ = new Variable(tmp, *$3);
+      }
+      //    Variable *blah = new Variable(TheTable->lookup(*$1), *$3);
+      //    $$ = new Variable(TheTable->lookup(*$1), *$3);
+    }
+    else
+      //wtf your status isnt ok??? Maybe eror
+      assert(false);
+  }
 }
 | T_ID T_LBRACKET expression T_RBRACKET T_PERIOD T_ID
 {
