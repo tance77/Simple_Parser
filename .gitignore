@@ -1,6 +1,3 @@
-
-Makefile
-
 *.bak
 
 tests/data_file
