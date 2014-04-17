@@ -756,26 +756,10 @@ T_ID
     Status s = (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable_type(*$3, gpl_RHS);
     if(s == OK)
     {
-      if(gpl_LHS == INT)
-      {
-        (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable(*$3, iTmp);
-        Symbol *tmp = new Symbol((TheTable->lookup(*$3))->getType(), *$3, iTmp);
-        $$ = new Variable(tmp, *$3);
-      }
-      else if(gpl_RHS == DOUBLE)
-      {
-        (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable(*$3, dTmp);
-        Symbol *tmp = new Symbol((TheTable->lookup(*$3))->getType(), *$3, dTmp);
-        $$ = new Variable(tmp, *$3);
-      }
-      else if(gpl_LHS == STRING)
-      {
-        (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable(*$3, sTmp);
-        Symbol *tmp = new Symbol((TheTable->lookup(*$3))->getType(), *$3, sTmp);
-        $$ = new Variable(tmp, *$3);
-      }
-      //    Variable *blah = new Variable(TheTable->lookup(*$1), *$3);
-      //    $$ = new Variable(TheTable->lookup(*$1), *$3);
+      assert(gpl_LHS == GAME_OBJECT);
+      // Variable *blah = new Variable(TheTable->lookup(*$1), *$3);
+      $$ = new Variable(TheTable->lookup(*$1), *$3);
+
     }
     else
       //wtf your status isnt ok??? Maybe eror
