@@ -473,10 +473,6 @@ T_ID T_ASSIGN expression
   
   std::string ID = *$1;
   Expression *e = $3;
-  cout
-  << "Parameter Integer Value = " << e->getiValue() << endl
-  << "Parameter Double Value = " << e->getdValue() << endl
-  << "Parameter String Value = " << e->getsValue() << endl << endl;
   Gpl_type d3 = $3->get_gType(); /*So I don't have to type $3->get_gType() every time. also for debugging purposes.*/
   
   /*Debugging purposes end*/
@@ -509,9 +505,9 @@ T_ID T_ASSIGN expression
         if(d3 != ANIMATION_BLOCK)
         {
           if(d3 == INT)
-            curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
+            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
           else if(d3 == DOUBLE)
-            curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
+            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
           else if(d3 == STRING)
             curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
         }
@@ -762,9 +758,9 @@ T_ID
   }
   else
   {
-    int iTmp;
-    double dTmp;
-    string sTmp;
+      //int iTmp;
+      //double dTmp;
+      //string sTmp;
     Gpl_type gpl_RHS;
     Status s = (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable_type(*$3, gpl_RHS);
     if(s == OK)
