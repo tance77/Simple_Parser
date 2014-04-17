@@ -80,7 +80,7 @@ Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
   m_AnimatiomBlock = m_Symbol->getanimationValue();
   if(m_Type == 0) //If the type isn't initialized
     m_Type = INT;
-};
+}
 Variable::Variable(Symbol *sym, std::string memberID) //EX J.x
 {
 
@@ -92,11 +92,20 @@ Variable::Variable(Symbol *sym, std::string memberID) //EX J.x
     m_MemberName = memberID;
     m_Expression = NULL;
       //m_AnimatiomBlock = NULL;
-    m_Type = m_Symbol->getType();
+
+   // get type of the "m_MemberName" field of the game object
+
+   Game_object *game_object = m_Symbol->getgameobjectValue();
+   assert(game_object);
+   Status result = game_object->get_member_variable_type(m_MemberName, m_Type);
+   assert(result == OK);
+    // m_Type = m_Symbol->getType();
   }
   else {
       //WTF goes here?
   }
+
+  
 }
 Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10].x
 {
@@ -115,7 +124,12 @@ Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10
     }
     else{
       m_Expression = e;
-      m_Type = tmp_Symbol->getType();
+      // m_Type = tmp_Symbol->getType();
+
+      Game_object *game_object = tmp_Symbol->getgameobjectValue();
+      assert(game_object);
+      Status result = game_object->get_member_variable_type(m_MemberName, m_Type);
+      assert(result == OK);
     }
   }
   else if(e->get_gType() == DOUBLE){

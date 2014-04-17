@@ -114,147 +114,106 @@ clean:
 # DO NOT DELETE
 
 error.o: error.h
-gpl_assert.o: /usr/include/stdlib.h /usr/include/Availability.h
-gpl_assert.o: /usr/include/AvailabilityInternal.h /usr/include/_types.h
-gpl_assert.o: /usr/include/sys/_types.h /usr/include/sys/cdefs.h
-gpl_assert.o: /usr/include/sys/_symbol_aliasing.h
-gpl_assert.o: /usr/include/sys/_posix_availability.h
-gpl_assert.o: /usr/include/machine/_types.h /usr/include/i386/_types.h
-gpl_assert.o: /usr/include/sys/wait.h /usr/include/sys/_types/_pid_t.h
-gpl_assert.o: /usr/include/sys/_types/_id_t.h /usr/include/sys/signal.h
-gpl_assert.o: /usr/include/sys/appleapiopts.h /usr/include/machine/signal.h
-gpl_assert.o: /usr/include/i386/signal.h /usr/include/machine/_mcontext.h
-gpl_assert.o: /usr/include/i386/_mcontext.h /usr/include/mach/i386/_structs.h
-gpl_assert.o: /usr/include/sys/_types/_sigaltstack.h
-gpl_assert.o: /usr/include/sys/_types/_ucontext.h
-gpl_assert.o: /usr/include/sys/_types/_pthread_attr_t.h
-gpl_assert.o: /usr/include/sys/_types/_sigset_t.h
-gpl_assert.o: /usr/include/sys/_types/_size_t.h
-gpl_assert.o: /usr/include/sys/_types/_uid_t.h /usr/include/sys/resource.h
-gpl_assert.o: /usr/include/stdint.h /usr/include/sys/_types/_int8_t.h
-gpl_assert.o: /usr/include/sys/_types/_int16_t.h
-gpl_assert.o: /usr/include/sys/_types/_int32_t.h
-gpl_assert.o: /usr/include/sys/_types/_int64_t.h
-gpl_assert.o: /usr/include/_types/_uint8_t.h /usr/include/_types/_uint16_t.h
-gpl_assert.o: /usr/include/_types/_uint32_t.h /usr/include/_types/_uint64_t.h
-gpl_assert.o: /usr/include/sys/_types/_intptr_t.h
-gpl_assert.o: /usr/include/sys/_types/_uintptr_t.h
-gpl_assert.o: /usr/include/_types/_intmax_t.h
-gpl_assert.o: /usr/include/_types/_uintmax_t.h
-gpl_assert.o: /usr/include/sys/_types/_timeval.h
-gpl_assert.o: /usr/include/machine/endian.h /usr/include/i386/endian.h
-gpl_assert.o: /usr/include/sys/_endian.h /usr/include/libkern/_OSByteOrder.h
-gpl_assert.o: /usr/include/libkern/i386/_OSByteOrder.h /usr/include/alloca.h
-gpl_assert.o: /usr/include/sys/_types/_ct_rune_t.h
-gpl_assert.o: /usr/include/sys/_types/_rune_t.h
-gpl_assert.o: /usr/include/sys/_types/_wchar_t.h
-gpl_assert.o: /usr/include/sys/_types/_null.h /usr/include/machine/types.h
-gpl_assert.o: /usr/include/i386/types.h /usr/include/sys/_types/___offsetof.h
-gpl_assert.o: /usr/include/sys/_types/_dev_t.h
-gpl_assert.o: /usr/include/sys/_types/_mode_t.h
-gpl.o: parser.h y.tab.h error.h gpl_assert.h /usr/include/signal.h
-gpl.o: /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h
-gpl.o: /usr/include/sys/_posix_availability.h /usr/include/_types.h
-gpl.o: /usr/include/sys/_types.h /usr/include/machine/_types.h
-gpl.o: /usr/include/i386/_types.h /usr/include/sys/signal.h
-gpl.o: /usr/include/sys/appleapiopts.h /usr/include/machine/signal.h
-gpl.o: /usr/include/i386/signal.h /usr/include/machine/_mcontext.h
-gpl.o: /usr/include/i386/_mcontext.h /usr/include/mach/i386/_structs.h
-gpl.o: /usr/include/sys/_types/_sigaltstack.h
-gpl.o: /usr/include/sys/_types/_ucontext.h /usr/include/sys/_types/_pid_t.h
-gpl.o: /usr/include/sys/_types/_pthread_attr_t.h
-gpl.o: /usr/include/sys/_types/_sigset_t.h /usr/include/sys/_types/_size_t.h
-gpl.o: /usr/include/sys/_types/_uid_t.h /usr/include/sys/_types/_pthread_t.h
-gpl.o: /usr/include/stdlib.h /usr/include/Availability.h
-gpl.o: /usr/include/AvailabilityInternal.h /usr/include/sys/wait.h
-gpl.o: /usr/include/sys/_types/_id_t.h /usr/include/sys/resource.h
-gpl.o: /usr/include/stdint.h /usr/include/sys/_types/_int8_t.h
-gpl.o: /usr/include/sys/_types/_int16_t.h /usr/include/sys/_types/_int32_t.h
-gpl.o: /usr/include/sys/_types/_int64_t.h /usr/include/_types/_uint8_t.h
-gpl.o: /usr/include/_types/_uint16_t.h /usr/include/_types/_uint32_t.h
-gpl.o: /usr/include/_types/_uint64_t.h /usr/include/sys/_types/_intptr_t.h
-gpl.o: /usr/include/sys/_types/_uintptr_t.h /usr/include/_types/_intmax_t.h
-gpl.o: /usr/include/_types/_uintmax_t.h /usr/include/sys/_types/_timeval.h
-gpl.o: /usr/include/machine/endian.h /usr/include/i386/endian.h
-gpl.o: /usr/include/sys/_endian.h /usr/include/libkern/_OSByteOrder.h
-gpl.o: /usr/include/libkern/i386/_OSByteOrder.h /usr/include/alloca.h
-gpl.o: /usr/include/sys/_types/_ct_rune_t.h /usr/include/sys/_types/_rune_t.h
-gpl.o: /usr/include/sys/_types/_wchar_t.h /usr/include/sys/_types/_null.h
-gpl.o: /usr/include/machine/types.h /usr/include/i386/types.h
-gpl.o: /usr/include/sys/_types/___offsetof.h /usr/include/sys/_types/_dev_t.h
-gpl.o: /usr/include/sys/_types/_mode_t.h /usr/include/string.h
-gpl.o: /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h
-gpl.o: /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h
-gpl.o: /usr/include/secure/_string.h /usr/include/secure/_common.h
-gpl.o: /usr/include/time.h /usr/include/_structs.h
-gpl.o: /usr/include/sys/_structs.h /usr/include/sys/_types/_timespec.h
-gpl.o: /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h
-gpl.o: /usr/include/stdio.h /usr/include/sys/_types/_va_list.h
-gpl.o: /usr/include/sys/_types/_off_t.h /usr/include/secure/_stdio.h
+gpl_assert.o: /usr/include/stdlib.h /usr/include/features.h
+gpl_assert.o: /usr/include/alloca.h
+gpl.o: parser.h gpl_type.h variable.h symbol.h game_object.h
+gpl.o: /usr/include/GL/gl.h /usr/include/GL/glext.h /usr/include/inttypes.h
+gpl.o: /usr/include/features.h /usr/include/stdint.h /usr/include/GL/glu.h
+gpl.o: animation_block.h statement_block.h indent.h expression.h y.tab.h
+gpl.o: error.h gpl_assert.h /usr/include/signal.h /usr/include/time.h
+gpl.o: /usr/include/stdlib.h /usr/include/alloca.h /usr/include/string.h
+gpl.o: /usr/include/xlocale.h /usr/include/stdio.h /usr/include/libio.h
+gpl.o: /usr/include/_G_config.h /usr/include/wchar.h
 indent.o: indent.h gpl_assert.h
-y.tab.o: error.h gpl_assert.h parser.h y.tab.h /usr/include/stddef.h
-y.tab.o: /usr/include/_types.h /usr/include/sys/_types.h
-y.tab.o: /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h
-y.tab.o: /usr/include/sys/_posix_availability.h /usr/include/machine/_types.h
-y.tab.o: /usr/include/i386/_types.h /usr/include/sys/_types/_ptrdiff_t.h
-y.tab.o: /usr/include/sys/_types/_size_t.h /usr/include/sys/_types/_rsize_t.h
-y.tab.o: /usr/include/sys/_types/_wchar_t.h /usr/include/sys/_types/_wint_t.h
-y.tab.o: /usr/include/sys/_types/_null.h
-lex.yy.o: /usr/include/stdio.h /usr/include/sys/cdefs.h
-lex.yy.o: /usr/include/sys/_symbol_aliasing.h
-lex.yy.o: /usr/include/sys/_posix_availability.h /usr/include/Availability.h
-lex.yy.o: /usr/include/AvailabilityInternal.h /usr/include/_types.h
-lex.yy.o: /usr/include/sys/_types.h /usr/include/machine/_types.h
-lex.yy.o: /usr/include/i386/_types.h /usr/include/sys/_types/_va_list.h
-lex.yy.o: /usr/include/sys/_types/_size_t.h /usr/include/sys/_types/_null.h
-lex.yy.o: /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h
-lex.yy.o: /usr/include/secure/_stdio.h /usr/include/secure/_common.h
-lex.yy.o: /usr/include/string.h /usr/include/sys/_types/_rsize_t.h
-lex.yy.o: /usr/include/sys/_types/_errno_t.h /usr/include/strings.h
-lex.yy.o: /usr/include/secure/_string.h /usr/include/errno.h
-lex.yy.o: /usr/include/sys/errno.h /usr/include/stdlib.h
-lex.yy.o: /usr/include/sys/wait.h /usr/include/sys/_types/_pid_t.h
-lex.yy.o: /usr/include/sys/_types/_id_t.h /usr/include/sys/signal.h
-lex.yy.o: /usr/include/sys/appleapiopts.h /usr/include/machine/signal.h
-lex.yy.o: /usr/include/i386/signal.h /usr/include/machine/_mcontext.h
-lex.yy.o: /usr/include/i386/_mcontext.h /usr/include/mach/i386/_structs.h
-lex.yy.o: /usr/include/sys/_types/_sigaltstack.h
-lex.yy.o: /usr/include/sys/_types/_ucontext.h
-lex.yy.o: /usr/include/sys/_types/_pthread_attr_t.h
-lex.yy.o: /usr/include/sys/_types/_sigset_t.h
-lex.yy.o: /usr/include/sys/_types/_uid_t.h /usr/include/sys/resource.h
-lex.yy.o: /usr/include/stdint.h /usr/include/sys/_types/_int8_t.h
-lex.yy.o: /usr/include/sys/_types/_int16_t.h
-lex.yy.o: /usr/include/sys/_types/_int32_t.h
-lex.yy.o: /usr/include/sys/_types/_int64_t.h /usr/include/_types/_uint8_t.h
-lex.yy.o: /usr/include/_types/_uint16_t.h /usr/include/_types/_uint32_t.h
-lex.yy.o: /usr/include/_types/_uint64_t.h /usr/include/sys/_types/_intptr_t.h
-lex.yy.o: /usr/include/sys/_types/_uintptr_t.h
-lex.yy.o: /usr/include/_types/_intmax_t.h /usr/include/_types/_uintmax_t.h
-lex.yy.o: /usr/include/sys/_types/_timeval.h /usr/include/machine/endian.h
-lex.yy.o: /usr/include/i386/endian.h /usr/include/sys/_endian.h
-lex.yy.o: /usr/include/libkern/_OSByteOrder.h
-lex.yy.o: /usr/include/libkern/i386/_OSByteOrder.h /usr/include/alloca.h
-lex.yy.o: /usr/include/sys/_types/_ct_rune_t.h
-lex.yy.o: /usr/include/sys/_types/_rune_t.h
-lex.yy.o: /usr/include/sys/_types/_wchar_t.h /usr/include/machine/types.h
-lex.yy.o: /usr/include/i386/types.h /usr/include/sys/_types/___offsetof.h
-lex.yy.o: /usr/include/sys/_types/_dev_t.h /usr/include/sys/_types/_mode_t.h
-lex.yy.o: error.h parser.h y.tab.h /usr/include/ctype.h
-lex.yy.o: /usr/include/runetype.h /usr/include/sys/_types/_wint_t.h
-lex.yy.o: /usr/include/unistd.h /usr/include/sys/unistd.h
-lex.yy.o: /usr/include/sys/_types/_posix_vdisable.h
-lex.yy.o: /usr/include/sys/_types/_seek_set.h
-lex.yy.o: /usr/include/sys/_types/_gid_t.h
-lex.yy.o: /usr/include/sys/_types/_useconds_t.h /usr/include/sys/select.h
-lex.yy.o: /usr/include/sys/_types/_fd_def.h
-lex.yy.o: /usr/include/sys/_types/_timespec.h
-lex.yy.o: /usr/include/sys/_types/_time_t.h
-lex.yy.o: /usr/include/sys/_types/_suseconds_t.h
-lex.yy.o: /usr/include/sys/_types/_fd_setsize.h
-lex.yy.o: /usr/include/sys/_types/_fd_set.h /usr/include/sys/_types/_fd_clr.h
-lex.yy.o: /usr/include/sys/_types/_fd_isset.h
-lex.yy.o: /usr/include/sys/_types/_fd_zero.h
-lex.yy.o: /usr/include/sys/_types/_fd_copy.h /usr/include/sys/_select.h
-lex.yy.o: /usr/include/sys/_types/_uuid_t.h /usr/include/gethostuuid.h
-gpl.o: error.h gpl_assert.h parser.h y.tab.h
+variable.o: variable.h gpl_type.h symbol.h game_object.h /usr/include/GL/gl.h
+variable.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+variable.o: /usr/include/features.h /usr/include/stdint.h
+variable.o: /usr/include/GL/glu.h animation_block.h statement_block.h
+variable.o: indent.h expression.h gpl_assert.h error.h symbol_table.h
+expression.o: expression.h gpl_type.h symbol.h game_object.h
+expression.o: /usr/include/GL/gl.h /usr/include/GL/glext.h
+expression.o: /usr/include/inttypes.h /usr/include/features.h
+expression.o: /usr/include/stdint.h /usr/include/GL/glu.h animation_block.h
+expression.o: statement_block.h indent.h variable.h gpl_assert.h
+expression.o: /usr/include/stdio.h /usr/include/libio.h
+expression.o: /usr/include/_G_config.h /usr/include/wchar.h
+expression.o: /usr/include/stdlib.h /usr/include/alloca.h
+symbol.o: symbol.h gpl_type.h game_object.h /usr/include/GL/gl.h
+symbol.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+symbol.o: /usr/include/features.h /usr/include/stdint.h /usr/include/GL/glu.h
+symbol.o: animation_block.h statement_block.h indent.h variable.h
+symbol_table.o: symbol_table.h symbol.h gpl_type.h game_object.h
+symbol_table.o: /usr/include/GL/gl.h /usr/include/GL/glext.h
+symbol_table.o: /usr/include/inttypes.h /usr/include/features.h
+symbol_table.o: /usr/include/stdint.h /usr/include/GL/glu.h animation_block.h
+symbol_table.o: statement_block.h indent.h variable.h /usr/include/assert.h
+animation_block.o: animation_block.h statement_block.h indent.h gpl_assert.h
+circle.o: circle.h game_object.h gpl_type.h /usr/include/GL/gl.h
+circle.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+circle.o: /usr/include/features.h /usr/include/stdint.h /usr/include/GL/glu.h
+circle.o: gpl_assert.h
+event_manager.o: event_manager.h window.h gpl_assert.h
+game_object.o: game_object.h gpl_type.h /usr/include/GL/gl.h
+game_object.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+game_object.o: /usr/include/features.h /usr/include/stdint.h
+game_object.o: /usr/include/GL/glu.h animation_block.h statement_block.h
+game_object.o: indent.h gpl_assert.h error.h
+pixmap.o: pixmap.h game_object.h gpl_type.h /usr/include/GL/gl.h
+pixmap.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+pixmap.o: /usr/include/features.h /usr/include/stdint.h /usr/include/GL/glu.h
+pixmap.o: /usr/include/GL/glut.h /usr/include/GL/freeglut_std.h
+pixmap.o: /usr/include/stdlib.h /usr/include/alloca.h gpl_assert.h
+pixmap.o: /usr/include/stdio.h /usr/include/libio.h /usr/include/_G_config.h
+pixmap.o: /usr/include/wchar.h default_pixmap.h
+rectangle.o: rectangle.h game_object.h gpl_type.h /usr/include/GL/gl.h
+rectangle.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+rectangle.o: /usr/include/features.h /usr/include/stdint.h
+rectangle.o: /usr/include/GL/glu.h gpl_assert.h
+statement_block.o: statement_block.h indent.h gpl_assert.h
+textbox.o: textbox.h game_object.h gpl_type.h /usr/include/GL/gl.h
+textbox.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+textbox.o: /usr/include/features.h /usr/include/stdint.h
+textbox.o: /usr/include/GL/glu.h /usr/include/GL/glut.h
+textbox.o: /usr/include/GL/freeglut_std.h /usr/include/stdlib.h
+textbox.o: /usr/include/alloca.h gpl_assert.h
+triangle.o: triangle.h game_object.h gpl_type.h /usr/include/GL/gl.h
+triangle.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+triangle.o: /usr/include/features.h /usr/include/stdint.h
+triangle.o: /usr/include/GL/glu.h gpl_assert.h
+window.o: window.h symbol_table.h symbol.h gpl_type.h game_object.h
+window.o: /usr/include/GL/gl.h /usr/include/GL/glext.h
+window.o: /usr/include/inttypes.h /usr/include/features.h
+window.o: /usr/include/stdint.h /usr/include/GL/glu.h animation_block.h
+window.o: statement_block.h indent.h variable.h event_manager.h gpl_assert.h
+window.o: /usr/include/unistd.h /usr/include/getopt.h /usr/include/signal.h
+window.o: /usr/include/time.h /usr/include/stdlib.h /usr/include/alloca.h
+window.o: /usr/include/stdio.h /usr/include/libio.h /usr/include/_G_config.h
+window.o: /usr/include/wchar.h /usr/include/string.h /usr/include/xlocale.h
+window.o: /usr/include/GL/glut.h /usr/include/GL/freeglut_std.h
+gpl_type.o: gpl_type.h gpl_assert.h
+y.tab.o: error.h gpl_assert.h parser.h gpl_type.h variable.h symbol.h
+y.tab.o: game_object.h /usr/include/GL/gl.h /usr/include/GL/glext.h
+y.tab.o: /usr/include/inttypes.h /usr/include/features.h
+y.tab.o: /usr/include/stdint.h /usr/include/GL/glu.h animation_block.h
+y.tab.o: statement_block.h indent.h expression.h y.tab.h
+y.tab.o: /usr/include/assert.h symbol_table.h circle.h pixmap.h
+y.tab.o: /usr/include/GL/glut.h /usr/include/GL/freeglut_std.h
+y.tab.o: /usr/include/stdlib.h /usr/include/alloca.h rectangle.h textbox.h
+y.tab.o: triangle.h event_manager.h window.h
+lex.yy.o: /usr/include/stdio.h /usr/include/features.h /usr/include/libio.h
+lex.yy.o: /usr/include/_G_config.h /usr/include/wchar.h /usr/include/string.h
+lex.yy.o: /usr/include/xlocale.h /usr/include/errno.h /usr/include/stdlib.h
+lex.yy.o: /usr/include/alloca.h error.h parser.h gpl_type.h variable.h
+lex.yy.o: symbol.h game_object.h /usr/include/GL/gl.h /usr/include/GL/glext.h
+lex.yy.o: /usr/include/inttypes.h /usr/include/stdint.h /usr/include/GL/glu.h
+lex.yy.o: animation_block.h statement_block.h indent.h expression.h y.tab.h
+lex.yy.o: /usr/include/ctype.h /usr/include/endian.h /usr/include/unistd.h
+lex.yy.o: /usr/include/getopt.h
+gpl.o: error.h gpl_assert.h parser.h gpl_type.h variable.h symbol.h
+gpl.o: game_object.h /usr/include/GL/gl.h /usr/include/GL/glext.h
+gpl.o: /usr/include/inttypes.h /usr/include/features.h /usr/include/stdint.h
+gpl.o: /usr/include/GL/glu.h animation_block.h statement_block.h indent.h
+gpl.o: expression.h y.tab.h /usr/include/assert.h symbol_table.h circle.h
+gpl.o: pixmap.h /usr/include/GL/glut.h /usr/include/GL/freeglut_std.h
+gpl.o: /usr/include/stdlib.h /usr/include/alloca.h rectangle.h textbox.h
+gpl.o: triangle.h event_manager.h window.h
