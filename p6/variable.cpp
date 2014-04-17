@@ -84,6 +84,9 @@ Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
 Variable::Variable(Symbol *sym, std::string memberID) //EX J.x
 {
 
+  m_iValue = 0;
+  m_dValue = 0;
+  m_sValue = "EMPTY";
   if(sym != NULL){
     m_Symbol = sym;
     m_MemberName = memberID;

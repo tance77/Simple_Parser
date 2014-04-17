@@ -468,7 +468,18 @@ parameter_list T_COMMA parameter
 parameter:
 T_ID T_ASSIGN expression
 {
-  Gpl_type d3 = $3->get_gType();
+  
+  /*Debugging purposes*/
+  
+  std::string ID = *$1;
+  Expression *e = $3;
+  cout
+  << "Parameter Integer Value = " << e->getiValue() << endl
+  << "Parameter Double Value = " << e->getdValue() << endl
+  << "Parameter String Value = " << e->getsValue() << endl << endl;
+  Gpl_type d3 = $3->get_gType(); /*So I don't have to type $3->get_gType() every time. also for debugging purposes.*/
+  
+  /*Debugging purposes end*/
 
   Gpl_type gpl_RHS;
   Status s = (curr_object_under_constructions->get_member_variable_type(*$1, gpl_RHS));
@@ -492,7 +503,6 @@ T_ID T_ASSIGN expression
         }
         else
         {
-          //errror
         }
         break;
       case STRING:/*STRING*/
@@ -522,6 +532,9 @@ T_ID T_ASSIGN expression
         //error
         break;
     }
+  } 
+  else if(s == MEMBER_NOT_DECLARED)
+  {
   }
 }
 ;
@@ -757,7 +770,7 @@ T_ID
     if(s == OK)
     {
       assert(gpl_LHS == GAME_OBJECT);
-      // Variable *blah = new Variable(TheTable->lookup(*$1), *$3);
+      Variable *blah = new Variable(TheTable->lookup(*$1), *$3);
       $$ = new Variable(TheTable->lookup(*$1), *$3);
 
     }

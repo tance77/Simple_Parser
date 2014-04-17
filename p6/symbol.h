@@ -16,19 +16,25 @@ class Symbol
       m_gType = INT;
       m_ID = name;
       m_iValue = value;
+      m_dValue = 0;
+      m_sValue = "EMPTY";
       m_Gameobject = NULL;
       m_Animation_block = NULL;
     };
     /*DOUBLE*/Symbol(Gpl_type type, string name, double value){
       m_gType = DOUBLE;
       m_ID = name;
+      m_iValue = 0;
       m_dValue = value;
+      m_sValue = "EMPTY";
       m_Gameobject = NULL;
-      // m_Animation_block = NULL;
+      m_Animation_block = NULL;
     };
     /*STRING*/Symbol(Gpl_type type, string name, string value){
       m_gType = STRING;
       m_ID = name;
+      m_iValue = 0;
+      m_dValue = 0;
       m_sValue = value;
       m_Gameobject = NULL;
       m_Animation_block = NULL;
@@ -38,12 +44,20 @@ class Symbol
       m_ID = name;
       m_Gameobject = value;
       m_Animation_block = NULL;
+      
+      m_iValue = 0;
+      m_dValue = 0;
+      m_sValue = "EMPTY";
     };
     /*ANIMATION BLOCK*/Symbol(string name, Animation_block *value){
       m_gType = ANIMATION_BLOCK;
       m_ID = name;
       m_Animation_block = value;
       m_Gameobject = NULL;
+      
+      m_iValue = 0;
+      m_dValue = 0;
+      m_sValue = "EMPTY";
     };
     int getintValue();
     double getdoubleValue();

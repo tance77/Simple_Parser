@@ -55,6 +55,7 @@ class Expression
                  m_sValue = "",
                  m_gType = SHIT;
     };
+  
     Expression(Operator_type type, Expression *LHS, Expression *RHS); //BINARY_OPERATOR
     Expression(Operator_type type, Expression *RHS); //UNARY OPERATOR
     int getiValue();
