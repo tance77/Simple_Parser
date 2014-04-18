@@ -471,76 +471,83 @@ parameter_list T_COMMA parameter
 parameter:
 T_ID T_ASSIGN expression
 {
-
+  
   /*Debugging purposes*/
-
+  
   std::string ID = *$1;
     // Expression *e = $3;
-  Gpl_type d3 = $3->get_gType(); /*So I don't have to type $3->get_gType() every time. also for debugging purposes.*/
-
-  /*Debugging purposes end*/
-
-  Gpl_type gpl_RHS;
-  Status s = (curr_object_under_constructions->get_member_variable_type(*$1, gpl_RHS));
-    // gpl_RHS; //debugging
-  if(s == OK)
-  {
-    switch(gpl_RHS)
-    {
-      case INT:/*INT*/
-        if(d3 != DOUBLE && d3 != STRING && d3 != ANIMATION_BLOCK)
+    Gpl_type d3 = $3->get_gType(); /*So I don't have to type $3->get_gType() every time. also for debugging purposes.*/
+    
+    /*Debugging purposes end*/
+//    if($3->get_gType() == ANIMATION_BLOCK){}
+//    Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
+//    else
+//    {
+      Gpl_type gpl_RHS;
+      Status s = (curr_object_under_constructions->get_member_variable_type(*$1, gpl_RHS));
+        // gpl_RHS; //debugging
+        if(s == OK)
         {
-          s =  curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
-          break;
-        }
-        else
+          switch(gpl_RHS)
+          {
+            case INT:/*INT*/
+            if(d3 != DOUBLE && d3 != STRING && d3 != ANIMATION_BLOCK)
+            {
+              s =  curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
+              break;
+            }
+            else
+            {
+              Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
+              break;
+            }
+            case DOUBLE:/*DOOUBLE*/
+            if(d3 != STRING && d3 != ANIMATION_BLOCK)
+            {
+              curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
+              break;
+            }
+            else
+            {
+              Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
+              break;
+            }
+            case STRING:/*STRING*/
+            if(d3 != ANIMATION_BLOCK)
+            {
+              curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
+              break;
+            }
+            else
+            {
+              Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
+              break;
+            }
+            case ANIMATION_BLOCK:/*ANIMATION BLOCK*/
+              //if(d3 != INT && d3 != DOUBLE && d3 != STRING)
+            if(d3 != ANIMATION_BLOCK)
+            {
+              curr_object_under_constructions->set_member_variable(*$1, $3->get_Animation());
+              break;
+            }
+            else
+            {
+               Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
+                // Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_animation_block,*$1);
+              break;
+            }
+            break;
+            default:
+              //Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE, name_of_curr_object_under_constructions, *$1);
+              // Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
+            break;
+          }
+        } 
+        else if(s == MEMBER_NOT_DECLARED)
         {
-          Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
-          break;
+          Error::error(Error::UNKNOWN_CONSTRUCTOR_PARAMETER, curr_object_under_constructions->type() , *$1);
         }
-      case DOUBLE:/*DOOUBLE*/
-        if(d3 != STRING && d3 != ANIMATION_BLOCK)
-        {
-          curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
-          break;
-        }
-        else
-        {
-          Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
-          break;
-        }
-      case STRING:/*STRING*/
-        if(d3 != ANIMATION_BLOCK)
-        {
-          curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
-          break;
-        }
-        else
-        {
-          Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
-          break;
-        }
-      case ANIMATION_BLOCK:/*ANIMATION BLOCK*/
-        if(d3 != INT && d3 != DOUBLE && d3 != STRING)
-        {
-          curr_object_under_constructions->set_member_variable(*$1, $3->get_Animation());
-          break;
-        }
-        else
-        {
-          Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_animation_block,*$1);
-          break;
-        }
-        break;
-      default:
-        Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE, name_of_curr_object_under_constructions, *$1);
-        break;
-    }
-  } 
-  else if(s == MEMBER_NOT_DECLARED)
-  {
-    Error::error(Error::UNKNOWN_CONSTRUCTOR_PARAMETER, curr_object_under_constructions->type() , *$1);
-  }
+//    }
 }
 ;
 
@@ -796,7 +803,19 @@ T_ID
 }
 | T_ID T_LBRACKET expression T_RBRACKET T_PERIOD T_ID
 {
+  stringstream ss;
+  ss << *$1;
+  ss << "[" << "0" << "]";
+  Gpl_type fuckthisshit = TheTable->lookup(ss.str())->getType();
+  if(fuckthisshit == GAME_OBJECT)
   $$ = new Variable($3, *$1, *$6);
+  else
+  {
+  assert(fuckthisshit != GAME_OBJECT);
+  Error::error(Error::LHS_OF_PERIOD_MUST_BE_OBJECT, *$1);
+  $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
+  }
+  
 }
 ;
 
