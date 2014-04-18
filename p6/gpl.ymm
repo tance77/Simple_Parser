@@ -234,7 +234,7 @@ simple_type  T_ID  optional_initializer
     }
   }
   
-/*--------------------------RESERVED WORDS END-----------------------------*/  
+/*--------------------------RESERVED WORDS END-----------------------------*/
   
   if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
   {
@@ -559,10 +559,21 @@ T_ID T_ASSIGN expression
               break;
             }
             case ANIMATION_BLOCK:/*ANIMATION BLOCK*/
-            if(d3 != INT && d3 != DOUBLE && d3 != STRING)
+           if(d3 != INT && d3 != DOUBLE && d3 != STRING)
             {
+              Animation_block *block = $3->get_Animation();
+              assert(block);
+              Symbol *tmpSym = block->get_parameter_symbol();
+              Game_object *param = tmpSym->getgameobjectValue();
+              if(curr_object_under_constructions->type() != param->type())
+              {
+                Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
+              }
+              else
+              {
               curr_object_under_constructions->set_member_variable(*$1, $3->get_Animation());
               break;
+              }
             }
             else
             {
@@ -580,7 +591,7 @@ T_ID T_ASSIGN expression
         {
           Error::error(Error::UNKNOWN_CONSTRUCTOR_PARAMETER, curr_object_under_constructions->type() , *$1);
         }
-//    }
+          // }
 }
 ;
 
