@@ -756,7 +756,7 @@ T_ID
 }
 | T_ID T_PERIOD T_ID /*rect.x*/
 {
-  if(!TheTable->lookup(*$1))
+  if(!TheTable->lookup(*$1))//if it isn't null then you can insert
   {
     Error::error(Error::UNDECLARED_VARIABLE, *$1);
     $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
@@ -785,8 +785,12 @@ T_ID
           
         }
         else
+        {
           //wtf your status isnt ok??? Maybe eror
-          assert(false);
+          assert(s = MEMBER_NOT_DECLARED);
+          Error::error(Error::UNDECLARED_MEMBER, *$1, *$3);
+          $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
+        }
     }
   }
 }
