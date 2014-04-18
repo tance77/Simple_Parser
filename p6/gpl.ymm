@@ -34,6 +34,7 @@
   static Symbol_table *TheTable = Symbol_table::instance();
   Game_object *curr_object_under_constructions;
   std::string name_of_curr_object_under_constructions;
+  std::string name_of_curr_animation_block;
 
   %}
 
@@ -62,7 +63,7 @@
 %token T_CIRCLE
 %token T_RECTANGLE
 %token T_TEXTBOX
-%token T_FORWARD
+%token <union_int>T_FORWARD
 %token T_INITIALIZATION
 
 %token T_TRUE
@@ -335,6 +336,7 @@ T_ASSIGN expression
 object_declaration:
 object_type T_ID
 {
+  name_of_curr_object_under_constructions = *$2;
   switch($1)
   {
     case T_TRIANGLE:
@@ -382,6 +384,7 @@ T_LPAREN parameter_list_or_empty T_RPAREN
         oss << *$2;
         oss << '[' << i << ']';
         string *s  = new string(oss.str());
+        name_of_curr_object_under_constructions = *s;
         switch($1)
         {
           case T_TRIANGLE:
@@ -468,69 +471,84 @@ parameter_list T_COMMA parameter
 parameter:
 T_ID T_ASSIGN expression
 {
-  
+
   /*Debugging purposes*/
-  
+
   std::string ID = *$1;
   Expression *e = $3;
   Gpl_type d3 = $3->get_gType(); /*So I don't have to type $3->get_gType() every time. also for debugging purposes.*/
-  
+
   /*Debugging purposes end*/
 
   Gpl_type gpl_RHS;
   Status s = (curr_object_under_constructions->get_member_variable_type(*$1, gpl_RHS));
+  gpl_RHS; //debugging
   if(s == OK)
   {
+    int tmp;
+    Game_object *hi = curr_object_under_constructions;
     switch(gpl_RHS)
     {
       case INT:/*INT*/
         if(d3 != DOUBLE && d3 != STRING && d3 != ANIMATION_BLOCK)
-          curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
-        else{//error
+        {
+          s =  curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
+          break;
+        }
+        else
+        {
+          Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
           break;
         }
       case DOUBLE:/*DOOUBLE*/
         if(d3 != STRING && d3 != ANIMATION_BLOCK)
         {
-          if(d3 == INT)
-            curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
-          else if(d3 == DOUBLE)
-            curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
+          //          if(d3 == INT)
+          //            curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
+          //          else if(d3 == DOUBLE)
+          curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
+          break;
         }
         else
         {
+          Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
+          break;
         }
-        break;
       case STRING:/*STRING*/
         if(d3 != ANIMATION_BLOCK)
         {
-          if(d3 == INT)
-            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
-          else if(d3 == DOUBLE)
-            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
-          else if(d3 == STRING)
-            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
+          //          if(d3 == INT)
+          //            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
+          //          else if(d3 == DOUBLE)
+          //            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
+          //          else if(d3 == STRING)
+          curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
         }
         else
         {
-          //error
+          Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
+          break;
         }
-        break;
       case ANIMATION_BLOCK:/*ANIMATION BLOCK*/
         if(d3 != INT && d3 != DOUBLE && d3 != STRING)
+        {
           curr_object_under_constructions->set_member_variable(*$1, $3->get_Animation());
+          break;
+        }
         else
         {
-          //error
+          Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_animation_block,*$1);
+          break;
         }
         break;
       default:
-        //error
+        Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE, name_of_curr_object_under_constructions, *$1);
         break;
     }
   } 
   else if(s == MEMBER_NOT_DECLARED)
   {
+    Error::error(Error::UNKNOWN_CONSTRUCTOR_PARAMETER, curr_object_under_constructions->type() , *$1);
   }
 }
 ;
@@ -540,9 +558,12 @@ forward_declaration:
 T_FORWARD T_ANIMATION T_ID T_LPAREN animation_parameter T_RPAREN
 {
   assert($5);
-  Animation_block* new_animation = new Animation_block(-1, $5, *$3);
+  name_of_curr_animation_block = *$3;
+  Animation_block* new_animation = new Animation_block($1, $5, *$3);
   Symbol *tmp = new Symbol(*$3, new_animation);
-  TheTable->insert(*$3, tmp);
+  if(!TheTable->insert(*$3, tmp))
+   Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$3);
+  
 }
 ;
 
@@ -758,9 +779,9 @@ T_ID
   }
   else
   {
-      //int iTmp;
-      //double dTmp;
-      //string sTmp;
+    //int iTmp;
+    //double dTmp;
+    //string sTmp;
     Gpl_type gpl_RHS;
     Status s = (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable_type(*$3, gpl_RHS);
     if(s == OK)

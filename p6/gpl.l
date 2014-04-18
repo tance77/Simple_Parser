@@ -24,13 +24,13 @@
     }
     int emit_string(int token)
     {
-        if(yytext[0] == '\"')
-        {
-            yytext[strlen(yytext)-1] = 0;
-            yytext = yytext+1;
-        }
-        yylval.union_string = new string(yytext);
-        return token;
+      if(yytext[0] == '\"')
+      {
+        yytext[strlen(yytext)-1] = 0;
+        yytext = yytext+1;
+      }
+      yylval.union_string = new string(yytext);
+      return token;
     }
     int emit_double(int token)
     {
@@ -80,7 +80,7 @@
 "circle"                            return T_CIRCLE;
 "rectangle"                         return T_RECTANGLE;
 "textbox"                           return T_TEXTBOX;
-"forward"                           return T_FORWARD;
+"forward"                           return emit_with_line_number (T_FORWARD);
 "initialization"                    return T_INITIALIZATION;
 
 "true"                              return T_TRUE;

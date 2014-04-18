@@ -1,0 +1,29 @@
+Passed t001
+Passed t002
+Passed t003
+Passed t004
+Failed t005:   <pixels incorrect>
+Passed t006
+Passed t007
+Passed t008
+Failed t009: <stdout incorrect>  <pixels incorrect>
+Failed t010: <stdout incorrect>  <pixels incorrect>
+Failed t011: <stdout incorrect>  <pixels incorrect>
+Passed t012
+Failed t013:   <pixels incorrect>
+Failed t014: <stdout incorrect>  <pixels incorrect>
+Failed t015: <stdout incorrect>  <pixels incorrect>
+Failed t050: <stdout incorrect> <stderr incorrect> 
+Failed t051: <stdout incorrect> <stderr incorrect> 
+Failed t052: <stdout incorrect> <stderr incorrect> 
+Failed t053: <stdout incorrect> <stderr incorrect> 
+Failed t054: <stdout incorrect> <stderr incorrect> 
+Failed t055: <stdout incorrect> <stderr incorrect> 
+Failed t056: <stdout incorrect> <stderr incorrect> 
+Failed t057: <stdout incorrect> <stderr incorrect> 
+Passed t058
+Failed t059: <stdout incorrect> <stderr incorrect> 
+Failed t060: <stdout incorrect> <stderr incorrect> 
+Failed t061: <stdout incorrect> <stderr incorrect> 
+Passed 9 out of 27 tests.
+Failed 18 out of 27 tests.

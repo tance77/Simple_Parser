@@ -226,7 +226,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 40 "gpl.y"
+#line 41 "gpl.y"
 {
     int            union_int;
     std::string    *union_string;  // MUST be a pointer to a string (this sucks!)

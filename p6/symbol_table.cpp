@@ -62,9 +62,9 @@ Symbol* Symbol_table::lookup(string target)
     return NULL;
   else return mTable.find(target)->second;
 }
-void Symbol_table::insert(string ID, Symbol *symbol)
+bool Symbol_table::insert(string ID, Symbol *symbol)
 {
-  mTable.insert(pair<string, Symbol*>(ID, symbol));
+return mTable.insert(pair<string, Symbol*>(ID, symbol)).second;
 }
 bool Symbol_table::get(string name, int &value)
 {

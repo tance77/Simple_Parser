@@ -356,10 +356,13 @@ int Expression::evalint()
 }
 double Expression::evaldouble()
 {
+  if(m_gType == INT)
+    return (double) evalint();
+
   if(m_kind == "VARIABLE")
     return m_Variable->getdValue();
   else if(m_kind == "DOUBLE_CONSTANT")
-    return m_dValue;
+      return m_dValue;
   //    else if(m_kind == "")
   //        return m_RHS->evaldouble();
   switch (m_oType) {
@@ -458,10 +461,23 @@ double Expression::evaldouble()
 }
 std::string Expression::evalstring()
 {
+  if(m_gType == INT)
+    {
+    stringstream ss;
+    ss << evalint();
+    return ss.str();
+    }
+  else if(m_gType == DOUBLE)
+    {
+    stringstream ss;
+    ss << evaldouble();
+    return ss.str();
+    }
+  else //you are a string
   if(m_kind == "VARIABLE")
     return m_Variable->getsValue();
   else if(m_oType == GARBAGE)
-    return m_sValue;
+      return m_sValue;
   else
   {
     switch (m_oType) {

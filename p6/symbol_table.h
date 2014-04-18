@@ -18,7 +18,7 @@ public:
   static Symbol_table *instance();
   Symbol* lookup(string target);
   void print(ostream &os);
-  void insert(string a, Symbol* symbol);
+  bool insert(string a, Symbol* symbol);
   bool get(string name, int &value);
 	bool get(string name, double &value);
 	bool get(string name, string &value);
