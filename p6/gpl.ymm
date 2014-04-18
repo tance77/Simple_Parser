@@ -475,18 +475,16 @@ T_ID T_ASSIGN expression
   /*Debugging purposes*/
 
   std::string ID = *$1;
-  Expression *e = $3;
+    // Expression *e = $3;
   Gpl_type d3 = $3->get_gType(); /*So I don't have to type $3->get_gType() every time. also for debugging purposes.*/
 
   /*Debugging purposes end*/
 
   Gpl_type gpl_RHS;
   Status s = (curr_object_under_constructions->get_member_variable_type(*$1, gpl_RHS));
-  gpl_RHS; //debugging
+    // gpl_RHS; //debugging
   if(s == OK)
   {
-    int tmp;
-    Game_object *hi = curr_object_under_constructions;
     switch(gpl_RHS)
     {
       case INT:/*INT*/
@@ -503,9 +501,6 @@ T_ID T_ASSIGN expression
       case DOUBLE:/*DOOUBLE*/
         if(d3 != STRING && d3 != ANIMATION_BLOCK)
         {
-          //          if(d3 == INT)
-          //            curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
-          //          else if(d3 == DOUBLE)
           curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
           break;
         }
@@ -517,12 +512,8 @@ T_ID T_ASSIGN expression
       case STRING:/*STRING*/
         if(d3 != ANIMATION_BLOCK)
         {
-          //          if(d3 == INT)
-          //            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
-          //          else if(d3 == DOUBLE)
-          //            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
-          //          else if(d3 == STRING)
           curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
+          break;
         }
         else
         {
@@ -622,8 +613,8 @@ object_type T_ID
 
   Symbol *passmeup = new Symbol(*$2, parameter);
 
-  TheTable->insert(*$2, passmeup);
-
+  if(!TheTable->insert(*$2, passmeup))
+  Error::error(Error::ANIMATION_PARAMETER_NAME_NOT_UNIQUE, *$2);
   $$ = passmeup;
 }
 ;
@@ -765,35 +756,38 @@ T_ID
 }
 | T_ID T_PERIOD T_ID /*rect.x*/
 {
-  Gpl_type gpl_LHS = TheTable->lookup(*$1)->getType();
   if(!TheTable->lookup(*$1))
   {
     Error::error(Error::UNDECLARED_VARIABLE, *$1);
     $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
-
-  }
-  else if (gpl_LHS == INT || gpl_LHS == DOUBLE || gpl_LHS == STRING)
-  {
-    Error::error(Error::LHS_OF_PERIOD_MUST_BE_OBJECT, *$1);
-    $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
+    
   }
   else
   {
-    //int iTmp;
-    //double dTmp;
-    //string sTmp;
-    Gpl_type gpl_RHS;
-    Status s = (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable_type(*$3, gpl_RHS);
-    if(s == OK)
+    Gpl_type gpl_LHS = TheTable->lookup(*$1)->getType();
+    if (gpl_LHS == INT || gpl_LHS == DOUBLE || gpl_LHS == STRING)
     {
-      assert(gpl_LHS == GAME_OBJECT);
-      Variable *blah = new Variable(TheTable->lookup(*$1), *$3);
-      $$ = new Variable(TheTable->lookup(*$1), *$3);
-
+      Error::error(Error::LHS_OF_PERIOD_MUST_BE_OBJECT, *$1);
+      $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
     }
     else
-      //wtf your status isnt ok??? Maybe eror
-      assert(false);
+    {
+        //int iTmp;
+        //double dTmp;
+        //string sTmp;
+        Gpl_type gpl_RHS;
+        Status s = (TheTable->lookup(*$1))->getgameobjectValue()->get_member_variable_type(*$3, gpl_RHS);
+        if(s == OK)
+        {
+          assert(gpl_LHS == GAME_OBJECT);
+          Variable *blah = new Variable(TheTable->lookup(*$1), *$3);
+          $$ = new Variable(TheTable->lookup(*$1), *$3);
+          
+        }
+        else
+          //wtf your status isnt ok??? Maybe eror
+          assert(false);
+    }
   }
 }
 | T_ID T_LBRACKET expression T_RBRACKET T_PERIOD T_ID
