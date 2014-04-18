@@ -201,6 +201,41 @@ variable_declaration T_SEMIC
 variable_declaration:
 simple_type  T_ID  optional_initializer
 {
+  /*--------------------------RESERVED WORDS START----------------------------*/
+  
+  if(*$2 == "window_width" || *$2 == "window_height" || *$2 == "window_x" || *$2 == "window_y" || *$2 == "animation_speed")  /*reserved words of type int*/
+  {
+    if($1 != INT)
+    {
+      if($1 == DOUBLE)
+      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"double","int");
+      if($1 == STRING)
+        Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"string","int");
+    }
+  }
+  else if(*$2 == "window_red" || *$2 == "window_blue" || *$2 == "window_green")  /*reserved words of type double*/
+  {
+    if($1 != DOUBLE)
+    {
+      if($1 == INT)
+      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"int","double");
+      else if($1 == STRING)
+      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"string","double");
+    }
+  }
+  else if(*$2 == "window_title") /*reserved words of type string*/
+  {
+    if($1 != STRING)
+    {
+      if($1 == INT)
+       Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"int","string");
+       else if($1 == DOUBLE)
+       Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"double","string");
+    }
+  }
+  
+/*--------------------------RESERVED WORDS END-----------------------------*/  
+  
   if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
   {
     switch($1){
@@ -524,22 +559,20 @@ T_ID T_ASSIGN expression
               break;
             }
             case ANIMATION_BLOCK:/*ANIMATION BLOCK*/
-              //if(d3 != INT && d3 != DOUBLE && d3 != STRING)
-            if(d3 != ANIMATION_BLOCK)
+            if(d3 != INT && d3 != DOUBLE && d3 != STRING)
             {
               curr_object_under_constructions->set_member_variable(*$1, $3->get_Animation());
               break;
             }
             else
             {
-               Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
-                // Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_animation_block,*$1);
+              Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_animation_block,*$1);
               break;
             }
             break;
             default:
               //Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE, name_of_curr_object_under_constructions, *$1);
-              // Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
+                  Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
             break;
           }
         } 
