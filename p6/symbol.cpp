@@ -35,3 +35,7 @@ bool Symbol::is_int()
     return true;
   else return false;
 }
+void Symbol::setint(int value)
+{
+  m_iValue = value;
+}

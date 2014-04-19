@@ -96,12 +96,16 @@ bool Symbol_table::get(string name, string &value)
 bool Symbol_table::get_type (string name, Gpl_type &value)
 {
   Symbol *cur = lookup(name);
-  if (!cur || !cur->is_int())
+  if (!cur)
     return false;
   
   value = cur->getType();
   return true;
 }
 bool Symbol_table::set(string name, int value){ // used for mouse_x, mouse_y
+  Symbol *tmp = lookup(name);
+  if(!tmp)
+    return false;
+  tmp->setint(value);
   return true;
 }

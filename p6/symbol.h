@@ -65,6 +65,7 @@ class Symbol
     Game_object *getgameobjectValue();
     Animation_block *getanimationValue();
     string getID();
+  void setint(int a);
     Gpl_type getType();
     bool is_int();
 

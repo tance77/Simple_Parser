@@ -201,41 +201,41 @@ variable_declaration T_SEMIC
 variable_declaration:
 simple_type  T_ID  optional_initializer
 {
-  /*--------------------------RESERVED WORDS START----------------------------*/
-  
-  if(*$2 == "window_width" || *$2 == "window_height" || *$2 == "window_x" || *$2 == "window_y" || *$2 == "animation_speed")  /*reserved words of type int*/
-  {
-    if($1 != INT)
-    {
-      if($1 == DOUBLE)
-      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"double","int");
-      if($1 == STRING)
-        Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"string","int");
-    }
-  }
-  else if(*$2 == "window_red" || *$2 == "window_blue" || *$2 == "window_green")  /*reserved words of type double*/
-  {
-    if($1 != DOUBLE)
-    {
-      if($1 == INT)
-      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"int","double");
-      else if($1 == STRING)
-      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"string","double");
-    }
-  }
-  else if(*$2 == "window_title") /*reserved words of type string*/
-  {
-    if($1 != STRING)
-    {
-      if($1 == INT)
-       Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"int","string");
-       else if($1 == DOUBLE)
-       Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"double","string");
-    }
-  }
-  
-/*--------------------------RESERVED WORDS END-----------------------------*/
-  
+//  /*--------------------------RESERVED WORDS START----------------------------*/
+//  
+//  if(*$2 == "window_width" || *$2 == "window_height" || *$2 == "window_x" || *$2 == "window_y" || *$2 == "animation_speed")  /*reserved words of type int*/
+//  {
+//    if($1 != INT)
+//    {
+//      if($1 == DOUBLE)
+//      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"double","int");
+//      if($1 == STRING)
+//        Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"string","int");
+//    }
+//  }
+//  else if(*$2 == "window_red" || *$2 == "window_blue" || *$2 == "window_green")  /*reserved words of type double*/
+//  {
+//    if($1 != DOUBLE)
+//    {
+//      if($1 == INT)
+//      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"int","double");
+//      else if($1 == STRING)
+//      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"string","double");
+//    }
+//  }
+//  else if(*$2 == "window_title") /*reserved words of type string*/
+//  {
+//    if($1 != STRING)
+//    {
+//      if($1 == INT)
+//       Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"int","string");
+//       else if($1 == DOUBLE)
+//       Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"double","string");
+//    }
+//  }
+//  
+///*--------------------------RESERVED WORDS END-----------------------------*/
+
   if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
   {
     switch($1){
