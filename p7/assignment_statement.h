@@ -1,0 +1,4 @@
+#ifndef ASSIGNMENT_STATEMENT_H
+#define ASSIGNMENT_STATEMENT_H
+
+#endif
