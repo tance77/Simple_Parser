@@ -19,6 +19,7 @@
 #include "statement_block.h"
 class Symbol;
 
+
 class Animation_block : public Statement_block
 {
     public:

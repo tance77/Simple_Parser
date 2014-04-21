@@ -31,8 +31,8 @@ Variable::Variable(std::string value, Expression *e) //array
     m_sValue = value;
     Symbol *tmp_Symbol = TheTable->lookup(value + "[0]");
     if(tmp_Symbol == NULL){
-      // if we can't find name [0], then this variable needs to reference
-      // a dummy symbol
+        // if we can't find name [0], then this variable needs to reference
+        // a dummy symbol
       m_Symbol = new Symbol(INT, value, 0);
       m_Expression = new Expression(0, INT);
       Error::error(Error::VARIABLE_NOT_AN_ARRAY, value);
@@ -50,7 +50,7 @@ Variable::Variable(std::string value, Expression *e) //array
     m_Symbol = new Symbol(INT, value, 0);
     m_Expression = new Expression(0, INT);
     m_Type = INT;
-
+    
   }
   else if (e->get_gType() == STRING){
     Error::error(Error::ARRAY_INDEX_MUST_BE_AN_INTEGER, value, "A string expression");
@@ -60,30 +60,30 @@ Variable::Variable(std::string value, Expression *e) //array
     m_Type = INT;
   }
 }
-Variable::Variable(std::string GameObject_Name, std::string MemberName) //GAME OBJECT
-{
-  m_MemberName = "";
-  m_Expression = NULL;
-  m_sValue = GameObject_Name;
-  m_Symbol = TheTable->lookup(MemberName);
-  m_Type = GAME_OBJECT;
-}
-Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
-{
-  m_MemberName = "";
-  m_sValue = name;
-  m_Expression = NULL;
-  m_Symbol = TheTable->lookup(name);
-  if(m_Symbol == NULL)
-    m_Type = INT;
-  m_Type = m_Symbol->getType();
-  m_AnimatiomBlock = m_Symbol->getanimationValue();
-  if(m_Type == 0) //If the type isn't initialized
-    m_Type = INT;
-}
+//Variable::Variable(std::string GameObject_Name, std::string MemberName) //GAME OBJECT
+//{
+//  m_MemberName = "";
+//  m_Expression = NULL;
+//  m_sValue = GameObject_Name;
+//  m_Symbol = TheTable->lookup(MemberName);
+//  m_Type = GAME_OBJECT;
+//}
+//Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
+//{
+//  m_MemberName = "";
+//  m_sValue = name;
+//  m_Expression = NULL;
+//  m_Symbol = TheTable->lookup(name);
+//  if(m_Symbol == NULL)
+//    m_Type = INT;
+//  m_Type = m_Symbol->getType();
+//  m_AnimatiomBlock = m_Symbol->getanimationValue();
+//  if(m_Type == 0) //If the type isn't initialized
+//    m_Type = INT;
+//}
 Variable::Variable(Symbol *sym, std::string memberID) //EX J.x
 {
-
+  
   m_iValue = 0;
   m_dValue = 0;
   m_sValue = "EMPTY";
@@ -91,26 +91,24 @@ Variable::Variable(Symbol *sym, std::string memberID) //EX J.x
     m_Symbol = sym;
     m_MemberName = memberID;
     m_Expression = NULL;
-      //m_AnimatiomBlock = NULL;
-
-   // get type of the "m_MemberName" field of the game object
-
-   Game_object *game_object = m_Symbol->getgameobjectValue();
-   assert(game_object);
-   Status result = game_object->get_member_variable_type(m_MemberName, m_Type);
-   assert(result == OK);
-    // m_Type = m_Symbol->getType();
+    m_AnimatiomBlock = NULL;
+    
+      // get type of the "m_MemberName" field of the game object
+    
+    Game_object *game_object = m_Symbol->getgameobjectValue();
+    assert(game_object);
+    Status result = game_object->get_member_variable_type(m_MemberName, m_Type);
+    assert(result == OK);
+      // m_Type = m_Symbol->getType();
   }
   else {
       //WTF goes here?
   }
-
-  
 }
 Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10].x
 {
   m_MemberName = memberID;
-    // m_AnimatiomBlock = NULL;
+  m_AnimatiomBlock = NULL;
   m_Symbol = NULL;
   if(e->get_gType()== INT){
     m_sValue = ID;
@@ -124,8 +122,8 @@ Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10
     }
     else{
       m_Expression = e;
-      // m_Type = tmp_Symbol->getType();
-
+        // m_Type = tmp_Symbol->getType();
+      
       Game_object *game_object = tmp_Symbol->getgameobjectValue();
       assert(game_object);
       Status result = game_object->get_member_variable_type(m_MemberName, m_Type);

@@ -8,31 +8,17 @@ Statement_block::Statement_block(int block_line)
   m_line = block_line;
 }
 
-// Return true if this statement_block has no statements, false otherwise
-// Implement this function for p7 (but you won't need it until p8)
 bool Statement_block::empty()
 {
-  // This function MUST be defined for p8
-  // If you forget to define it, none of your animations will work
-  // So define it when you implement p7
-
-  // **** remove this assert when you implement empty();
-  // assert(false);
-
-  // place holder to keep the compiler from issuing a warning
-  return true;
+  return m_vector_Statements->empty(); //returns true if it is empty false if its not
 }
 
-// this function is called for all non-animation_block statement_blocks
-// Implement it for p7
 void Statement_block::execute()
 {
-  // This function should be defined before it is ever called
-  // This assert will cause the program to abort if this function 
-  // is called before it is implemented.
-
-  // *** ==> Remove this assert when you implement this function
-  assert(false);
+  if(!empty()) //if the vector is not empty we need to execute
+    for(Statement* cur_statement: *m_vector_Statements)
+        //for each statement cur_statement in the vector of statements m_vector_Statements, call execute on the statement
+      cur_statement->execute();
 }
 
 ostream & Statement_block::print(ostream &os) const
@@ -40,7 +26,7 @@ ostream & Statement_block::print(ostream &os) const
   os << indent << "Statement_block[" << m_line;
   
   os << "]" << endl
-     << indent << "{" << endl;
+  << indent << "{" << endl;
   indent++;
   os << indent << "statement block not implemented yet" << endl;
   indent--;
@@ -57,10 +43,10 @@ ostream & operator<<(ostream &os, const Statement_block &statement_block)
 ostream & operator<<(ostream &os, const Statement_block *statement_block)
 {
   if (!statement_block)
-  {
-      os << indent << "NULL";
-      return os;
-  }
-
+    {
+    os << indent << "NULL";
+    return os;
+    }
+  
   return statement_block->print(os);
 }

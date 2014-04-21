@@ -60,7 +60,7 @@ Variable::Variable(std::string value, Expression *e) //array
     m_Type = INT;
   }
 }
-Variable::Variable(std::string GameObject_Name, std::string MemberName) //GAME OBJECT
+/*Variable::Variable(std::string GameObject_Name, std::string MemberName) //GAME OBJECT
 {
   m_MemberName = "";
   m_Expression = NULL;
@@ -81,6 +81,7 @@ Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
   if(m_Type == 0) //If the type isn't initialized
     m_Type = INT;
 }
+*/
 Variable::Variable(Symbol *sym, std::string memberID) //EX J.x
 {
 

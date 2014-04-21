@@ -81,7 +81,7 @@
 "circle"                            return T_CIRCLE;
 "rectangle"                         return T_RECTANGLE;
 "textbox"                           return T_TEXTBOX;
-"forward"                           return T_FORWARD;
+"forward"                           return emit_with_line_number(T_FORWARD);
 "initialization"                    return T_INITIALIZATION;
 
 "true"                              return T_TRUE;
@@ -116,7 +116,7 @@
 "if"                                return T_IF;
 "for"                               return T_FOR;
 "else"                              return T_ELSE;
-"exit"                              return T_EXIT;
+"exit"                              return emit_with_line_number(T_EXIT);
 "print"                             return emit_with_line_number(T_PRINT);
 "("                                 return T_LPAREN;
 ")"                                 return T_RPAREN;

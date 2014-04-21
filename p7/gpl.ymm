@@ -1,66 +1,64 @@
 %{  // bison syntax to indicate the start of the header
-  // the header is copied directly into y.tab.c
-
-  extern int yylex();         // this lexer function returns next token
-  extern int yyerror(char *); // used to print errors
-  extern int line_count;      // the current line in the input; from array.l
-
-
-#include <assert.h>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
-
-
-#include "animation_block.h"
-#include "assignment_statement.h"
-#include "circle.h"
-#include "error.h"
-#include "event_manager.h"
-#include "exit_statement.h"
-#include "expression.h"
-#include "for_statement.h"
-#include "game_object.h"
-#include "gpl_assert.h"
-#include "gpl_type.h"
-#include "if_statement.h"
-#include "parser.h"
-#include "pixmap.h"
-#include "print_statement.h"
-#include "rectangle.h"
-#include "statement.h"
-#include "symbol.h"
-#include "symbol_table.h"
-#include "textbox.h"
-#include "triangle.h"
-#include "variable.h"
-#include "window.h"
-
-  using namespace std;
-
-  static Symbol_table *TheTable = Symbol_table::instance();
-  Game_object *curr_object_under_constructions;
-  std::string name_of_curr_object_under_constructions;
-  std::string name_of_curr_animation_block;
-
+    // the header is copied directly into y.tab.c
+    
+    extern int yylex();         // this lexer function returns next token
+    extern int yyerror(char *); // used to print errors
+    extern int line_count;      // the current line in the input; from array.l
+    
+    
+    #include <assert.h>
+    #include <iostream>
+    #include <sstream>
+    #include <string>
+    #include <vector>
+    
+    
+    #include "animation_block.h"
+    #include "assignment_statement.h"
+    #include "circle.h"
+    #include "error.h"
+    #include "event_manager.h"
+    #include "exit_statement.h"
+    #include "expression.h"
+    #include "for_statement.h"
+    #include "game_object.h"
+    #include "gpl_assert.h"
+    #include "gpl_type.h"
+    #include "if_statement.h"
+    #include "parser.h"
+    #include "pixmap.h"
+    #include "print_statement.h"
+    #include "rectangle.h"
+    #include "statement.h"
+    #include "symbol.h"
+    #include "symbol_table.h"
+    #include "textbox.h"
+    #include "triangle.h"
+    #include "variable.h"
+    #include "window.h"
+    
+    using namespace std;
+    
+    static Symbol_table *TheTable = Symbol_table::instance();
+    Game_object *curr_object_under_constructions;
+    std::string name_of_curr_object_under_constructions;
+    std::string name_of_curr_animation_block;
+    
   %}
 
-  %union {
-    int            union_int;
-    std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
-    double         union_double;
-    Gpl_type       union_gpl_type;
-    Operator_type  union_operator_type;
-    Expression*    union_expression;
-    Variable*      union_variable;
-    // Game_object*   union_game_object;
-    //Animation_block* union_animation_block;
-    Symbol*        union_symbol;
-  }
+%union {
+  int            union_int;
+  std::string    *union_string;  // MUST be a pointer to a string (this sucks!)
+  double         union_double;
+  Gpl_type       union_gpl_type;
+  Operator_type  union_operator_type;
+  Expression*    union_expression;
+  Variable*      union_variable;
+  Symbol*        union_symbol;
+}
 
 
-// each token in the language is defined here
+  // each token in the language is defined here
 
 
 %token T_INT
@@ -112,7 +110,7 @@
 %token T_FOR
 %token T_ELSE
 
-%token T_EXIT
+%token <union_int>T_EXIT
 
 %token T_LPAREN
 %token T_RPAREN
@@ -188,78 +186,78 @@
 %nonassoc T_NOT UNARY_OPS
 
 %% // indicates the start of the rules
-//---------------------------------------------------------------------
+   //---------------------------------------------------------------------
 program:
 declaration_list block_list
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 declaration_list:
 declaration_list declaration
 | empty
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 declaration:
 variable_declaration T_SEMIC
 | object_declaration T_SEMIC
 | forward_declaration T_SEMIC
 ;
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 variable_declaration:
 simple_type  T_ID  optional_initializer
 {
-//  /*--------------------------RESERVED WORDS START----------------------------*/
-//  
-//  if(*$2 == "window_width" || *$2 == "window_height" || *$2 == "window_x" || *$2 == "window_y" || *$2 == "animation_speed")  /*reserved words of type int*/
-//  {
-//    if($1 != INT)
-//    {
-//      if($1 == DOUBLE)
-//      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"double","int");
-//      if($1 == STRING)
-//        Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"string","int");
-//    }
-//  }
-//  else if(*$2 == "window_red" || *$2 == "window_blue" || *$2 == "window_green")  /*reserved words of type double*/
-//  {
-//    if($1 != DOUBLE)
-//    {
-//      if($1 == INT)
-//      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"int","double");
-//      else if($1 == STRING)
-//      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"string","double");
-//    }
-//  }
-//  else if(*$2 == "window_title") /*reserved words of type string*/
-//  {
-//    if($1 != STRING)
-//    {
-//      if($1 == INT)
-//       Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"int","string");
-//       else if($1 == DOUBLE)
-//       Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"double","string");
-//    }
-//  }
-//  
-///*--------------------------RESERVED WORDS END-----------------------------*/
-
-  if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
-  {
-    switch($1){
-      case INT: /*INT*/
+    //  /*--------------------------RESERVED WORDS START----------------------------*/
+    //
+    //  if(*$2 == "window_width" || *$2 == "window_height" || *$2 == "window_x" || *$2 == "window_y" || *$2 == "animation_speed")  /*reserved words of type int*/
+    //  {
+    //    if($1 != INT)
+    //    {
+    //      if($1 == DOUBLE)
+    //      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"double","int");
+    //      if($1 == STRING)
+    //        Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"string","int");
+    //    }
+    //  }
+    //  else if(*$2 == "window_red" || *$2 == "window_blue" || *$2 == "window_green")  /*reserved words of type double*/
+    //  {
+    //    if($1 != DOUBLE)
+    //    {
+    //      if($1 == INT)
+    //      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"int","double");
+    //      else if($1 == STRING)
+    //      Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"string","double");
+    //    }
+    //  }
+    //  else if(*$2 == "window_title") /*reserved words of type string*/
+    //  {
+    //    if($1 != STRING)
+    //    {
+    //      if($1 == INT)
+    //       Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"int","string");
+    //       else if($1 == DOUBLE)
+    //       Error::error(Error::INVALID_TYPE_FOR_RESERVED_VARIABLE, *$2,"double","string");
+    //    }
+    //  }
+    //
+    ///*--------------------------RESERVED WORDS END-----------------------------*/
+    
+    if(TheTable->lookup(*$2) == NULL && TheTable->lookup(*$2 + "[0]") == NULL)
+    {
+      switch($1){
+        case INT: /*INT*/
         if($3){
           if ($3->get_gType() == DOUBLE || $3 -> get_gType() == STRING) {
             Error::error(Error::INVALID_TYPE_FOR_INITIAL_VALUE, *$2);
             TheTable->insert(*$2, new Symbol($1, *$2, 0));
           }
           else
-            TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
+          TheTable->insert(*$2, new Symbol($1, *$2, $3->evalint()));
         }
         else /* No expression */
-          TheTable->insert(*$2, new Symbol($1, *$2, 0));
+        TheTable->insert(*$2, new Symbol($1, *$2, 0));
         break;
-      case DOUBLE: /*DOUBLE*/
+        case DOUBLE: /*DOUBLE*/
         if($3){
           if($3->get_gType() == STRING ){
             Error::error(Error::INVALID_TYPE_FOR_INITIAL_VALUE, *$2);
@@ -268,15 +266,15 @@ simple_type  T_ID  optional_initializer
           else
           {
             if($3->get_gType() == INT)
-              TheTable->insert(*$2, new Symbol($1, *$2, (double)$3->evalint()));
+            TheTable->insert(*$2, new Symbol($1, *$2, (double)$3->evalint()));
             else if($3->get_gType() ==  DOUBLE)
-              TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
+            TheTable->insert(*$2, new Symbol($1, *$2, $3->evaldouble()));
           }
         }
         else /* No expression */
-          TheTable->insert(*$2, new Symbol($1, *$2, (double)0));
+        TheTable->insert(*$2, new Symbol($1, *$2, (double)0));
         break;
-      case STRING:/*STRING*/
+        case STRING:/*STRING*/
         if($3){
           if($3->get_gType() == INT){
             ostringstream ss;
@@ -296,12 +294,12 @@ simple_type  T_ID  optional_initializer
           TheTable->insert(*$2, new Symbol($1, *$2, ""));
         }
         break;
-      default: /*DEFAULT*/
+        default: /*DEFAULT*/
         Error::error(Error::ASSIGNMENT_TYPE_ERROR);
         break;
+      }
     }
-  }
-  else
+    else
     Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
 }
 | simple_type  T_ID  T_LBRACKET expression T_RBRACKET
@@ -321,17 +319,17 @@ simple_type  T_ID  optional_initializer
         oss << *$2;
         oss << '[' << i << ']';
         string *s  = new string(oss.str());
-
+        
         if($1 == INT)
-          TheTable->insert(*s, new Symbol($1, *s, 0));
+        TheTable->insert(*s, new Symbol($1, *s, 0));
         if($1 == DOUBLE)
-          TheTable->insert(*s, new Symbol($1, *s, 0.0));
+        TheTable->insert(*s, new Symbol($1, *s, 0.0));
         if($1 == STRING)
-          TheTable->insert(*s, new Symbol($1, *s, ""));
+        TheTable->insert(*s, new Symbol($1, *s, ""));
       }
     }
     else
-      Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+    Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
   }
   else if($4->get_gType() == DOUBLE){
     ostringstream ss;
@@ -343,11 +341,11 @@ simple_type  T_ID  optional_initializer
     ss << $4->evalstring();
     Error::error(Error::INVALID_ARRAY_SIZE, *$2, ss.str());
   }
-
+  
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 simple_type:
 T_INT
 {
@@ -363,7 +361,7 @@ T_INT
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 optional_initializer:
 T_ASSIGN expression
 {
@@ -375,7 +373,7 @@ T_ASSIGN expression
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 object_declaration:
 object_type T_ID
 {
@@ -383,28 +381,28 @@ object_type T_ID
   switch($1)
   {
     case T_TRIANGLE:
-      curr_object_under_constructions = new Triangle();
-      TheTable->insert(*$2, new Symbol(*$2, curr_object_under_constructions));
-      break;
+    curr_object_under_constructions = new Triangle();
+    TheTable->insert(*$2, new Symbol(*$2, curr_object_under_constructions));
+    break;
     case T_PIXMAP:
-      curr_object_under_constructions = new Pixmap();
-      TheTable->insert(*$2, new Symbol(*$2, curr_object_under_constructions));
-      break;
+    curr_object_under_constructions = new Pixmap();
+    TheTable->insert(*$2, new Symbol(*$2, curr_object_under_constructions));
+    break;
     case T_CIRCLE:
-      curr_object_under_constructions = new Circle();
-      TheTable->insert(*$2, new Symbol(*$2, curr_object_under_constructions));
-      break;
+    curr_object_under_constructions = new Circle();
+    TheTable->insert(*$2, new Symbol(*$2, curr_object_under_constructions));
+    break;
     case T_RECTANGLE:
-      curr_object_under_constructions = new Rectangle();
-      TheTable->insert(*$2, new Symbol(*$2, curr_object_under_constructions));
-      break;
+    curr_object_under_constructions = new Rectangle();
+    TheTable->insert(*$2, new Symbol(*$2, curr_object_under_constructions));
+    break;
     case T_TEXTBOX:
-      curr_object_under_constructions = new Textbox();
-      TheTable->insert(*$2, new Symbol(*$2, curr_object_under_constructions));
-      break;
+    curr_object_under_constructions = new Textbox();
+    TheTable->insert(*$2, new Symbol(*$2, curr_object_under_constructions));
+    break;
     default:
-      break;
-
+    break;
+    
   }
 }
 T_LPAREN parameter_list_or_empty T_RPAREN
@@ -431,35 +429,35 @@ T_LPAREN parameter_list_or_empty T_RPAREN
         switch($1)
         {
           case T_TRIANGLE:
-            curr_object_under_constructions = new Triangle();
-            TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
-            break;
+          curr_object_under_constructions = new Triangle();
+          TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
+          break;
           case T_PIXMAP:
-            curr_object_under_constructions = new Pixmap();
-            TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
-            break;
+          curr_object_under_constructions = new Pixmap();
+          TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
+          break;
           case T_CIRCLE:
-            curr_object_under_constructions = new Circle();
-            TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
-            break;
+          curr_object_under_constructions = new Circle();
+          TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
+          break;
           case T_RECTANGLE:
-            curr_object_under_constructions = new Rectangle();
-            TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
-            break;
+          curr_object_under_constructions = new Rectangle();
+          TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
+          break;
           case T_TEXTBOX:
-            curr_object_under_constructions = new Textbox();
-            TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
-            break;
+          curr_object_under_constructions = new Textbox();
+          TheTable->insert(*s, new Symbol(*s, curr_object_under_constructions));
+          break;
           default:
-
+          
             //probably an error
             break;
-
+            
         }
       }
     }
     else
-      Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
+    Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$2);
   }
   else if($4->get_gType() == DOUBLE){
     ostringstream ss;
@@ -474,7 +472,7 @@ T_LPAREN parameter_list_or_empty T_RPAREN
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 object_type:
 T_TRIANGLE
 {
@@ -498,19 +496,19 @@ T_TRIANGLE
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 parameter_list_or_empty :
 parameter_list
 | empty
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 parameter_list :
 parameter_list T_COMMA parameter
 | parameter
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 parameter:
 T_ID T_ASSIGN expression
 {
@@ -522,88 +520,84 @@ T_ID T_ASSIGN expression
     Gpl_type d3 = $3->get_gType(); /*So I don't have to type $3->get_gType() every time. also for debugging purposes.*/
     
     /*Debugging purposes end*/
-//    if($3->get_gType() == ANIMATION_BLOCK){}
-//    Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
-//    else
-//    {
-      Gpl_type gpl_RHS;
-      Status s = (curr_object_under_constructions->get_member_variable_type(*$1, gpl_RHS));
-        // gpl_RHS; //debugging
-        if(s == OK)
+    Gpl_type gpl_RHS;
+    Status s = (curr_object_under_constructions->get_member_variable_type(*$1, gpl_RHS));
+      // gpl_RHS; //debugging
+      if(s == OK)
+      {
+        switch(gpl_RHS)
         {
-          switch(gpl_RHS)
+          case INT:/*INT*/
+          if(d3 != DOUBLE && d3 != STRING && d3 != ANIMATION_BLOCK)
           {
-            case INT:/*INT*/
-            if(d3 != DOUBLE && d3 != STRING && d3 != ANIMATION_BLOCK)
-            {
-              s =  curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
-              break;
-            }
-            else
-            {
-              Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
-              break;
-            }
-            case DOUBLE:/*DOOUBLE*/
-            if(d3 != STRING && d3 != ANIMATION_BLOCK)
-            {
-              curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
-              break;
-            }
-            else
-            {
-              Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
-              break;
-            }
-            case STRING:/*STRING*/
-            if(d3 != ANIMATION_BLOCK)
-            {
-              curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
-              break;
-            }
-            else
-            {
-              Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
-              break;
-            }
-            case ANIMATION_BLOCK:/*ANIMATION BLOCK*/
-           if(d3 != INT && d3 != DOUBLE && d3 != STRING)
-            {
-              Animation_block *block = $3->get_Animation();
-              assert(block);
-              Symbol *tmpSym = block->get_parameter_symbol();
-              Game_object *param = tmpSym->getgameobjectValue();
-              if(curr_object_under_constructions->type() != param->type())
-              {
-                Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
-              }
-              else
-              {
-              curr_object_under_constructions->set_member_variable(*$1, $3->get_Animation());
-              break;
-              }
-            }
-            else
-            {
-              Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_animation_block,*$1);
-              break;
-            }
-            break;
-            default:
-              //Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE, name_of_curr_object_under_constructions, *$1);
-                  Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
+            s =  curr_object_under_constructions->set_member_variable(*$1, $3->evalint());
             break;
           }
-        } 
-        else if(s == MEMBER_NOT_DECLARED)
-        {
-          Error::error(Error::UNKNOWN_CONSTRUCTOR_PARAMETER, curr_object_under_constructions->type() , *$1);
+          else
+          {
+            Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
+            break;
+          }
+          case DOUBLE:/*DOOUBLE*/
+          if(d3 != STRING && d3 != ANIMATION_BLOCK)
+          {
+            curr_object_under_constructions->set_member_variable(*$1, $3->evaldouble());
+            break;
+          }
+          else
+          {
+            Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
+            break;
+          }
+          case STRING:/*STRING*/
+          if(d3 != ANIMATION_BLOCK)
+          {
+            curr_object_under_constructions->set_member_variable(*$1, $3->evalstring());
+            break;
+          }
+          else
+          {
+            Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_object_under_constructions,*$1);
+            break;
+          }
+          case ANIMATION_BLOCK:/*ANIMATION BLOCK*/
+          if(d3 != INT && d3 != DOUBLE && d3 != STRING)
+          {
+            Animation_block *block = $3->get_Animation();
+            assert(block);
+            Symbol *tmpSym = block->get_parameter_symbol();
+            Game_object *param = tmpSym->getgameobjectValue();
+            if(curr_object_under_constructions->type() != param->type())
+            {
+              Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
+            }
+            else
+            {
+              curr_object_under_constructions->set_member_variable(*$1, $3->get_Animation());
+              break;
+            }
+          }
+          else
+          {
+            Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE,name_of_curr_animation_block,*$1);
+            break;
+          }
+          break;
+          default:
+            //Error::error(Error::INCORRECT_CONSTRUCTOR_PARAMETER_TYPE, name_of_curr_object_under_constructions, *$1);
+            Error::error(Error::TYPE_MISMATCH_BETWEEN_ANIMATION_BLOCK_AND_OBJECT,name_of_curr_object_under_constructions, name_of_curr_animation_block);
+            break;
         }
-          // }
+      }
+      else if(s == MEMBER_NOT_DECLARED)
+      {
+        Error::error(Error::UNKNOWN_CONSTRUCTOR_PARAMETER, curr_object_under_constructions->type() , *$1);
+      }
+        // }
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 forward_declaration:
 T_FORWARD T_ANIMATION T_ID T_LPAREN animation_parameter T_RPAREN
 {
@@ -612,35 +606,35 @@ T_FORWARD T_ANIMATION T_ID T_LPAREN animation_parameter T_RPAREN
   Animation_block* new_animation = new Animation_block($1, $5, *$3);
   Symbol *tmp = new Symbol(*$3, new_animation);
   if(!TheTable->insert(*$3, tmp))
-   Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$3);
+  Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$3);
   
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 block_list:
 block_list block
 | empty
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 block:
 initialization_block
 | animation_block
 | on_block
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 initialization_block:
 T_INITIALIZATION statement_block
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 animation_block:
 T_ANIMATION T_ID T_LPAREN check_animation_parameter T_RPAREN T_LBRACE { } statement_list T_RBRACE end_of_statement_block
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 animation_parameter:
 object_type T_ID
 {
@@ -648,37 +642,37 @@ object_type T_ID
   switch($1)
   {
     case T_TRIANGLE:
-      parameter = new Triangle();
-      break;
+    parameter = new Triangle();
+    break;
     case T_RECTANGLE:
-      parameter = new Rectangle();
-      break;
+    parameter = new Rectangle();
+    break;
     case T_CIRCLE:
-      parameter = new Circle();
-      break;
+    parameter = new Circle();
+    break;
     case T_PIXMAP:
-      parameter = new Pixmap();
-      break;
+    parameter = new Pixmap();
+    break;
     case T_TEXTBOX:
-      parameter = new Textbox();
-      break;
+    parameter = new Textbox();
+    break;
     default:
       //error
       break;
   }
-
+  
   parameter->never_animate();
   parameter->never_draw();
-
+  
   Symbol *passmeup = new Symbol(*$2, parameter);
-
+  
   if(!TheTable->insert(*$2, passmeup))
   Error::error(Error::ANIMATION_PARAMETER_NAME_NOT_UNIQUE, *$2);
   $$ = passmeup;
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 check_animation_parameter:
 T_TRIANGLE T_ID
 {
@@ -697,12 +691,12 @@ T_TRIANGLE T_ID
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 on_block:
 T_ON keystroke statement_block
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 keystroke:
 T_SPACE
 | T_UPARROW
@@ -729,34 +723,34 @@ T_SPACE
 | T_F1
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 if_block:
 statement_block_creator statement end_of_statement_block
 | statement_block
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 statement_block:
 T_LBRACE statement_block_creator statement_list T_RBRACE end_of_statement_block
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 statement_block_creator:
-// this goes to nothing so that you can put an action here in p7
+  // this goes to nothing so that you can put an action here in p7
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 end_of_statement_block:
-// this goes to nothing so that you can put an action here in p7
+  // this goes to nothing so that you can put an action here in p7
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 statement_list:
 statement_list statement
 | empty
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 statement:
 if_statement
 | for_statement
@@ -765,35 +759,35 @@ if_statement
 | exit_statement T_SEMIC
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 if_statement:
 T_IF T_LPAREN expression T_RPAREN if_block %prec IF_NO_ELSE
 | T_IF T_LPAREN expression T_RPAREN if_block T_ELSE if_block %prec T_ELSE
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 for_statement:
 T_FOR T_LPAREN statement_block_creator assign_statement end_of_statement_block T_SEMIC expression T_SEMIC statement_block_creator assign_statement end_of_statement_block T_RPAREN statement_block
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 print_statement:
 T_PRINT T_LPAREN expression T_RPAREN
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 exit_statement:
 T_EXIT T_LPAREN expression T_RPAREN
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 assign_statement:
 variable T_ASSIGN expression
 | variable T_PLUS_ASSIGN expression
 | variable T_MINUS_ASSIGN expression
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 variable:
 T_ID
 {
@@ -845,10 +839,10 @@ T_ID
         }
         else
         {
-          //wtf your status isnt ok??? Maybe eror
-          assert(s = MEMBER_NOT_DECLARED);
-          Error::error(Error::UNDECLARED_MEMBER, *$1, *$3);
-          $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
+            //wtf your status isnt ok??? Maybe eror
+            assert(s = MEMBER_NOT_DECLARED);
+            Error::error(Error::UNDECLARED_MEMBER, *$1, *$3);
+            $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
         }
     }
   }
@@ -863,15 +857,15 @@ T_ID
   $$ = new Variable($3, *$1, *$6);
   else
   {
-  assert(fuckthisshit != GAME_OBJECT);
-  Error::error(Error::LHS_OF_PERIOD_MUST_BE_OBJECT, *$1);
-  $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
+    assert(fuckthisshit != GAME_OBJECT);
+    Error::error(Error::LHS_OF_PERIOD_MUST_BE_OBJECT, *$1);
+    $$ = new Variable(new Symbol(INT, "", 0)); /*DUMBY VAR*/
   }
   
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 expression:
 primary_expression
 {
@@ -881,20 +875,20 @@ primary_expression
 {
   /*need to check to see weather or not we can or two things forexample a string cant or  integer*/
   if($1->get_gType() == STRING)
-    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "||");
+  Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "||");
   else if ($3->get_gType() == STRING)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "||");
+  Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "||");
   else
-    $$ = new Expression(OR, $1, $3);
+  $$ = new Expression(OR, $1, $3);
 }
 | expression T_AND expression
 {
   if($1->get_gType() == STRING)
-    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "&&");
+  Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "&&");
   else if ($3->get_gType() == STRING)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "&&");
+  Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "&&");
   else
-    $$ = new Expression(AND, $1, $3);
+  $$ = new Expression(AND, $1, $3);
 }
 | expression T_LESS_EQUAL expression
 {
@@ -927,38 +921,38 @@ primary_expression
 | expression T_MINUS expression
 {
   if($1->get_gType() == STRING)
-    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "-");
+  Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "-");
   else if ($3->get_gType() == STRING)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "-");
+  Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "-");
   else
-    $$ = new Expression(MINUS, $1, $3);
+  $$ = new Expression(MINUS, $1, $3);
 }
 | expression T_ASTERISK expression
 {
   if($1->get_gType() == STRING)
-    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "*");
+  Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "*");
   else if ($3->get_gType() == STRING)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "*");
+  Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "*");
   else
-    $$ = new Expression(MULTIPLY, $1, $3);
+  $$ = new Expression(MULTIPLY, $1, $3);
 }
 | expression T_DIVIDE expression
 {
   if($1->get_gType() == STRING)
-    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "/");
+  Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "/");
   else if ($3->get_gType() == STRING)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "/");
+  Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "/");
   else
-    $$ = new Expression(DIVIDE, $1, $3);
+  $$ = new Expression(DIVIDE, $1, $3);
 }
 | expression T_MOD expression
 {
   if($1->get_gType() == STRING)
-    Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "%");
+  Error::error(Error::INVALID_LEFT_OPERAND_TYPE, "%");
   else if ($3->get_gType() == STRING)
-    Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "%");
+  Error::error(Error::INVALID_RIGHT_OPERAND_TYPE, "%");
   else
-    $$ = new Expression(MOD, $1, $3);
+  $$ = new Expression(MOD, $1, $3);
 }
 | T_MINUS  expression %prec UNARY_OPS
 {
@@ -1073,13 +1067,13 @@ primary_expression
     }
   }
   else
-    $$ = new Expression($1,$3);
+  $$ = new Expression($1,$3);
 }
 | variable geometric_operator variable
 {
 }
 ;
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 primary_expression:
 T_LPAREN  expression T_RPAREN
 {
@@ -1111,13 +1105,13 @@ T_LPAREN  expression T_RPAREN
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 geometric_operator:
 T_TOUCHES
 | T_NEAR
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 math_operator:
 T_SIN
 {
@@ -1161,6 +1155,6 @@ T_SIN
 }
 ;
 
-//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
 empty:
 ;

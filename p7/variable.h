@@ -15,8 +15,8 @@ public:
   Variable();
   Variable(Symbol *s); //VARIABLE
   Variable(std::string value, Expression *e); //EXPRESSION
-  Variable(std::string GameObject_Name, std::string MemberName); //GAME OBJECT
-  Variable(std::string name, Animation_block *animate); //ANIMATION BLOCK
+//  Variable(std::string GameObject_Name, std::string MemberName); //GAME OBJECT
+//  Variable(std::string name, Animation_block *animate); //ANIMATION BLOCK
   Variable(Symbol *s, std::string); //Symbol with variable EX j.x
   Variable(Expression * e, std::string id, std::string memberID); //Expression Member Variable EX j[10].x expr
   Gpl_type gettype();
@@ -35,9 +35,6 @@ private:
   Variable *m_Variable;
   Expression *m_Expression;
   Animation_block *m_AnimatiomBlock;
-  std::string m_MemberName; //DONT KNOW IF I NEED THIS OR NOT
-//  std::string m_AnimationName;
-//  std::string m_GameObjectName;
-  
+  std::string m_MemberName;
 };
 #endif
