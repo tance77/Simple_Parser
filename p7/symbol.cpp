@@ -3,15 +3,15 @@
 
 int Symbol::getintValue()
 {
-        return m_iValue;
+    return m_iValue;
 }
 double Symbol::getdoubleValue()
 {
-        return m_dValue;
+    return m_dValue;
 }
 string Symbol::getstringValue()
 {
-        return m_sValue;
+    return m_sValue;
 }
 string Symbol::getID()
 {
@@ -23,19 +23,31 @@ Gpl_type Symbol::getType()
 }
 Game_object *Symbol::getgameobjectValue()
 {
-  return m_Gameobject;
+    return m_Gameobject;
 }
 Animation_block *Symbol::getanimationValue()
 {
-  return m_Animation_block;
+    return m_Animation_block;
 }
 bool Symbol::is_int()
 {
-  if(m_gType == INT)
-    return true;
-  else return false;
+    if(m_gType == INT)
+        return true;
+    else return false;
 }
-void Symbol::setint(int value)
+void Symbol::set(int value)
 {
-  m_iValue = value;
+    m_iValue = value;
+}
+void Symbol::set(double value)
+{
+    m_dValue = value;
+}
+void Symbol::set(std::string value)
+{
+    m_sValue = value;
+}
+void Symbol::set(Game_object *value)
+{
+    m_Gameobject = value;
 }

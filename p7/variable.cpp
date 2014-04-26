@@ -223,3 +223,19 @@ Animation_block* Variable::getAnimate()
 {
   return m_AnimatiomBlock;
 }
+void Variable::set(int value)
+{
+    m_Symbol->set(value);
+}
+void Variable::set(double value)
+{
+    m_Symbol->set(value);
+}
+void Variable::set(std::string value)
+{
+    m_Symbol->set(value);
+}
+void Variable::set(Game_object *value)
+{
+    m_Symbol->set(value);
+}

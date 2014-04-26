@@ -3,10 +3,10 @@
 
 #include "gpl_type.h"
 #include "game_object.h"
-// #include "animation_block.h"
-class Animation_block;
 #include "variable.h"
 #include <string>
+
+class Animation_block;
 using namespace std;
 
 class Symbol
@@ -66,7 +66,10 @@ public:
     Game_object *getgameobjectValue();
     Animation_block *getanimationValue();
     string getID();
-    void setint(int a);
+    void set(int);
+    void set(double);
+    void set(std::string);
+    void set(Game_object*);
     Gpl_type getType();
     bool is_int();
     

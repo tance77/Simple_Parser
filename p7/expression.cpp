@@ -691,3 +691,11 @@ Animation_block* Expression::get_Animation()
 {
     return m_Variable->getAnimate();
 }
+Expression* Expression::getLHS()
+{
+    return m_LHS;
+}
+Expression* Expression::getRHS()
+{
+    return m_RHS;
+}

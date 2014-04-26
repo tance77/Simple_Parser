@@ -11,7 +11,7 @@ public:
 private:
     Variable *m_variable;
     Expression *m_expression;
-    int m_oType;
+    Operator_type m_oType;
 };
 
 #endif
