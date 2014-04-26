@@ -1,4 +1,4 @@
-#include "statement_block.h"
+ #include "statement_block.h"
 #include "gpl_assert.h"
 using namespace std;
 
@@ -10,13 +10,13 @@ Statement_block::Statement_block(int block_line)
 
 bool Statement_block::empty()
 {
-  return m_vector_Statements->empty(); //returns true if it is empty false if its not
+  return m_vector_Statements.empty(); //returns true if it is empty false if its not
 }
 
 void Statement_block::execute()
 {
   if(!empty()) //if the vector is not empty we need to execute
-    for(Statement* cur_statement: *m_vector_Statements)
+    for(Statement* cur_statement: m_vector_Statements)
         //for each statement cur_statement in the vector of statements m_vector_Statements, call execute on the statement
       cur_statement->execute();
 }
@@ -49,4 +49,16 @@ ostream & operator<<(ostream &os, const Statement_block *statement_block)
     }
   
   return statement_block->print(os);
+}
+bool Statement_block::insert(Statement *stmt)
+{
+    if(stmt)
+      {
+        m_vector_Statements.push_back(stmt);
+        return true;
+      }
+    else{
+        assert(stmt == NULL);
+        return false;
+    }
 }

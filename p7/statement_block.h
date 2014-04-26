@@ -26,20 +26,19 @@ class Statement;
 class Statement_block
 {
 public:
-  
-  Statement_block(int block_line);
-  bool empty();
-  void execute();
-  
-  std::ostream &print(std::ostream &os) const;
-protected:
-  
-    // line number statement block starts on (only used for debugging)
-  int m_line;
-  std::vector<Statement*> *m_vector_Statements; //vector of statement pointers
-  
+    
+    Statement_block(int block_line);
+    bool empty();
+    void execute();
+    
+    std::ostream &print(std::ostream &os) const;
+    bool insert(Statement *stmt);
+        // line number statement block starts on (only used for debugging)
+    int m_line;
+    
 private:
-
+    std::vector<Statement*> m_vector_Statements; //vector of statement pointers
+    
 };
 
 

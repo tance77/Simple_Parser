@@ -3,61 +3,62 @@
 
 #include "gpl_type.h"
 #include "game_object.h"
-#include "animation_block.h"
+// #include "animation_block.h"
+class Animation_block;
 #include "variable.h"
 #include <string>
 using namespace std;
 
 class Symbol
 {
-  public:
+public:
     Symbol(){};
     /*INT*/Symbol(Gpl_type type, string name, int value){
-      m_gType = INT;
-      m_ID = name;
-      m_iValue = value;
-      m_dValue = 0;
-      m_sValue = "EMPTY";
-      m_Gameobject = NULL;
-      m_Animation_block = NULL;
+        m_gType = INT;
+        m_ID = name;
+        m_iValue = value;
+        m_dValue = 0;
+        m_sValue = "EMPTY";
+        m_Gameobject = NULL;
+        m_Animation_block = NULL;
     };
     /*DOUBLE*/Symbol(Gpl_type type, string name, double value){
-      m_gType = DOUBLE;
-      m_ID = name;
-      m_iValue = 0;
-      m_dValue = value;
-      m_sValue = "EMPTY";
-      m_Gameobject = NULL;
-      m_Animation_block = NULL;
+        m_gType = DOUBLE;
+        m_ID = name;
+        m_iValue = 0;
+        m_dValue = value;
+        m_sValue = "EMPTY";
+        m_Gameobject = NULL;
+        m_Animation_block = NULL;
     };
     /*STRING*/Symbol(Gpl_type type, string name, string value){
-      m_gType = STRING;
-      m_ID = name;
-      m_iValue = 0;
-      m_dValue = 0;
-      m_sValue = value;
-      m_Gameobject = NULL;
-      m_Animation_block = NULL;
+        m_gType = STRING;
+        m_ID = name;
+        m_iValue = 0;
+        m_dValue = 0;
+        m_sValue = value;
+        m_Gameobject = NULL;
+        m_Animation_block = NULL;
     };
     /*GAME OBJECT*/Symbol(string name, Game_object *value){
-      m_gType = GAME_OBJECT;
-      m_ID = name;
-      m_Gameobject = value;
-      m_Animation_block = NULL;
-      
-      m_iValue = 0;
-      m_dValue = 0;
-      m_sValue = "EMPTY";
+        m_gType = GAME_OBJECT;
+        m_ID = name;
+        m_Gameobject = value;
+        m_Animation_block = NULL;
+        
+        m_iValue = 0;
+        m_dValue = 0;
+        m_sValue = "EMPTY";
     };
     /*ANIMATION BLOCK*/Symbol(string name, Animation_block *value){
-      m_gType = ANIMATION_BLOCK;
-      m_ID = name;
-      m_Animation_block = value;
-      m_Gameobject = NULL;
-      
-      m_iValue = 0;
-      m_dValue = 0;
-      m_sValue = "EMPTY";
+        m_gType = ANIMATION_BLOCK;
+        m_ID = name;
+        m_Animation_block = value;
+        m_Gameobject = NULL;
+        
+        m_iValue = 0;
+        m_dValue = 0;
+        m_sValue = "EMPTY";
     };
     int getintValue();
     double getdoubleValue();
@@ -65,11 +66,11 @@ class Symbol
     Game_object *getgameobjectValue();
     Animation_block *getanimationValue();
     string getID();
-  void setint(int a);
+    void setint(int a);
     Gpl_type getType();
     bool is_int();
-
-  private:
+    
+private:
     static Symbol *m_instance;
     Gpl_type m_gType;
     int m_iValue;

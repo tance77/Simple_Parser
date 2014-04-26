@@ -26,6 +26,10 @@
 #include <string>
 #include "variable.h"
 #include "expression.h"
+#include "event_manager.h"
+#include "game_object.h"
+#include "statement.h"
+
 
 #include "y.tab.h"
 #endif // #ifndef PARSER_H

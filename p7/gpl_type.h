@@ -42,7 +42,8 @@ enum Operator_type {PLUS, MINUS, MULTIPLY, DIVIDE, MOD,
                     NEAR, TOUCHES,
                     SIN, COS, TAN,
                     ASIN, ACOS, ATAN,
-                    SQRT, FLOOR, ABS, RANDOM, GARBAGE
+                    SQRT, FLOOR, ABS, RANDOM,
+                    ASSIGN, PLUS_ASSIGN, MINUS_ASSIGN, GARBAGE //added ASSIGN PLUS ASSIGN AND MINUS ASSIGN FOR P7
                    };
 
 std::string operator_to_string(Operator_type op);

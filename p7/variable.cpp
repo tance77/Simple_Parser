@@ -196,9 +196,9 @@ double Variable::getdValue()
       tmp->get_member_variable(m_MemberName, val);
       return val;
       }
+    else
+        return m_Symbol->getdoubleValue();
     }
-  else
-    return m_Symbol->getdoubleValue();
   return 0;
 }
 std::string Variable::getsValue()

@@ -7,12 +7,11 @@
 class Print_Statement : public Statement
 {
 public:
-  Print_Statement();
+  Print_Statement(int linenumber, Expression *exp);
   virtual void execute();
-  void print(int linenumber, Expression *exp);
 private:
   int m_line_number;
-  Expression m_expression;
+  Expression *m_expression;
 };
 
 #endif
