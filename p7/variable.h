@@ -25,7 +25,9 @@ public:
     double getdValue();
     std::string getsValue();
     Animation_block* getAnimate();
-    bool get_symbol();
+    
+    Symbol* get_symbol();
+    Expression* get_expression();
     
     void set(int);
     void set(double);

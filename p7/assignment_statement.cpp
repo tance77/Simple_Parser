@@ -5,21 +5,15 @@ Assignment_Statement::Assignment_Statement(Expression *expr, Operator_type oType
     m_expression = expr;
     m_variable = var;
     m_oType = oType;
-    m_gType = expr->get_gType();
 }
 void Assignment_Statement::execute()
 {
-    if(m_gType == INT)
+    if(m_variable->gettype() == INT)
       {
         switch(m_oType)
         {
             case ASSIGN:
-              if(m_variable->get_symbol()) //Means you are just a variable like int x
-                  m_variable->set(m_expression->evalint());
-              else if(m_variable->get_symbol() == false) //Means you have an expression attached to you
-                {
-                  
-                }
+              m_variable->set(m_expression->evalint());
               break;
               
             case PLUS_ASSIGN:
@@ -35,12 +29,13 @@ void Assignment_Statement::execute()
               
         }
       }
-    else if(m_gType == DOUBLE)
+    else if(m_variable->gettype() == DOUBLE)
       {
         switch(m_oType)
         {
             case ASSIGN:
-                  //    m_variable->set(m_expression->evaldouble());
+              m_variable->set(m_expression->evaldouble());
+              
               break;
               
             case PLUS_ASSIGN:
@@ -56,12 +51,12 @@ void Assignment_Statement::execute()
               
         }
       }
-    else if(m_gType == STRING)
+    else if(m_variable->gettype() == STRING)
       {
         switch(m_oType)
         {
             case ASSIGN:
-                  //m_variable->set(m_expression->evalstring());
+              m_variable->set(m_expression->evalstring());
               break;
               
             case PLUS_ASSIGN:
@@ -70,27 +65,6 @@ void Assignment_Statement::execute()
               
             case MINUS_ASSIGN:
                   //error
-              break;
-              
-            default:
-              break;
-              
-        }
-      }
-    else if(m_gType == GAME_OBJECT)
-      {
-        switch(m_oType)
-        {
-            case ASSIGN:
-                  // m_variable->set(m_expression->get_Animation());
-              break;
-              
-            case PLUS_ASSIGN:
-                  //   m_variable->set(m_variable->getAnimate() + m_expression->get_Animation());
-              break;
-              
-            case MINUS_ASSIGN:
-                  // m_variable->set(m_variable->getAnimate() - m_expression->get_Animation());
               break;
               
             default:
