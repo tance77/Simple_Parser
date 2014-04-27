@@ -884,6 +884,10 @@ T_IF T_LPAREN expression T_RPAREN if_block %prec IF_NO_ELSE
   //---------------------------------------------------------------------
 for_statement:
 T_FOR T_LPAREN statement_block_creator assign_statement end_of_statement_block T_SEMIC expression T_SEMIC statement_block_creator assign_statement end_of_statement_block T_RPAREN statement_block
+{
+    Statement *stmt = new For_Statement($5,$7,$11,$13);
+    stack_block.top()->insert(stmt);
+}
 ;
 
   //---------------------------------------------------------------------
@@ -899,8 +903,8 @@ T_PRINT T_LPAREN expression T_RPAREN
 exit_statement:
 T_EXIT T_LPAREN expression T_RPAREN
 {
-        //Statement *stmt = new Exit_statmeent($1, $3);
-        //stack_block.top()->insert(stmt);
+        Statement *stmt = new Exit_Statement($3, $1);
+        stack_block.top()->insert(stmt);
 }
 ;
 
@@ -910,19 +914,19 @@ variable T_ASSIGN expression
 {
     Statement *stmt = new Assignment_Statement($3, ASSIGN, $1);
     stack_block.top()->insert(stmt);
-    $$= stmt;
+    $$ = stmt;
 }
 | variable T_PLUS_ASSIGN expression
 {
     Statement *stmt = new Assignment_Statement($3,PLUS_ASSIGN,$1);
     stack_block.top()->insert(stmt);
-    $$= stmt;
+    $$ = stmt;
 }
 | variable T_MINUS_ASSIGN expression
 {
     Statement *stmt = new Assignment_Statement($3,MINUS_ASSIGN,$1);
     stack_block.top()->insert(stmt);
-    $$= stmt;
+    $$ = stmt;
 }
 ;
 
