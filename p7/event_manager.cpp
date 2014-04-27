@@ -23,12 +23,17 @@ Event_manager::~Event_manager()
 
 void Event_manager::execute_handlers(Window::Keystroke keystroke)
 {
-        //array_of_statement_blocks[keystroke] is the vector adding the [i] is the index to the vector
-    for(int i=0; i < array_of_statement_blocks[keystroke].size(); i++){
-        array_of_statement_blocks[keystroke][i]->execute();
+    for(vector<Statement_block*>::iterator it = array_of_statement_blocks[keystroke].begin();
+        it != array_of_statement_blocks[keystroke].end(); it++){
+        (*it)->execute();
     }
+    
+        //array_of_statement_blocks[keystroke] is the vector adding the [i] is the index to the vector
+        //    for(int i=0; i < array_of_statement_blocks[keystroke].size(); i++){
+        //        array_of_statement_blocks[keystroke][i]->execute();
+        //}
 }
-//put the statements in the actual vector here?
+    //put the statements in the actual vector here?
 void Event_manager::register_handlers(Window::Keystroke keystroke, Statement_block *stmt)
 {
     assert(stmt);
