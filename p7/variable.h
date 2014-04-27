@@ -19,12 +19,14 @@ public:
                                                 //  Variable(std::string name, Animation_block *animate); //ANIMATION BLOCK
     Variable(Symbol *s, std::string); //Symbol with variable EX j.x
     Variable(Expression * e, std::string id, std::string memberID); //Expression Member Variable EX j[10].x expr
+   
     Gpl_type gettype();
-    void evaluate();
     int getiValue();
     double getdValue();
     std::string getsValue();
     Animation_block* getAnimate();
+    bool get_symbol();
+    
     void set(int);
     void set(double);
     void set(std::string);

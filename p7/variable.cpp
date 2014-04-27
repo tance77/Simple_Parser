@@ -239,3 +239,9 @@ void Variable::set(Game_object *value)
 {
     m_Symbol->set(value);
 }
+bool Variable::get_symbol()
+{
+    if(m_Symbol == NULL)
+        return false;
+    return true;
+}

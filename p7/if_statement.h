@@ -7,11 +7,12 @@
 class If_Statement : public Statement
 {
 public:
-    If_Statement(Expression*, Statement_block*);
+    If_Statement(Expression*, Statement_block*, Statement_block*);
   virtual void execute();
 private:
     Expression *m_expression;
     Statement_block *m_stmtblock;
+    Statement_block *m_stmtblock_else;
 };
 
 #endif

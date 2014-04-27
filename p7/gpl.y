@@ -871,12 +871,13 @@ if_statement
 if_statement:
 T_IF T_LPAREN expression T_RPAREN if_block %prec IF_NO_ELSE
 {
-    Statement *stmt = new If_Statement($3, $5);
+    Statement *stmt = new If_Statement($3, $5, NULL);
     stack_block.top()->insert(stmt);
 }
 | T_IF T_LPAREN expression T_RPAREN if_block T_ELSE if_block %prec T_ELSE
 {
-    
+    Statement *stmt = new If_Statement($3, $5, $7);
+    stack_block.top()->insert(stmt);
 }
 ;
 
@@ -907,15 +908,21 @@ T_EXIT T_LPAREN expression T_RPAREN
 assign_statement:
 variable T_ASSIGN expression
 {
-    $$= new Assignment_Statement($3,ASSIGN,$1);
+    Statement *stmt = new Assignment_Statement($3, ASSIGN, $1);
+    stack_block.top()->insert(stmt);
+    $$= stmt;
 }
 | variable T_PLUS_ASSIGN expression
 {
-    $$= new Assignment_Statement($3,PLUS_ASSIGN,$1);
+    Statement *stmt = new Assignment_Statement($3,PLUS_ASSIGN,$1);
+    stack_block.top()->insert(stmt);
+    $$= stmt;
 }
 | variable T_MINUS_ASSIGN expression
 {
-    $$= new Assignment_Statement($3,MINUS_ASSIGN,$1);
+    Statement *stmt = new Assignment_Statement($3,MINUS_ASSIGN,$1);
+    stack_block.top()->insert(stmt);
+    $$= stmt;
 }
 ;
 

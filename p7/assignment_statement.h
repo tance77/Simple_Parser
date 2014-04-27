@@ -12,6 +12,7 @@ private:
     Variable *m_variable;
     Expression *m_expression;
     Operator_type m_oType;
+    Gpl_type m_gType;
 };
 
 #endif
