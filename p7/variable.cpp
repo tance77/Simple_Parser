@@ -160,7 +160,18 @@ int Variable::getiValue()
             return val;
           }
         else
-            return m_Symbol->getintValue();
+          {
+            if(m_Symbol->getType() == INT)
+              {
+                return m_Symbol->getintValue();
+              }
+            else if(m_Symbol->getType() == DOUBLE) //error
+              {
+                return -1;
+              }
+            else //you are a string error
+                return -1;
+          }
       }
     else //I'm an expresion
       {
@@ -197,7 +208,18 @@ double Variable::getdValue()
             return val;
           }
         else
-            return m_Symbol->getdoubleValue();
+          {
+            if(m_Symbol->getType() == INT)
+              {
+                return m_Symbol->getintValue();
+              }
+            else if(m_Symbol->getType() == DOUBLE)
+              {
+                return m_Symbol->getdoubleValue();
+              }
+            else //you are a string //error
+                return -1;
+          }
       }
     else //I'm an expresion
       {
@@ -232,7 +254,23 @@ std::string Variable::getsValue()
             tmp->get_member_variable(m_MemberName, val);
             return val;
           }
-        return m_Symbol->getstringValue();
+        else
+          {
+            if(m_Symbol->getType() == INT)
+              {
+                stringstream s;
+                s << m_Symbol->getintValue();
+                return s.str();
+              }
+            else if(m_Symbol->getType() == DOUBLE)
+              {
+                stringstream s;
+                s<< m_Symbol->getdoubleValue();
+                return s.str();
+              }
+            else //you are a string
+                return m_Symbol->getstringValue();
+          }
     }
     else //I'm an expresion
       {

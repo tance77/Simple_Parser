@@ -12,7 +12,7 @@ For_Statement::For_Statement(Statement_block *first_condition,
 }
 void For_Statement::execute()
 {
-    for(m_first_condition; m_second_condition->evalint(); m_third_condition)
+    for(m_first_condition->execute(); m_second_condition->evalint(); m_third_condition->execute())
       {
         m_stuff_in_for_loop->execute();
       }

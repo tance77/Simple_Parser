@@ -18,7 +18,7 @@ public:
         m_ID = name;
         m_iValue = value;
         m_dValue = 0;
-        m_sValue = "EMPTY";
+        m_sValue = "";
         m_Gameobject = NULL;
         m_Animation_block = NULL;
     };
@@ -27,7 +27,7 @@ public:
         m_ID = name;
         m_iValue = 0;
         m_dValue = value;
-        m_sValue = "EMPTY";
+        m_sValue = "";
         m_Gameobject = NULL;
         m_Animation_block = NULL;
     };
@@ -48,7 +48,7 @@ public:
         
         m_iValue = 0;
         m_dValue = 0;
-        m_sValue = "EMPTY";
+        m_sValue = "";
     };
     /*ANIMATION BLOCK*/Symbol(string name, Animation_block *value){
         m_gType = ANIMATION_BLOCK;
@@ -58,7 +58,7 @@ public:
         
         m_iValue = 0;
         m_dValue = 0;
-        m_sValue = "EMPTY";
+        m_sValue = "";
     };
     int getintValue();
     double getdoubleValue();

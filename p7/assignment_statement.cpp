@@ -17,11 +17,11 @@ void Assignment_Statement::execute()
               break;
               
             case PLUS_ASSIGN:
-                  //  m_variable->set(m_variable->getiValue() + m_expression->evalint());
+              m_variable->set(m_variable->getiValue() + m_expression->evalint());
               break;
               
             case MINUS_ASSIGN:
-                  //  m_variable->set(m_variable->getiValue() - m_expression->evalint());
+              m_variable->set(m_variable->getiValue() - m_expression->evalint());
               break;
               
             default:
@@ -39,11 +39,11 @@ void Assignment_Statement::execute()
               break;
               
             case PLUS_ASSIGN:
-                  //   m_variable->set(m_variable->getdValue() + m_expression->evaldouble());
+            m_variable->set(m_variable->getdValue() + m_expression->evaldouble());
               break;
               
             case MINUS_ASSIGN:
-                  //   m_variable->set(m_variable->getdValue() - m_expression->evaldouble());
+            m_variable->set(m_variable->getdValue() - m_expression->evaldouble());
               break;
               
             default:
@@ -60,7 +60,7 @@ void Assignment_Statement::execute()
               break;
               
             case PLUS_ASSIGN:
-                  // m_variable->set(m_variable->getsValue() + m_expression->evalstring());
+                  m_variable->set(m_variable->getsValue() + m_expression->evalstring());
               break;
               
             case MINUS_ASSIGN:
