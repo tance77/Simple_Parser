@@ -24,6 +24,7 @@ public:
     int getiValue();
     double getdValue();
     std::string getsValue();
+    std::string getVariableName();
     Animation_block* getAnimate();
     
     Symbol* get_symbol();

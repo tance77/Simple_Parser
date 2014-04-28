@@ -170,7 +170,9 @@ int Variable::getiValue()
                 return -1;
               }
             else //you are a string error
+              {
                 return -1;
+              }
           }
       }
     else //I'm an expresion
@@ -313,7 +315,20 @@ void Variable::set(int value)
             tmp->set_member_variable(m_MemberName,value);
           }
         else
-            m_Symbol->set(value);
+          {
+            if(m_Symbol->getType() == INT)
+              {
+                m_Symbol->set(value);
+              }
+            else if(m_Symbol->getType() == DOUBLE) //error
+              {
+                    //
+              }
+            else //you are a string error
+              {
+                    //
+              }
+          }
       }
     else //I'm an expresion
       {
@@ -345,7 +360,20 @@ void Variable::set(double value)
             tmp->set_member_variable(m_MemberName, value);
           }
         else
-            m_Symbol->set(value);
+          {
+            if(m_Symbol->getType() == INT)
+              {
+                m_Symbol->set(value);
+              }
+            else if(m_Symbol->getType() == DOUBLE) //error
+              {
+                m_Symbol->set(value);
+              }
+            else //you are a string error
+              {
+                    //error
+              }
+        }
       }
     else //I'm an expresion
       {
@@ -412,4 +440,8 @@ Expression* Variable::get_expression()
     if(m_Expression == NULL)
         return NULL;
     return m_Expression;
+}
+std::string Variable::getVariableName()
+{
+    return m_Symbol->getID();
 }

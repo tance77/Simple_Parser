@@ -871,13 +871,27 @@ if_statement
 if_statement:
 T_IF T_LPAREN expression T_RPAREN if_block %prec IF_NO_ELSE
 {
-    Statement *stmt = new If_Statement($3, $5, NULL);
-    stack_block.top()->insert(stmt);
+    if($3->get_gType() == INT)
+    {
+        Statement *stmt = new If_Statement($3, $5, NULL);
+        stack_block.top()->insert(stmt);
+    }
+    else
+    {
+        Error::error(Error::INVALID_TYPE_FOR_IF_STMT_EXPRESSION);
+    }
 }
 | T_IF T_LPAREN expression T_RPAREN if_block T_ELSE if_block %prec T_ELSE
 {
-    Statement *stmt = new If_Statement($3, $5, $7);
-    stack_block.top()->insert(stmt);
+    if($3->get_gType() == INT)
+    {
+        Statement *stmt = new If_Statement($3, $5, $7);
+        stack_block.top()->insert(stmt);
+    }
+    else
+    {
+        Error::error(Error::INVALID_TYPE_FOR_IF_STMT_EXPRESSION);
+    }
 }
 ;
 
@@ -885,8 +899,15 @@ T_IF T_LPAREN expression T_RPAREN if_block %prec IF_NO_ELSE
 for_statement:
 T_FOR T_LPAREN statement_block_creator assign_statement end_of_statement_block T_SEMIC expression T_SEMIC statement_block_creator assign_statement end_of_statement_block T_RPAREN statement_block
 {
+    if($7->get_gType() == INT)
+    {
     Statement *stmt = new For_Statement($5,$7,$11,$13);
     stack_block.top()->insert(stmt);
+    }
+    else
+    {
+        Error::error(Error::INVALID_TYPE_FOR_FOR_STMT_EXPRESSION);
+    }
 }
 ;
 
@@ -912,21 +933,108 @@ T_EXIT T_LPAREN expression T_RPAREN
 assign_statement:
 variable T_ASSIGN expression
 {
-    Statement *stmt = new Assignment_Statement($3, ASSIGN, $1);
-    stack_block.top()->insert(stmt);
-    $$ = stmt;
+    if($1->gettype() == INT)
+    {
+        if($3->get_gType() == DOUBLE){
+            Error::error(Error::ASSIGNMENT_TYPE_ERROR, "int", "double");
+        }
+        else if($3->get_gType() == STRING){
+            Error::error(Error::ASSIGNMENT_TYPE_ERROR, "int", "string");
+        }
+        else{
+            Statement *stmt = new Assignment_Statement($3, ASSIGN, $1);
+            stack_block.top()->insert(stmt);
+            $$ = stmt;
+        }
+    }
+    else if($1->gettype() == DOUBLE)
+    {
+        if($3->get_gType() == STRING){
+            Error::error(Error::ASSIGNMENT_TYPE_ERROR, "double", "string");
+        }
+        else{
+            Statement *stmt = new Assignment_Statement($3, ASSIGN, $1);
+            stack_block.top()->insert(stmt);
+            $$ = stmt;
+        }
+    }
+    else if($1->gettype() == STRING)
+    {
+        Statement *stmt = new Assignment_Statement($3, ASSIGN, $1);
+        stack_block.top()->insert(stmt);
+        $$ = stmt;
+    }
 }
 | variable T_PLUS_ASSIGN expression
 {
-    Statement *stmt = new Assignment_Statement($3,PLUS_ASSIGN,$1);
-    stack_block.top()->insert(stmt);
-    $$ = stmt;
+    if($1->gettype() == INT)
+    {
+        if($3->get_gType() == DOUBLE){
+            Error::error(Error::PLUS_ASSIGNMENT_TYPE_ERROR, "int", "double");
+        }
+        else if($3->get_gType() == STRING){
+            Error::error(Error::PLUS_ASSIGNMENT_TYPE_ERROR, "int", "string");
+        }
+        else{
+            Statement *stmt = new Assignment_Statement($3, PLUS_ASSIGN, $1);
+            stack_block.top()->insert(stmt);
+            $$ = stmt;
+        }
+    }
+    else if($1->gettype() == DOUBLE)
+    {
+        if($3->get_gType() == STRING){
+            Error::error(Error::PLUS_ASSIGNMENT_TYPE_ERROR, "double", "string");
+        }
+        else{
+            Statement *stmt = new Assignment_Statement($3, PLUS_ASSIGN, $1);
+            stack_block.top()->insert(stmt);
+            $$ = stmt;
+        }
+    }
+    else if($1->gettype() == STRING)
+    {
+        Statement *stmt = new Assignment_Statement($3, PLUS_ASSIGN, $1);
+        stack_block.top()->insert(stmt);
+        $$ = stmt;
+    }
 }
 | variable T_MINUS_ASSIGN expression
 {
-    Statement *stmt = new Assignment_Statement($3,MINUS_ASSIGN,$1);
-    stack_block.top()->insert(stmt);
-    $$ = stmt;
+    if($1->gettype() == INT)
+    {
+        if($3->get_gType() == DOUBLE){
+            Error::error(Error::MINUS_ASSIGNMENT_TYPE_ERROR, "int", "double");
+        }
+        else if($3->get_gType() == STRING){
+            Error::error(Error::MINUS_ASSIGNMENT_TYPE_ERROR, "int", "string");
+        }
+        else{
+            Statement *stmt = new Assignment_Statement($3, MINUS_ASSIGN, $1);
+            stack_block.top()->insert(stmt);
+            $$ = stmt;
+        }
+    }
+    else if($1->gettype() == DOUBLE)
+    {
+        if($3->get_gType() == STRING){
+            Error::error(Error::MINUS_ASSIGNMENT_TYPE_ERROR, "double", "string");
+        }
+        else{
+            Statement *stmt = new Assignment_Statement($3, MINUS_ASSIGN, $1);
+            stack_block.top()->insert(stmt);
+            $$ = stmt;
+        }
+    }
+    else if($1->gettype() == STRING)
+    {
+        if($3->get_gType() == INT)
+            Error::error(Error::INVALID_LHS_OF_MINUS_ASSIGNMENT, $1->getVariableName(), "int");
+        else if($3->get_gType() == DOUBLE)
+            Error::error(Error::INVALID_LHS_OF_MINUS_ASSIGNMENT, $1->getVariableName(), "double");
+        else if($3->get_gType() == STRING)
+            Error::error(Error::INVALID_LHS_OF_MINUS_ASSIGNMENT, $1->getVariableName(), "string");
+    }
 }
 ;
 
