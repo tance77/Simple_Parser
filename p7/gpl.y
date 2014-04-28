@@ -915,8 +915,14 @@ T_FOR T_LPAREN statement_block_creator assign_statement end_of_statement_block T
 print_statement:
 T_PRINT T_LPAREN expression T_RPAREN
 {
+    if($3->get_gType() == INT || $3->get_gType() == DOUBLE || $3->get_gType() == STRING)
+    {
     Statement *stmt = new Print_Statement($1, $3);
     stack_block.top()->insert(stmt);
+    }
+    else{
+        Error::error(Error::INVALID_TYPE_FOR_PRINT_STMT_EXPRESSION);
+    }
 }
 ;
 
@@ -924,8 +930,20 @@ T_PRINT T_LPAREN expression T_RPAREN
 exit_statement:
 T_EXIT T_LPAREN expression T_RPAREN
 {
+    if($3->get_gType() == INT)
+    {
         Statement *stmt = new Exit_Statement($3, $1);
         stack_block.top()->insert(stmt);
+    }
+    else{
+        if($3->get_gType() == DOUBLE) //your a mother fucking double
+        {
+            Error::error(Error::EXIT_STATUS_MUST_BE_AN_INTEGER, "double");
+        }
+        else{ //your a mother fucking string
+            Error::error(Error::EXIT_STATUS_MUST_BE_AN_INTEGER, "string");
+        }
+    }
 }
 ;
 
@@ -964,6 +982,10 @@ variable T_ASSIGN expression
         stack_block.top()->insert(stmt);
         $$ = stmt;
     }
+    else if($1->gettype() == GAME_OBJECT)
+    {
+        Error::error(Error::INVALID_LHS_OF_ASSIGNMENT, $1->getVariableName(), "game_object");
+    }
 }
 | variable T_PLUS_ASSIGN expression
 {
@@ -997,6 +1019,10 @@ variable T_ASSIGN expression
         Statement *stmt = new Assignment_Statement($3, PLUS_ASSIGN, $1);
         stack_block.top()->insert(stmt);
         $$ = stmt;
+    }
+    else
+    {
+        Error::error(Error::INVALID_LHS_OF_PLUS_ASSIGNMENT, $1->getVariableName(), "game_object");
     }
 }
 | variable T_MINUS_ASSIGN expression

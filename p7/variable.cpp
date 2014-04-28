@@ -340,6 +340,8 @@ void Variable::set(int value)
             stringstream ss2;
             ss2 << m_Expression->evalint();
             Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
+            sym = TheTable->lookup(m_sValue + "[0]");
+            sym->set(value);
           }
         if(m_MemberName != "")
           {
@@ -385,6 +387,8 @@ void Variable::set(double value)
             stringstream ss2;
             ss2 << m_Expression->evalint();
             Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
+            sym = TheTable->lookup(m_sValue + "[0]");
+            sym->set(value);
           }
         if(m_MemberName != "")
           {
@@ -415,6 +419,8 @@ void Variable::set(std::string value)
             stringstream ss2;
             ss2 << m_Expression->evalint();
             Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
+            sym = TheTable->lookup(m_sValue + "[0]");
+            sym->set(value);
           }
         if(m_MemberName != "")
           {
