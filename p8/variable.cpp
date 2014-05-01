@@ -14,12 +14,12 @@ Variable::Variable(Symbol *target) //default add symbol to table int double stri
         m_Symbol = target;
         m_Type = m_Symbol->getType();
         if(m_Symbol->getType() == ANIMATION_BLOCK)
-          {
+        {
             m_AnimatiomBlock = m_Symbol->getanimationValue();
-          }
+        }
     }
     else {
-            //WTF goes here?
+        //WTF goes here?
     }
 }
 Variable::Variable(std::string value, Expression *e) //array
@@ -31,8 +31,8 @@ Variable::Variable(std::string value, Expression *e) //array
         m_sValue = value;
         Symbol *tmp_Symbol = TheTable->lookup(value + "[0]");
         if(tmp_Symbol == NULL){
-                // if we can't find name [0], then this variable needs to reference
-                // a dummy symbol
+            // if we can't find name [0], then this variable needs to reference
+            // a dummy symbol
             m_Symbol = new Symbol(INT, value, 0);
             m_Expression = new Expression(0, INT);
             Error::error(Error::VARIABLE_NOT_AN_ARRAY, value);
@@ -50,7 +50,7 @@ Variable::Variable(std::string value, Expression *e) //array
         m_Symbol = new Symbol(INT, value, 0);
         m_Expression = new Expression(0, INT);
         m_Type = INT;
-        
+
     }
     else if (e->get_gType() == STRING){
         Error::error(Error::ARRAY_INDEX_MUST_BE_AN_INTEGER, value, "A string expression");
@@ -60,30 +60,30 @@ Variable::Variable(std::string value, Expression *e) //array
         m_Type = INT;
     }
 }
-    //Variable::Variable(std::string GameObject_Name, std::string MemberName) //GAME OBJECT
-    //{
-    //  m_MemberName = "";
-    //  m_Expression = NULL;
-    //  m_sValue = GameObject_Name;
-    //  m_Symbol = TheTable->lookup(MemberName);
-    //  m_Type = GAME_OBJECT;
-    //}
-    //Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
-    //{
-    //  m_MemberName = "";
-    //  m_sValue = name;
-    //  m_Expression = NULL;
-    //  m_Symbol = TheTable->lookup(name);
-    //  if(m_Symbol == NULL)
-    //    m_Type = INT;
-    //  m_Type = m_Symbol->getType();
-    //  m_AnimatiomBlock = m_Symbol->getanimationValue();
-    //  if(m_Type == 0) //If the type isn't initialized
-    //    m_Type = INT;
-    //}
+//Variable::Variable(std::string GameObject_Name, std::string MemberName) //GAME OBJECT
+//{
+//  m_MemberName = "";
+//  m_Expression = NULL;
+//  m_sValue = GameObject_Name;
+//  m_Symbol = TheTable->lookup(MemberName);
+//  m_Type = GAME_OBJECT;
+//}
+//Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
+//{
+//  m_MemberName = "";
+//  m_sValue = name;
+//  m_Expression = NULL;
+//  m_Symbol = TheTable->lookup(name);
+//  if(m_Symbol == NULL)
+//    m_Type = INT;
+//  m_Type = m_Symbol->getType();
+//  m_AnimatiomBlock = m_Symbol->getanimationValue();
+//  if(m_Type == 0) //If the type isn't initialized
+//    m_Type = INT;
+//}
 Variable::Variable(Symbol *sym, std::string memberID) //EX J.x
 {
-    
+
     m_iValue = 0;
     m_dValue = 0;
     m_sValue = "EMPTY";
@@ -92,17 +92,17 @@ Variable::Variable(Symbol *sym, std::string memberID) //EX J.x
         m_MemberName = memberID;
         m_Expression = NULL;
         m_AnimatiomBlock = NULL;
-        
-            // get type of the "m_MemberName" field of the game object
-        
+
+        // get type of the "m_MemberName" field of the game object
+
         Game_object *game_object = m_Symbol->getgameobjectValue();
         assert(game_object);
         Status result = game_object->get_member_variable_type(m_MemberName, m_Type);
         assert(result == OK);
-            // m_Type = m_Symbol->getType();
+        // m_Type = m_Symbol->getType();
     }
     else {
-            //WTF goes here?
+        //WTF goes here?
     }
 }
 Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10].x
@@ -114,16 +114,16 @@ Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10
         m_sValue = ID;
         Symbol *tmp_Symbol = TheTable->lookup(ID + "[0]");
         if(tmp_Symbol == NULL){
-                // if we can't find name [0], then this variable needs to reference
-                // a dummy symbol
+            // if we can't find name [0], then this variable needs to reference
+            // a dummy symbol
             m_Symbol = new Symbol(INT, ID, 0);
             m_Expression = new Expression(0, INT);
             Error::error(Error::VARIABLE_NOT_AN_ARRAY, ID);
         }
         else{
             m_Expression = e;
-                // m_Type = tmp_Symbol->getType();
-            
+            // m_Type = tmp_Symbol->getType();
+
             Game_object *game_object = tmp_Symbol->getgameobjectValue();
             assert(game_object);
             Status result = game_object->get_member_variable_type(m_MemberName, m_Type);
@@ -138,7 +138,7 @@ Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10
         m_Symbol = new Symbol(INT, ID, 0);
         m_Expression = new Expression(0, INT);
         m_Type = INT;
-        
+
     }
     else if (e->get_gType() == STRING){
         Error::error(Error::ARRAY_INDEX_MUST_BE_AN_INTEGER, ID, "A string expression");
@@ -151,150 +151,150 @@ Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10
 int Variable::getiValue()
 {
     if(m_Symbol)
-      {
+    {
         if(m_MemberName != "")
-          {
+        {
             Game_object *tmp = m_Symbol->getgameobjectValue();
             int val;
             tmp->get_member_variable(m_MemberName, val);
             return val;
-          }
+        }
         else
-          {
+        {
             if(m_Symbol->getType() == INT)
-              {
+            {
                 return m_Symbol->getintValue();
-              }
+            }
             else if(m_Symbol->getType() == DOUBLE) //error
-              {
+            {
                 return -1;
-              }
+            }
             else //you are a string error
-              {
+            {
                 return -1;
-              }
-          }
-      }
+            }
+        }
+    }
     else //I'm an expresion
-      {
+    {
         stringstream ss;
         ss << m_Expression->evalint();
         Symbol* sym = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
         if(sym == NULL)
-          {
+        {
             stringstream ss2;
             ss2 << m_Expression->evalint();
             Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
-          }
+        }
         if(m_MemberName != "")
-          {
+        {
             Game_object *tmp = sym->getgameobjectValue();
             int val;
             tmp->get_member_variable(m_MemberName, val);
             return val;
-          }
+        }
         else
             return sym->getintValue();
-      }
+    }
     return 0;
 }
 double Variable::getdValue()
 {
     if(m_Symbol)
-      {
+    {
         if(m_MemberName != "")
-          {
+        {
             Game_object *tmp = m_Symbol->getgameobjectValue();
             double val;
             tmp->get_member_variable(m_MemberName, val);
             return val;
-          }
+        }
         else
-          {
+        {
             if(m_Symbol->getType() == INT)
-              {
+            {
                 return m_Symbol->getintValue();
-              }
+            }
             else if(m_Symbol->getType() == DOUBLE)
-              {
+            {
                 return m_Symbol->getdoubleValue();
-              }
+            }
             else //you are a string //error
                 return -1;
-          }
-      }
+        }
+    }
     else //I'm an expresion
-      {
+    {
         stringstream ss;
         ss << m_Expression->evalint();
         Symbol* sym = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
         if(sym == NULL)
-          {
+        {
             stringstream ss2;
             ss2 << m_Expression->evalint();
             Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
-          }
+        }
         if(m_MemberName != "")
-          {
+        {
             Game_object *tmp = sym->getgameobjectValue();
             double val;
             tmp->get_member_variable(m_MemberName, val);
             return val;
-          }
+        }
         else
             return sym->getdoubleValue();
-      }
+    }
     return 0;
 }
 std::string Variable::getsValue()
 {
     if(m_Symbol){
         if(m_MemberName != "")
-          {
+        {
             Game_object *tmp = m_Symbol->getgameobjectValue();
             string val;
             tmp->get_member_variable(m_MemberName, val);
             return val;
-          }
+        }
         else
-          {
+        {
             if(m_Symbol->getType() == INT)
-              {
+            {
                 stringstream s;
                 s << m_Symbol->getintValue();
                 return s.str();
-              }
+            }
             else if(m_Symbol->getType() == DOUBLE)
-              {
+            {
                 stringstream s;
                 s<< m_Symbol->getdoubleValue();
                 return s.str();
-              }
+            }
             else //you are a string
                 return m_Symbol->getstringValue();
-          }
+        }
     }
     else //I'm an expresion
-      {
+    {
         stringstream ss;
         ss << m_Expression->evalint();
         Symbol* sym = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
         if(sym == NULL)
-          {
+        {
             stringstream ss2;
             ss2 << m_Expression->evalint();
             Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
-          }
+        }
         if(m_MemberName != "")
-          {
+        {
             Game_object *tmp = sym->getgameobjectValue();
             std::string val;
             tmp->get_member_variable(m_MemberName, val);
             return val;
-          }
+        }
         else
             return sym->getstringValue();
-      }
+    }
     return "";
 }
 Gpl_type Variable::gettype()
@@ -303,103 +303,139 @@ Gpl_type Variable::gettype()
 }
 Animation_block* Variable::getAnimate()
 {
-    return m_AnimatiomBlock;
+    return m_Symbol->getanimationValue();
 }
 void Variable::set(int value)
 {
     if(m_Symbol)
-      {
+    {
         if(m_MemberName != "")
-          {
+        {
             Game_object *tmp = m_Symbol->getgameobjectValue();
             tmp->set_member_variable(m_MemberName,value);
-          }
+        }
         else
-          {
+        {
             if(m_Symbol->getType() == INT)
-              {
+            {
                 m_Symbol->set(value);
-              }
+            }
             else if(m_Symbol->getType() == DOUBLE) //error
-              {
-                    //
-              }
+            {
+                //
+            }
             else //you are a string error
-              {
-                    //
-              }
-          }
-      }
+            {
+                //
+            }
+        }
+    }
     else //I'm an expresion
-      {
+    {
         stringstream ss;
         ss << m_Expression->evalint();
         Symbol* sym = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
         if(sym == NULL)
-          {
+        {
             stringstream ss2;
             ss2 << m_Expression->evalint();
             Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
             sym = TheTable->lookup(m_sValue + "[0]");
             sym->set(value);
-          }
+        }
         if(m_MemberName != "")
-          {
+        {
             Game_object *tmp = sym->getgameobjectValue();
             tmp->set_member_variable(m_MemberName,value);
-          }
+        }
         else
             sym->set(value);
-      }
+    }
 }
 void Variable::set(double value)
 {
     if(m_Symbol)
-      {
+    {
         if(m_MemberName != "")
-          {
+        {
             Game_object *tmp = m_Symbol->getgameobjectValue();
             tmp->set_member_variable(m_MemberName, value);
-          }
-        else
-          {
-            if(m_Symbol->getType() == INT)
-              {
-                m_Symbol->set(value);
-              }
-            else if(m_Symbol->getType() == DOUBLE) //error
-              {
-                m_Symbol->set(value);
-              }
-            else //you are a string error
-              {
-                    //error
-              }
         }
-      }
+        else
+        {
+            if(m_Symbol->getType() == INT)
+            {
+                m_Symbol->set(value);
+            }
+            else if(m_Symbol->getType() == DOUBLE) //error
+            {
+                m_Symbol->set(value);
+            }
+            else //you are a string error
+            {
+                //error
+            }
+        }
+    }
     else //I'm an expresion
-      {
+    {
         stringstream ss;
         ss << m_Expression->evalint();
         Symbol* sym = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
         if(sym == NULL)
-          {
+        {
             stringstream ss2;
             ss2 << m_Expression->evalint();
             Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
             sym = TheTable->lookup(m_sValue + "[0]");
             sym->set(value);
-          }
+        }
         if(m_MemberName != "")
-          {
+        {
             Game_object *tmp = sym->getgameobjectValue();
             tmp->set_member_variable(m_MemberName,value);
-          }
+        }
         else
             sym->set(value);
-      }
+    }
 }
 void Variable::set(std::string value)
+{
+    if(m_Symbol){
+        if(m_MemberName != "")
+        {
+            Game_object *tmp = m_Symbol->getgameobjectValue();
+            tmp->set_member_variable(m_MemberName, value);
+        }
+        m_Symbol->set(value);
+    }
+    else //I'm an expresion
+    {
+        stringstream ss;
+        ss << m_Expression->evalint();
+        Symbol* sym = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
+        if(sym == NULL)
+        {
+            stringstream ss2;
+            ss2 << m_Expression->evalint();
+            Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
+            sym = TheTable->lookup(m_sValue + "[0]");
+            sym->set(value);
+        }
+        if(m_MemberName != "")
+        {
+            Game_object *tmp = sym->getgameobjectValue();
+            tmp->set_member_variable(m_MemberName,value);
+        }
+        else
+            sym->set(value);
+    }
+}
+void Variable::set(Game_object *value)
+{
+    m_Symbol->set(value);
+}
+void Variable::set(Animation_block *value)
 {
     if(m_Symbol){
         if(m_MemberName != "")
@@ -430,10 +466,6 @@ void Variable::set(std::string value)
         else
             sym->set(value);
       }
-}
-void Variable::set(Game_object *value)
-{
-    m_Symbol->set(value);
 }
 Symbol* Variable::get_symbol()
 {

@@ -70,6 +70,7 @@ public:
     void set(double);
     void set(std::string);
     void set(Game_object*);
+    void set(Animation_block*);
     Gpl_type getType();
     bool is_int();
     

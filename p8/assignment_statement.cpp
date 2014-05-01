@@ -39,11 +39,11 @@ void Assignment_Statement::execute()
               break;
               
             case PLUS_ASSIGN:
-            m_variable->set(m_variable->getdValue() + m_expression->evaldouble());
+              m_variable->set(m_variable->getdValue() + m_expression->evaldouble());
               break;
               
             case MINUS_ASSIGN:
-            m_variable->set(m_variable->getdValue() - m_expression->evaldouble());
+              m_variable->set(m_variable->getdValue() - m_expression->evaldouble());
               break;
               
             default:
@@ -60,7 +60,7 @@ void Assignment_Statement::execute()
               break;
               
             case PLUS_ASSIGN:
-                  m_variable->set(m_variable->getsValue() + m_expression->evalstring());
+              m_variable->set(m_variable->getsValue() + m_expression->evalstring());
               break;
               
             case MINUS_ASSIGN:
@@ -70,6 +70,21 @@ void Assignment_Statement::execute()
             default:
               break;
               
+        }
+      }
+    else if(m_variable->gettype() == ANIMATION_BLOCK)
+      {
+        switch (m_oType) {
+            case ASSIGN:
+                m_variable->set(m_expression->get_Animation());
+                break;
+            case PLUS_ASSIGN:
+                m_variable->set(m_expression->get_Animation());
+                break;
+            case MINUS_ASSIGN:
+                break;
+            default:
+                break;
         }
       }
 }

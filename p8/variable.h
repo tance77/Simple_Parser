@@ -34,6 +34,8 @@ public:
     void set(double);
     void set(std::string);
     void set(Game_object*);
+    void set(Animation_block*);
+    
 private:
     int m_iValue;
     double m_dValue;

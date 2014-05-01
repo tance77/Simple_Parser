@@ -349,6 +349,10 @@ int Expression::evalint()
                     return !m_RHS->evaldouble();
                 }
                 return !m_RHS->evalint();
+            case NEAR:
+                return m_RHS->evalint();
+            case TOUCHES:
+                return m_RHS->evalint();
             default:
                 return m_iValue;
         }

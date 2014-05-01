@@ -51,3 +51,7 @@ void Symbol::set(Game_object *value)
 {
     m_Gameobject = value;
 }
+void Symbol::set(Animation_block *value)
+{
+    m_Animation_block = value;
+}

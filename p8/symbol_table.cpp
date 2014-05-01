@@ -87,7 +87,7 @@ bool Symbol_table::get(string name, double &value)
 bool Symbol_table::get(string name, string &value)
 {
     Symbol *cur = lookup(name);
-    if (!cur || !cur->is_int())
+    if (!cur)
         return false;
     
     value = cur->getstringValue();
