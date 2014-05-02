@@ -437,35 +437,7 @@ void Variable::set(Game_object *value)
 }
 void Variable::set(Animation_block *value)
 {
-    if(m_Symbol){
-        if(m_MemberName != "")
-          {
-            Game_object *tmp = m_Symbol->getgameobjectValue();
-            tmp->set_member_variable(m_MemberName, value);
-          }
-        m_Symbol->set(value);
-    }
-    else //I'm an expresion
-      {
-        stringstream ss;
-        ss << m_Expression->evalint();
-        Symbol* sym = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
-        if(sym == NULL)
-          {
-            stringstream ss2;
-            ss2 << m_Expression->evalint();
-            Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
-            sym = TheTable->lookup(m_sValue + "[0]");
-            sym->set(value);
-          }
-        if(m_MemberName != "")
-          {
-            Game_object *tmp = sym->getgameobjectValue();
-            tmp->set_member_variable(m_MemberName,value);
-          }
-        else
-            sym->set(value);
-      }
+    m_Symbol->getgameobjectValue()->set_member_variable("animation_block", value);
 }
 Symbol* Variable::get_symbol()
 {

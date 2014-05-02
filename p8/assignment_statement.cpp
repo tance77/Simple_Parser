@@ -74,17 +74,19 @@ void Assignment_Statement::execute()
       }
     else if(m_variable->gettype() == ANIMATION_BLOCK)
       {
-        switch (m_oType) {
-            case ASSIGN:
-                m_variable->set(m_expression->get_Animation());
-                break;
-            case PLUS_ASSIGN:
-                m_variable->set(m_expression->get_Animation());
-                break;
-            case MINUS_ASSIGN:
-                break;
-            default:
-                break;
-        }
+//        switch (m_oType) {
+//            case ASSIGN:
+//                m_variable->set(m_expression->get_Animation());
+//                break;
+//            case PLUS_ASSIGN:
+//                m_variable->set(m_expression->get_Animation());
+//                break;
+//            case MINUS_ASSIGN:
+//                break;
+//            default:
+//                break;
+//        m_variable->get_symbol()->getgameobjectValue()->set_member_variable("animation_block", m_expression->get_Animation());
+            //        }
+        m_variable->set(m_expression->get_Animation());
       }
 }

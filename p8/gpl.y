@@ -878,6 +878,7 @@ T_IF T_LPAREN expression T_RPAREN if_block %prec IF_NO_ELSE
 }
 | T_IF T_LPAREN expression T_RPAREN if_block T_ELSE if_block %prec T_ELSE
 {
+    Gpl_type fuckkkkkkk = $3->get_gType();
   if($3->get_gType() == INT)
   {
     Statement *stmt = new If_Statement($3, $5, $7);
@@ -1343,6 +1344,7 @@ primary_expression
 }
 | variable geometric_operator variable
 {
+    $$ = new Expression ($2, new Expression($1), new Expression($3));
 }
 ;
 //---------------------------------------------------------------------
@@ -1381,11 +1383,11 @@ T_LPAREN  expression T_RPAREN
 geometric_operator:
 T_TOUCHES
 {
-  $$ = TOUCHES;
+    $$ = TOUCHES;
 }
 | T_NEAR
 {
-  $$ = NEAR;
+    $$ = NEAR;
 }
 ;
 
