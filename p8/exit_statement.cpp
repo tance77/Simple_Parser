@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "exit_statement.h"
 
 Exit_Statement::Exit_Statement(Expression* expr, int line) : Statement()

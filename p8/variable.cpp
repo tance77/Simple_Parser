@@ -6,23 +6,6 @@
 
 Symbol_table* TheTable = Symbol_table::instance();
 
-void Variable::update_symbol()
-{
-    if(m_Expression != NULL)
-    {
-        stringstream ss;
-        ss << m_Expression->evalint();
-        m_Symbol = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
-        if(m_Symbol== NULL)
-        {
-            stringstream ss2;
-            ss2 << m_Expression->evalint();
-            Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
-            m_Symbol = TheTable->lookup(m_sValue + "[0]");
-        }
-    }
-}
-
 Variable::Variable(Symbol *target) //default add symbol to table int double strin
 {
     m_MemberName = ""; //when would this have a member name?
@@ -77,27 +60,6 @@ Variable::Variable(std::string value, Expression *e) //array
         m_Type = INT;
     }
 }
-//Variable::Variable(std::string GameObject_Name, std::string MemberName) //GAME OBJECT
-//{
-//  m_MemberName = "";
-//  m_Expression = NULL;
-//  m_sValue = GameObject_Name;
-//  m_Symbol = TheTable->lookup(MemberName);
-//  m_Type = GAME_OBJECT;
-//}
-//Variable::Variable(std::string name, Animation_block *animate) //ANIMATION BLOCK
-//{
-//  m_MemberName = "";
-//  m_sValue = name;
-//  m_Expression = NULL;
-//  m_Symbol = TheTable->lookup(name);
-//  if(m_Symbol == NULL)
-//    m_Type = INT;
-//  m_Type = m_Symbol->getType();
-//  m_AnimatiomBlock = m_Symbol->getanimationValue();
-//  if(m_Type == 0) //If the type isn't initialized
-//    m_Type = INT;
-//}
 Variable::Variable(Symbol *sym, std::string memberID) //EX J.x
 {
 
@@ -165,6 +127,24 @@ Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10
         m_Type = INT;
     }
 }
+
+void Variable::update_symbol()
+{
+    if(m_Expression != NULL)
+      {
+        stringstream ss;
+        ss << m_Expression->evalint();
+        m_Symbol = TheTable->lookup(m_sValue + '[' + ss.str() + ']');
+        if(m_Symbol== NULL)
+          {
+            stringstream ss2;
+            ss2 << m_Expression->evalint();
+            Error::error(Error::ARRAY_INDEX_OUT_OF_BOUNDS, m_sValue, ss2.str());
+            m_Symbol = TheTable->lookup(m_sValue + "[0]");
+          }
+      }
+}
+
 int Variable::getiValue()
 {
     update_symbol();
@@ -177,20 +157,15 @@ int Variable::getiValue()
             return val;
         }
         else
-        {
+          {
             if(m_Symbol->getType() == INT)
-            {
                 return m_Symbol->getintValue();
-            }
             else if(m_Symbol->getType() == DOUBLE) //error
-            {
                 return -1;
-            }
             else //you are a string error
-            {
+                
                 return -1;
-            }
-        }
+          }
     }
     return 0;
 }
@@ -208,13 +183,9 @@ double Variable::getdValue()
         else
         {
             if(m_Symbol->getType() == INT)
-            {
                 return m_Symbol->getintValue();
-            }
             else if(m_Symbol->getType() == DOUBLE)
-            {
                 return m_Symbol->getdoubleValue();
-            }
             else //you are a string //error
                 return -1;
         }
@@ -258,7 +229,7 @@ Gpl_type Variable::gettype()
 }
 Animation_block* Variable::getAnimate()
 {
-    update_symbol();
+        //update_symbol();
     return m_Symbol->getanimationValue();
 }
 void Variable::set(int value)
@@ -273,17 +244,11 @@ void Variable::set(int value)
         else
         {
             if(m_Symbol->getType() == INT)
-            {
                 m_Symbol->set(value);
-            }
-            else if(m_Symbol->getType() == DOUBLE) //error
-            {
+            else if(m_Symbol->getType() == DOUBLE){} //error
                 //
-            }
-            else //you are a string error
-            {
+                else {}//you are a string error
                 //
-            }
         }
     }
 }
@@ -299,17 +264,10 @@ void Variable::set(double value)
         else
         {
             if(m_Symbol->getType() == INT)
-            {
                 m_Symbol->set(value);
-            }
             else if(m_Symbol->getType() == DOUBLE) //error
-            {
                 m_Symbol->set(value);
-            }
-            else //you are a string error
-            {
-                //error
-            }
+            else{}
         }
     }
 }
@@ -332,12 +290,12 @@ void Variable::set(Game_object *value)
 }
 void Variable::set(Animation_block *value)
 {
-    update_symbol();
+    update_symbol(); //This is to pass the test 4 EX circles[index].animation_block = move;
     m_Symbol->getgameobjectValue()->set_member_variable("animation_block", value);
 }
 Symbol* Variable::get_symbol()
 {
-    update_symbol();
+    update_symbol(); //this is the one we needed to do to pass the tests in the 20's for p8
     return m_Symbol;
 }
 Expression* Variable::get_expression()

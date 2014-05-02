@@ -955,7 +955,7 @@ variable T_ASSIGN expression
     else if($3->get_gType() == STRING){
       Error::error(Error::ASSIGNMENT_TYPE_ERROR, "int", "string");
     }
-    else{
+    else{ /*if the left and the right side are of type INT then we push this onto the stack*/
       Statement *stmt = new Assignment_Statement($3, ASSIGN, $1);
       stack_block.top()->insert(stmt);
       $$ = stmt;
@@ -966,7 +966,7 @@ variable T_ASSIGN expression
     if($3->get_gType() == STRING){
       Error::error(Error::ASSIGNMENT_TYPE_ERROR, "double", "string");
     }
-    else{
+    else{ /*if the left side is a double and the right side is of type INT or DOUBLE push this onto the stack*/
       Statement *stmt = new Assignment_Statement($3, ASSIGN, $1);
       stack_block.top()->insert(stmt);
       $$ = stmt;
@@ -978,9 +978,22 @@ variable T_ASSIGN expression
     stack_block.top()->insert(stmt);
     $$ = stmt;
   }
-  else if($1->gettype() == GAME_OBJECT)
+  else if($1->gettype() == GAME_OBJECT) /*We do not assign game objects*/
   {
     Error::error(Error::INVALID_LHS_OF_ASSIGNMENT, $1->getVariableName(), "game_object");
+  }
+  else if($1->gettype() == ANIMATION_BLOCK)
+  {
+   if($3->get_gType() == ANIMATION_BLOCK) /*If the left and right side are both of type ANIMATION_BLOCK*/
+   {
+       Statement *stmt = new Assignment_Statement($3, ASSIGN, $1);
+       stack_block.top()->insert(stmt);
+       $$ = stmt;
+   }
+   else
+   {
+           /*We have an error*/
+   }
   }
 }
 | variable T_PLUS_ASSIGN expression

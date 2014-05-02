@@ -9,84 +9,94 @@ Assignment_Statement::Assignment_Statement(Expression *expr, Operator_type oType
 void Assignment_Statement::execute()
 {
     if(m_variable->gettype() == INT)
-      {
+    {
         switch(m_oType)
         {
             case ASSIGN:
-              m_variable->set(m_expression->evalint());
-              break;
-              
+                m_variable->set(m_expression->evalint());
+                break;
+
             case PLUS_ASSIGN:
-              m_variable->set(m_variable->getiValue() + m_expression->evalint());
-              break;
-              
+                m_variable->set(m_variable->getiValue() + m_expression->evalint());
+                break;
+
             case MINUS_ASSIGN:
-              m_variable->set(m_variable->getiValue() - m_expression->evalint());
-              break;
-              
+                m_variable->set(m_variable->getiValue() - m_expression->evalint());
+                break;
+
             default:
-              break;
-              
+                break;
+
         }
-      }
+    }
     else if(m_variable->gettype() == DOUBLE)
-      {
+    {
         switch(m_oType)
         {
             case ASSIGN:
-              m_variable->set(m_expression->evaldouble());
-              
-              break;
-              
+                m_variable->set(m_expression->evaldouble());
+
+                break;
+
             case PLUS_ASSIGN:
-              m_variable->set(m_variable->getdValue() + m_expression->evaldouble());
-              break;
-              
+                m_variable->set(m_variable->getdValue() + m_expression->evaldouble());
+                break;
+
             case MINUS_ASSIGN:
-              m_variable->set(m_variable->getdValue() - m_expression->evaldouble());
-              break;
-              
+                m_variable->set(m_variable->getdValue() - m_expression->evaldouble());
+                break;
+
             default:
-              break;
-              
+                break;
+
         }
-      }
+    }
     else if(m_variable->gettype() == STRING)
-      {
+    {
         switch(m_oType)
         {
             case ASSIGN:
-              m_variable->set(m_expression->evalstring());
-              break;
-              
+                m_variable->set(m_expression->evalstring());
+                break;
+
             case PLUS_ASSIGN:
-              m_variable->set(m_variable->getsValue() + m_expression->evalstring());
-              break;
-              
+                m_variable->set(m_variable->getsValue() + m_expression->evalstring());
+                break;
+
             case MINUS_ASSIGN:
-                  //error
-              break;
-              
+                //error
+                break;
+
             default:
-              break;
-              
+                break;
+
         }
-      }
+    }
     else if(m_variable->gettype() == ANIMATION_BLOCK)
-      {
-//        switch (m_oType) {
-//            case ASSIGN:
-//                m_variable->set(m_expression->get_Animation());
-//                break;
-//            case PLUS_ASSIGN:
-//                m_variable->set(m_expression->get_Animation());
-//                break;
-//            case MINUS_ASSIGN:
-//                break;
-//            default:
-//                break;
-//        m_variable->get_symbol()->getgameobjectValue()->set_member_variable("animation_block", m_expression->get_Animation());
-            //        }
-        m_variable->set(m_expression->get_Animation());
-      }
+    {
+        //        switch (m_oType) {
+        //            case ASSIGN:
+        //                m_variable->set(m_expression->get_Animation());
+        //                break;
+        //            case PLUS_ASSIGN:
+        //                m_variable->set(m_expression->get_Animation());
+        //                break;
+        //            case MINUS_ASSIGN:
+        //                break;
+        //            default:
+        //                break;
+        //        m_variable->get_symbol()->getgameobjectValue()->set_member_variable("animation_block", m_expression->get_Animation());
+        //        }
+        switch (m_oType){
+            case ASSIGN:
+                m_variable->set(m_expression->get_Animation());
+                break;
+            case PLUS_ASSIGN:
+                break;
+            case MINUS_ASSIGN:
+                break;
+            default:
+                break;
+        }
+    }
 }
