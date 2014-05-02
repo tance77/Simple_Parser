@@ -46,5 +46,6 @@ private:
     Expression *m_Expression;
     Animation_block *m_AnimatiomBlock;
     std::string m_MemberName;
+    void update_symbol();
 };
 #endif
