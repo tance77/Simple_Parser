@@ -460,6 +460,8 @@ double Expression::evaldouble()
             else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)              //Left is DOUBLE right is DOUBLE
                 return m_LHS->evaldouble() / m_RHS->evaldouble();
             return m_LHS->evaldouble() / m_RHS->evaldouble();
+        case RANDOM:
+            return rand() % m_RHS->evalint();
         default:
             return m_dValue;
     }

@@ -29,6 +29,8 @@ public:
     std::string name() {return m_name;}
     
     std::ostream &print(std::ostream &os) const;
+    int getLineNumber();
+    void setLineNumber(int);
     
 private:
     

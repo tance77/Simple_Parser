@@ -23,7 +23,6 @@ Animation_block::execute(Game_object *argument)
     m_parameter_symbol->set(argument);
     Statement_block::execute();
     m_parameter_symbol = tmp;
-    // not implemented yet
     //assert(false);
 }
 
@@ -57,4 +56,12 @@ operator<<(ostream &os, const Animation_block *animation_block)
     }
 
     return animation_block->print(os);
+}
+int Animation_block::getLineNumber()
+{
+    return m_forward_line;
+}
+void Animation_block::setLineNumber(int value)
+{
+    m_forward_line = value;
 }

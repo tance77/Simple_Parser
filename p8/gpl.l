@@ -81,7 +81,7 @@
 "circle"                            return T_CIRCLE;
 "rectangle"                         return T_RECTANGLE;
 "textbox"                           return T_TEXTBOX;
-"forward"                           return emit_with_line_number(T_FORWARD);
+"forward"                           return T_FORWARD;
 "initialization"                    return T_INITIALIZATION;
 
 "true"                              return T_TRUE;
@@ -112,7 +112,7 @@
 "wkey"                              return T_WKEY;
 "touches"                           return T_TOUCHES;
 "near"                              return T_NEAR;
-"animation"                         return T_ANIMATION;
+"animation"                         return emit_with_line_number(T_ANIMATION);
 "if"                                return T_IF;
 "for"                               return T_FOR;
 "else"                              return T_ELSE;
