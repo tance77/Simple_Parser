@@ -29,7 +29,7 @@ Expression::Expression(Operator_type type, Expression *RHS)
     m_LHS = NULL;
     m_RHS = RHS;
     m_Variable = NULL;
-    if(type == FLOOR){
+    if(type == FLOOR || type == RANDOM){
         m_gType = INT;
     }
     else if(type == SIN || type == COS || type == TAN || type == ASIN || type == ACOS || type == ATAN || type == SQRT){
@@ -363,13 +363,10 @@ double Expression::evaldouble()
 {
     if(m_gType == INT)
         return (double) evalint();
-
     if(m_kind == "VARIABLE")
         return m_Variable->getdValue();
     else if(m_kind == "DOUBLE_CONSTANT")
         return m_dValue;
-    //    else if(m_kind == "")
-    //        return m_RHS->evaldouble();
     switch (m_oType) {
         case SIN:
             if(m_RHS->get_gType() == INT)
@@ -413,7 +410,6 @@ double Expression::evaldouble()
                 return abs(m_RHS->evaldouble());
             else
                 return abs(m_RHS->evalint());
-
         case FLOOR:
             return floor(m_RHS->evaldouble());
         case UNARY_MINUS:
@@ -460,8 +456,6 @@ double Expression::evaldouble()
             else if (m_LHS->get_gType() == DOUBLE && m_RHS->get_gType() == DOUBLE)              //Left is DOUBLE right is DOUBLE
                 return m_LHS->evaldouble() / m_RHS->evaldouble();
             return m_LHS->evaldouble() / m_RHS->evaldouble();
-        case RANDOM:
-            return rand() % m_RHS->evalint();
         default:
             return m_dValue;
     }
