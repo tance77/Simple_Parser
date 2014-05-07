@@ -61,8 +61,8 @@ void Pixmap::build_display_list()
   if (!m_pixmap_data)
   {
     m_pixmap_data = default_pixmap_data;
-    m_w = m_pixmap_data->m_width;
-    m_h = m_pixmap_data->m_height;
+    Game_object::m_w = m_pixmap_data->m_width;
+    Game_object::m_h = m_pixmap_data->m_height;
   }
 
   // build the display list
@@ -73,28 +73,23 @@ void Pixmap::build_display_list()
   glPushMatrix();
   glRasterPos2i(m_x, m_y);
 
+  // Enable opengl transparency
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   // the .bmp format packs pixels into rows that are a
   // multiple of 4 bytes (adds padding if neccessary).  
   // Tell openGL to expect the padding @ 4byte level
+  // OBSOLETE: padding is removed when .bmp is converted to include ALPHA
+  // or maybe not...  I've read the default to be 4.
   glPixelStorei(GL_UNPACK_ALIGNMENT, (GLint) 4);
-
-  // LIMITATION: it would be nice if I could draw pixmaps with
-  // stencils
-  //   solution:  
-  //     include a second filename that specifies a stencil file
-  //     read the stencil in and keep it with the bitmap_data
-  //     before calling glDrawPixels()...
-  //     The following isn't correct, but it might be partially correct
-  //       glEnable(GL_STENCIL_TEST)
-  //       glDrawPixels(..., stencil,  using the stencil argument)
-  //       glDrawPixels(as before)
-  //       glDisable(GL_STENCIL_TEST)
 
   glDrawPixels(m_pixmap_data->m_width,
                m_pixmap_data->m_height,
-               GL_BGR, GL_UNSIGNED_BYTE,
+               GL_BGRA, GL_UNSIGNED_BYTE,
                m_pixmap_data->m_data
               );
+
   glPopMatrix();
   glEndList();
 }
@@ -116,8 +111,8 @@ void Pixmap::read_file()
   if (iter != m_pixmap_cache.end())
   {
     m_pixmap_data = (*iter).second;
-    m_w = m_pixmap_data->m_width;
-    m_h = m_pixmap_data->m_height;
+    Game_object::m_w = m_pixmap_data->m_width;
+    Game_object::m_h = m_pixmap_data->m_height;
     return;
   }
 
@@ -230,7 +225,7 @@ void Pixmap::read_file()
          << m_filename << ">" << endl;
     return;
   }
-  // buffer used hold the pixel array (passed to Pixmap_data: DO NOT DELETE)
+  // buffer used temporarially hold the pixel array (NOTE: this array includes padding)
   unsigned char *bitmap_data = (unsigned char *) malloc(bitmap_data_size);
 
   // seek to the start of the pixel array
@@ -246,14 +241,73 @@ void Pixmap::read_file()
   // done reading .bmp file
   fclose(file);
 
-  m_pixmap_data = new Pixmap_data(width, height, bitmap_data);
-  m_w = m_pixmap_data->m_width;
-  m_h = m_pixmap_data->m_height;
+  // create a new array large enough to hold an alpha value for each pixel
+  // NOTE: this array will NOT contain any padding
+  // DO NOT DELETE, memory allocated here is used by Pixmap_data object
+  unsigned char *bitmap_data_with_alpha = (unsigned char *) malloc(width * height * 4);
+
+  // bytes in row of .bmp not including the padding
+  // unsigned long row_width = width * 3;
+  // unsigned long row_padding = (row_width * 3) % 4;
+
+  // bytes in the padding at end of each row (could be zero)
+  // row width (in bytes) is width*3, use bytes*3 == width*9
+  // the magic mathmatics of %
+  unsigned long row_padding = (width * 9) % 4;
+
+  // cout << m_filename << " being parsed\n";
+  // cout << "width = " << width << " " << width*3 << "bytes " << endl;
+  // cout << "height = " << height << endl;
+  // cout << "row_padding = " << row_padding << endl;
+
+  unsigned long count = 0;
+  // the bitmap_data is padded so that each row contains a multiple of 4 bytes (this is .bmp std)
+  // must skip this padding when creating the bitmap_data array that contains alpha
+  //   each pixel in the old array is 3 bytes long + padding at end of row
+  //   each pixel in the new array is 4 bytes long
+  for (unsigned long old_index = 0, new_index = 0; new_index < width*height*4; new_index += 4)
+  {
+    bitmap_data_with_alpha[new_index+0] = bitmap_data[old_index+0];
+    bitmap_data_with_alpha[new_index+1] = bitmap_data[old_index+1];
+    bitmap_data_with_alpha[new_index+2] = bitmap_data[old_index+2];
+
+    // if the current pixel is the special "transparent" color
+    // give this pixel an alpha of 0 so it will not be displayed
+    // NOTE: colors are stored BGR  NOT RGB
+    if (bitmap_data_with_alpha[new_index+0] == ALPHA_BLUE
+        && bitmap_data_with_alpha[new_index + 1] == ALPHA_GREEN
+        && bitmap_data_with_alpha[new_index + 2] == ALPHA_RED)
+    {
+        bitmap_data_with_alpha[new_index + 3] = 0;
+    }
+    // else this pixel is NOT a transparent pixel, give it max alpha
+    else
+    {
+        bitmap_data_with_alpha[new_index + 3] = 255;
+    }
+
+    // each pixel in the old array is 3 bytes long
+    old_index += 3;
+    count++;
+
+    if (count == width)
+    {
+      old_index += row_padding;
+      count = 0;
+    }
+  }
+
+  // no longer need the temp bitmap array
+  free(bitmap_data);
+
+  m_pixmap_data = new Pixmap_data(width, height, bitmap_data_with_alpha);
+  Game_object::m_w = m_pixmap_data->m_width;
+  Game_object::m_h = m_pixmap_data->m_height;
 
   // insert new pixmap into the pixmap cache
   m_pixmap_cache[m_filename] = m_pixmap_data;
 
-  /****
+  /***
   // DO NOT DELETE, keep it around in case we want a new default
   // this code was used to create default_pixmap.h
   //
@@ -264,19 +318,19 @@ void Pixmap::read_file()
   // (3) run gpl save stdout to file
   // (4) update default_pixmap.h with the output
   cout << "dumping bitmap ******************" << endl;
-  cout << "width = " << m_width << endl;
-  cout << "height= " << m_height<< endl;
-  cout << "size = " << size << endl;
+  cout << "width = " << m_w << endl;
+  cout << "height= " << m_h << endl;
+  cout << "size = " << m_w * m_h * 4 << endl;
   cout << "data = " << endl;
   int in_row = 0;
-  for (int i = 0; i < size; i++)
+  for (int i = 0; i < m_w * m_h * 4; i++)
   {
-    if (++in_row > 10)
+    if (++in_row > 20)
     {
       cout << endl;
       in_row = 0;
     }
-    cout << (unsigned short) m_data[i] << ",";
+    cout << (unsigned short) bitmap_data_with_alpha[i] << ",";
   }
   ****/
 }

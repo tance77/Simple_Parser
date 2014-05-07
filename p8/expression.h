@@ -53,7 +53,7 @@ public:
         m_iValue = 0,
         m_dValue = 0.0,
         m_sValue = "",
-        m_gType = SHIT;
+        m_gType = m_Variable->gettype();;
     };
     
     Expression(Operator_type type, Expression *LHS, Expression *RHS); //BINARY_OPERATOR

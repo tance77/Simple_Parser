@@ -128,7 +128,7 @@ Variable::Variable(Expression *e, std::string ID, std::string memberID)//EX J[10
     }
 }
 
-void Variable::update_symbol()
+void Variable::update_symbol() //for an array
 {
     if(m_Expression != NULL)
       {
@@ -176,8 +176,11 @@ double Variable::getdValue()
         if(m_MemberName != "")
         {
             Game_object *tmp = m_Symbol->getgameobjectValue();
+            assert(m_Symbol->getgameobjectValue());
             double val;
             tmp->get_member_variable(m_MemberName, val);
+          cout << val << endl;
+          cout << m_MemberName << endl;
             return val;
         }
         else
@@ -229,7 +232,7 @@ Gpl_type Variable::gettype()
 }
 Animation_block* Variable::getAnimate()
 {
-        //update_symbol();
+    update_symbol();
     return m_Symbol->getanimationValue();
 }
 void Variable::set(int value)
@@ -286,6 +289,7 @@ void Variable::set(std::string value)
 void Variable::set(Game_object *value)
 {
     update_symbol();
+    assert(value);
     m_Symbol->set(value);
 }
 void Variable::set(Animation_block *value)

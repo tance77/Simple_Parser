@@ -602,8 +602,9 @@ T_FORWARD T_ANIMATION T_ID T_LPAREN animation_parameter T_RPAREN
     Animation_block* new_animation = new Animation_block(-1, $5, *$3);
     Symbol *tmp = new Symbol(*$3, new_animation);
     vector_block.push_back(*$3);
-    if(!TheTable->insert(*$3, tmp))
-    Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$3);
+    if(!TheTable->insert(*$3, tmp)){
+        Error::error(Error::PREVIOUSLY_DECLARED_VARIABLE, *$3);
+    }
     
 }
 ;
@@ -636,7 +637,7 @@ T_ANIMATION T_ID T_LPAREN check_animation_parameter
     Symbol* looked_up_symbol = TheTable->lookup(*$2);
     if(looked_up_symbol) //if this exists
     {
-        if(looked_up_symbol->getanimationValue()->getLineNumber() == -1)
+        if(looked_up_symbol->getanimationValue()->getLineNumber() == -1) //-1 is to see if we have already defined this animatiom block
         {
             assert(looked_up_symbol->getanimationValue());
             looked_up_symbol->getanimationValue()->setLineNumber($1);
@@ -703,52 +704,63 @@ object_type T_ID
 check_animation_parameter:
 T_TRIANGLE T_ID
 {
-    if(TheTable->lookup(*$2)->getgameobjectValue()->type() == "Triangle"){
-        $$ = TheTable->lookup(*$2);
-    }
-    else{
-        Error::error(Error::ANIMATION_PARAM_DOES_NOT_MATCH_FORWARD);
-        $$ = NULL;
+    if(TheTable->lookup(*$2)){
+        if(TheTable->lookup(*$2)->getgameobjectValue()->type() == "Triangle"){
+            $$ = TheTable->lookup(*$2);
+        }
+        else{
+            Error::error(Error::ANIMATION_PARAM_DOES_NOT_MATCH_FORWARD);
+            $$ = NULL;
+        }
     }
 }
 | T_PIXMAP T_ID
 {
-    if(TheTable->lookup(*$2)->getgameobjectValue()->type() == "Pixmap"){
-        $$ = TheTable->lookup(*$2);
-    }
-    else{
-        Error::error(Error::ANIMATION_PARAM_DOES_NOT_MATCH_FORWARD);
-        $$ = NULL;
+    if(TheTable->lookup(*$2)){
+        if(TheTable->lookup(*$2)->getgameobjectValue()->type() == "Pixmap"){
+            $$ = TheTable->lookup(*$2);
+        }
+        else{
+            Error::error(Error::ANIMATION_PARAM_DOES_NOT_MATCH_FORWARD);
+            $$ = NULL;
+        }
     }
 }
 | T_CIRCLE T_ID
 {
-    if(TheTable->lookup(*$2)->getgameobjectValue()->type() == "Circle"){
-        $$ = TheTable->lookup(*$2);
-    }
-    else{
-        Error::error(Error::ANIMATION_PARAM_DOES_NOT_MATCH_FORWARD);
-        $$ = NULL;
+    if(TheTable->lookup(*$2)){
+        if(TheTable->lookup(*$2)->getgameobjectValue()->type() == "Circle"){
+            $$ = TheTable->lookup(*$2);
+        }
+        else{
+            Error::error(Error::ANIMATION_PARAM_DOES_NOT_MATCH_FORWARD);
+            $$ = NULL;
+        }
     }
 }
 | T_RECTANGLE T_ID
 {
-    if(TheTable->lookup(*$2)->getgameobjectValue()->type() == "Rectangle"){
-        $$ = TheTable->lookup(*$2);
-    }
-    else{
-        Error::error(Error::ANIMATION_PARAM_DOES_NOT_MATCH_FORWARD);
-        $$ = NULL;
+    if(TheTable->lookup(*$2)) // if it exists dont do anything
+    {
+        if(TheTable->lookup(*$2)->getgameobjectValue()->type() == "Rectangle"){
+            $$ = TheTable->lookup(*$2);
+        }
+        else{
+            Error::error(Error::ANIMATION_PARAM_DOES_NOT_MATCH_FORWARD);
+            $$ = NULL;
+        }
     }
 }
 | T_TEXTBOX T_ID
 {
-    if(TheTable->lookup(*$2)->getgameobjectValue()->type() == "Textbox"){
-        $$ = TheTable->lookup(*$2);
-    }
-    else{
-        Error::error(Error::ANIMATION_PARAM_DOES_NOT_MATCH_FORWARD);
-        $$ = NULL;
+    if(TheTable->lookup(*$2)){
+        if(TheTable->lookup(*$2)->getgameobjectValue()->type() == "Textbox"){
+            $$ = TheTable->lookup(*$2);
+        }
+        else{
+            Error::error(Error::ANIMATION_PARAM_DOES_NOT_MATCH_FORWARD);
+            $$ = NULL;
+        }
     }
 }
 ;

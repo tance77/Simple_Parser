@@ -41,7 +41,12 @@ class Pixmap : public Game_object
   public:
     Pixmap();
     void draw();
+    static const unsigned char ALPHA_BLUE = 255;
+    static const unsigned char ALPHA_GREEN = 0;
+    static const unsigned char ALPHA_RED = 255;
+
   private:
+
     class Pixmap_data
     {
       public:

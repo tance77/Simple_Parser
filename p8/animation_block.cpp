@@ -20,6 +20,7 @@ void
 Animation_block::execute(Game_object *argument)
 {
     Symbol* tmp = m_parameter_symbol;
+    assert(argument);
     m_parameter_symbol->set(argument);
     Statement_block::execute();
     m_parameter_symbol = tmp;
